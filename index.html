@@ -11,36 +11,55 @@
       --line: #d8dee9;
       --paper: #f7f9fc;
       --panel: #ffffff;
+      --panel-soft: #fbfcff;
       --blue: #0c66e4;
+      --blue-soft: #eef4ff;
       --teal: #118d7c;
+      --teal-soft: #e9f7f4;
       --amber: #b76e00;
+      --amber-soft: #fff3d9;
       --red: #c9372c;
-      --shadow: 0 18px 45px rgba(23, 32, 51, .13);
+      --red-soft: #ffe9e7;
+      --shadow: 0 18px 45px rgba(23, 32, 51, .11);
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      min-width: 0;
+    }
+
     body {
       margin: 0;
+      min-width: 320px;
       min-height: 100vh;
       color: var(--ink);
       background: var(--paper);
       font: 13px/1.42 "Segoe UI", Arial, sans-serif;
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+      letter-spacing: 0;
     }
 
     .page {
-      width: 1400px;
-      min-height: 900px;
-      padding: 28px;
+      width: 100%;
+      max-width: 1540px;
+      margin: 0 auto;
+      padding: clamp(12px, 2vw, 28px);
     }
 
     .shell {
-      min-height: 832px;
+      width: 100%;
       border: 1px solid rgba(96, 112, 141, .18);
       border-radius: 8px;
-      background: rgba(255, 255, 255, .94);
+      background: rgba(255, 255, 255, .96);
       box-shadow: var(--shadow);
       overflow: hidden;
     }
@@ -49,15 +68,15 @@
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 24px;
-      padding: 26px 30px 22px;
+      gap: 20px;
+      padding: clamp(18px, 2.3vw, 30px);
       border-bottom: 1px solid var(--line);
-      background: linear-gradient(90deg, #fff, #f5f8ff 58%, #f2fbf8);
+      background: linear-gradient(90deg, #fff, #f5f8ff 56%, #f2fbf8);
     }
 
     h1 {
       margin: 0;
-      font-size: 32px;
+      font-size: clamp(24px, 3.4vw, 34px);
       line-height: 1.08;
       font-weight: 760;
       letter-spacing: 0;
@@ -67,11 +86,12 @@
       margin-top: 8px;
       color: var(--muted);
       font-size: 14px;
-      max-width: 840px;
+      max-width: 860px;
     }
 
     .stamp {
-      min-width: 288px;
+      flex: 0 0 auto;
+      min-width: min(288px, 100%);
       padding: 12px 14px;
       border: 1px solid #cdd7e7;
       border-radius: 8px;
@@ -87,16 +107,71 @@
       font-size: 13px;
     }
 
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px clamp(18px, 2.3vw, 30px);
+      border-bottom: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+
+    .toolbar-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .control-button,
+    .chip,
+    .section-toggle {
+      border: 1px solid #cdd7e7;
+      border-radius: 8px;
+      background: #fff;
+      color: #284263;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .control-button {
+      min-height: 34px;
+      padding: 7px 11px;
+    }
+
+    .control-button:hover,
+    .chip:hover,
+    .section-toggle:hover {
+      border-color: #9eb5d5;
+      color: var(--blue);
+    }
+
+    .control-button[aria-pressed="true"],
+    .chip.active {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+      color: #0747a6;
+    }
+
+    .filter-state {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
     .metrics {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 12px;
-      padding: 18px 30px;
+      padding: 18px clamp(18px, 2.3vw, 30px);
       border-bottom: 1px solid var(--line);
-      background: #fbfcff;
+      background: #fff;
     }
 
     .metric {
+      min-width: 0;
       border: 1px solid #dce3ef;
       border-radius: 8px;
       background: #fff;
@@ -117,30 +192,95 @@
       text-transform: uppercase;
     }
 
-    .board {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      align-items: start;
-      gap: 16px;
-      padding: 22px 30px 26px;
+    .components-panel {
+      padding: 16px clamp(18px, 2.3vw, 30px) 18px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel-soft);
     }
 
-    .column {
-      min-width: 0;
-    }
-
-    .column-title {
+    .panel-title {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .panel-title h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 780;
+    }
+
+    .panel-note {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 30px;
+      padding: 5px 9px;
+      max-width: 100%;
+    }
+
+    .chip-name {
+      overflow-wrap: anywhere;
+    }
+
+    .chip-count {
+      min-width: 22px;
+      border-radius: 999px;
+      background: #eef2f7;
+      padding: 1px 7px;
+      color: #41506a;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    .chip.active .chip-count {
+      background: #fff;
+      color: #0747a6;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 365px), 1fr));
+      align-items: start;
+      gap: 16px;
+      padding: 22px clamp(18px, 2.3vw, 30px) 26px;
+    }
+
+    .section {
+      min-width: 0;
+    }
+
+    .section-toggle {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
       gap: 10px;
       margin-bottom: 10px;
       padding: 9px 10px;
+      border-color: transparent;
       border-top: 3px solid var(--blue);
-      border-radius: 6px;
-      background: #eef4ff;
+      background: var(--blue-soft);
       color: #0b3f8a;
-      font-weight: 780;
+      text-align: left;
+    }
+
+    .section-toggle .title {
+      overflow-wrap: anywhere;
     }
 
     .count {
@@ -152,17 +292,37 @@
       font-size: 12px;
     }
 
+    .chevron {
+      color: #41506a;
+      font-size: 12px;
+    }
+
+    .section.collapsed .chevron {
+      transform: rotate(-90deg);
+    }
+
     .cards {
       display: grid;
       gap: 10px;
     }
 
-    .ticket {
+    .section.collapsed .cards {
+      display: none;
+    }
+
+    .ticket,
+    .subtask {
+      min-width: 0;
       border: 1px solid #dce3ef;
       border-radius: 8px;
       background: var(--panel);
       padding: 12px;
       break-inside: avoid;
+    }
+
+    .ticket.parent-stub {
+      border-style: dashed;
+      background: #fffdf8;
     }
 
     .topline {
@@ -180,6 +340,10 @@
       white-space: nowrap;
     }
 
+    .key:hover {
+      text-decoration: underline;
+    }
+
     .type {
       border: 1px solid #cfd8e6;
       border-radius: 999px;
@@ -194,12 +358,13 @@
       margin: 8px 0 10px;
       font-size: 13px;
       font-weight: 680;
+      overflow-wrap: anywhere;
     }
 
     .meta {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px 12px;
+      gap: 7px 12px;
       color: var(--muted);
       font-size: 11px;
     }
@@ -221,18 +386,93 @@
     }
 
     .p-p0 {
-      background: #ffe9e7;
+      background: var(--red-soft);
       color: var(--red);
     }
 
     .p-p1 {
-      background: #fff3d9;
+      background: var(--amber-soft);
       color: var(--amber);
     }
 
     .p-p3 {
-      background: #eaf8f5;
+      background: var(--teal-soft);
       color: var(--teal);
+    }
+
+    .components-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 3px;
+    }
+
+    .component-pill {
+      border-radius: 999px;
+      background: #eef2f7;
+      padding: 2px 7px;
+      color: #334968;
+      font-size: 11px;
+      font-weight: 650;
+      overflow-wrap: anywhere;
+    }
+
+    .subtask-shell {
+      margin-top: 12px;
+      border-left: 3px solid #cde7df;
+      padding-left: 10px;
+    }
+
+    .subtask-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: #0f6c60;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .subtask-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .subtask {
+      background: #fbfffd;
+      padding: 10px;
+    }
+
+    .subtask .key {
+      font-size: 13px;
+    }
+
+    .subtask .summary {
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    .hidden-subtasks {
+      margin-top: 10px;
+      border-radius: 8px;
+      background: var(--teal-soft);
+      padding: 8px 10px;
+      color: #0f6c60;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      border: 1px dashed #cdd7e7;
+      border-radius: 8px;
+      background: #fff;
+      padding: 20px;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 700;
     }
 
     .footer {
@@ -240,7 +480,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 18px;
-      padding: 14px 30px 18px;
+      padding: 14px clamp(18px, 2.3vw, 30px) 18px;
       border-top: 1px solid var(--line);
       color: var(--muted);
       font-size: 12px;
@@ -251,6 +491,33 @@
       font-weight: 700;
       text-decoration: none;
       white-space: nowrap;
+    }
+
+    @media (max-width: 760px) {
+      header,
+      .toolbar,
+      .panel-title,
+      .footer {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .stamp,
+      .panel-note {
+        text-align: left;
+      }
+
+      .toolbar-group {
+        width: 100%;
+      }
+
+      .control-button {
+        flex: 1 1 150px;
+      }
+
+      .meta {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -264,514 +531,414 @@
         </div>
         <div class="stamp">
           <strong>Pulled from Jira</strong>
-          May 1, 2026, 9:36 AM ET<br>
+          <span id="pulled-at"></span> ET<br>
           golfnow.atlassian.net
         </div>
       </header>
 
-      <section class="metrics" aria-label="Board metrics">
-        <div class="metric">
-          <div class="value">30</div>
-          <div class="label">Tracked tickets</div>
+      <section class="toolbar" aria-label="Board controls">
+        <div class="toolbar-group">
+          <button class="control-button" id="toggle-subtasks" type="button" aria-pressed="true">Hide subtasks</button>
+          <button class="control-button" id="expand-all" type="button">Expand all sections</button>
+          <button class="control-button" id="collapse-all" type="button">Collapse all sections</button>
         </div>
-        <div class="metric">
-          <div class="value">20</div>
-          <div class="label">QA Testing (DEV)</div>
-        </div>
-        <div class="metric">
-          <div class="value">3</div>
-          <div class="label">Pending Deployment (DEV)</div>
-        </div>
-        <div class="metric">
-          <div class="value">17</div>
-          <div class="label">P0/P1 priority items</div>
-        </div>
+        <div class="filter-state" id="filter-state">Showing all components</div>
       </section>
 
-      <section class="board" aria-label="Jira tickets by status">
+      <section class="metrics" id="metrics" aria-label="Board metrics"></section>
 
-        <div class="column">
-          <div class="column-title">
-            <span>Blocked</span>
-            <span class="count">1</span>
-          </div>
-          <div class="cards">
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14215">CORE-14215</a>
-                <span class="type">Bug</span>
-              </div>
-              <p class="summary">Cannot Add Account Balance Due to 'Missing' Wallet Option</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-p3">P3</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 11:30 PM</div>
-                <div><b>Components</b>GolfNowCentral</div>
-              </div>
-            </article>
-          </div>
+      <section class="components-panel" aria-label="Components">
+        <div class="panel-title">
+          <h2>Components</h2>
+          <div class="panel-note">Auto-built from the current Jira ticket components.</div>
         </div>
-
-        <div class="column">
-          <div class="column-title">
-            <span>Analysis</span>
-            <span class="count">1</span>
-          </div>
-          <div class="cards">
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14386">CORE-14386</a>
-                <span class="type">Bug</span>
-              </div>
-              <p class="summary">Premier Card Miami - Subscriptions Being Created Despite Purchase Errors</p>
-              <div class="meta">
-                <div><b>Assignee</b>Daniel McNaughton</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 20, 2026, 7:03 PM</div>
-                <div><b>Components</b>None</div>
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <div class="column">
-          <div class="column-title">
-            <span>Pre Planning</span>
-            <span class="count">1</span>
-          </div>
-          <div class="cards">
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14331">CORE-14331</a>
-                <span class="type">Task</span>
-              </div>
-              <p class="summary">Timelyst - QA testing</p>
-              <div class="meta">
-                <div><b>Assignee</b>Yu-Sheng Tu</div>
-                <div><b>Priority</b><span class="priority p-none">None</span></div>
-                <div><b>Updated</b>Apr 21, 2026, 2:19 PM</div>
-                <div><b>Components</b>gn-svc-timelyst</div>
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <div class="column">
-          <div class="column-title">
-            <span>Code Review</span>
-            <span class="count">2</span>
-          </div>
-          <div class="cards">
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14434">CORE-14434</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">Database changes.</p>
-              <div class="meta">
-                <div><b>Assignee</b>Raghav Kancherla</div>
-                <div><b>Priority</b><span class="priority p-none">None</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 4:55 PM</div>
-                <div><b>Components</b>Database</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14433">CORE-14433</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">Code changes.</p>
-              <div class="meta">
-                <div><b>Assignee</b>Raghav Kancherla</div>
-                <div><b>Priority</b><span class="priority p-none">None</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 4:48 PM</div>
-                <div><b>Components</b>Cache Manager, Cache Manager - QueueUtility</div>
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <div class="column">
-          <div class="column-title">
-            <span>Pending Deployment (DEV)</span>
-            <span class="count">3</span>
-          </div>
-          <div class="cards">
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14272">CORE-14272</a>
-                <span class="type">Story</span>
-              </div>
-              <p class="summary">Create endpoint to validate cancellation eligibility for Products</p>
-              <div class="meta">
-                <div><b>Assignee</b>Raghav Kancherla</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>May 1, 2026, 8:35 AM</div>
-                <div><b>Components</b>GolfNow.Services.Product, GolfNowAPI</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14420">CORE-14420</a>
-                <span class="type">Bug</span>
-              </div>
-              <p class="summary">CRMCustomerPhone missing index on CustomerNumber causes timeouts in STG (phx-api-be-internal)</p>
-              <div class="meta">
-                <div><b>Assignee</b>Daniel McNaughton</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 11:30 PM</div>
-                <div><b>Components</b>Database</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14431">CORE-14431</a>
-                <span class="type">Bug</span>
-              </div>
-              <p class="summary">Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL</p>
-              <div class="meta">
-                <div><b>Assignee</b>Yoel Martin Pardo</div>
-                <div><b>Priority</b><span class="priority p-p0">P0</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 5:14 PM</div>
-                <div><b>Components</b>Cache Manager, Cache Manager - QueueUtility, Database</div>
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <div class="column">
-          <div class="column-title">
-            <span>QA Testing (DEV)</span>
-            <span class="count">20</span>
-          </div>
-          <div class="cards">
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14426">CORE-14426</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">Code Changes</p>
-              <div class="meta">
-                <div><b>Assignee</b>Unassigned</div>
-                <div><b>Priority</b><span class="priority p-none">None</span></div>
-                <div><b>Updated</b>May 1, 2026, 8:38 AM</div>
-                <div><b>Components</b>GolfNow.API.TR, GolfNow.Services.Product, GolfNowAPI</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14342">CORE-14342</a>
-                <span class="type">Task</span>
-              </div>
-              <p class="summary">Integrate New EZL Contact Endpoint into NEW EZL Booking Flow</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 11:30 PM</div>
-                <div><b>Components</b>Database, GolfNow.Services.Reservation, GolfNow.Services.TeeSheet</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14332">CORE-14332</a>
-                <span class="type">Story</span>
-              </div>
-              <p class="summary">Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 11:30 PM</div>
-                <div><b>Components</b>GolfNow.API.TR, GolfNowAPI</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14117">CORE-14117</a>
-                <span class="type">Story</span>
-              </div>
-              <p class="summary">Move Fee-Messaging to Post-Fee-Calculation &amp; Use FeeConfiguration (API 2.1)</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 11:30 PM</div>
-                <div><b>Components</b>Database, GolfNow.API.TR, GolfNowAPI</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14210">CORE-14210</a>
-                <span class="type">Bug</span>
-              </div>
-              <p class="summary">CLONE - [Commerce] Convenience fee shown lower for Hot Deals on Checkout compared to GNC settings</p>
-              <div class="meta">
-                <div><b>Assignee</b>Nicole Greer</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 11:30 PM</div>
-                <div><b>Components</b>GolfNow.Services.CommerceProxy</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14435">CORE-14435</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">SQL changes</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-none">None</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 7:17 PM</div>
-                <div><b>Components</b>Database</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14430">CORE-14430</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">Code changes</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-none">None</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 7:17 PM</div>
-                <div><b>Components</b>GolfNowAPI</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14271">CORE-14271</a>
-                <span class="type">Story</span>
-              </div>
-              <p class="summary">Support Product Refunds</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 7:17 PM</div>
-                <div><b>Components</b>GolfNowAPI</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14425">CORE-14425</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">SQL changes</p>
-              <div class="meta">
-                <div><b>Assignee</b>Unassigned</div>
-                <div><b>Priority</b><span class="priority p-none">None</span></div>
-                <div><b>Updated</b>Apr 30, 2026, 5:23 PM</div>
-                <div><b>Components</b>Database</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14412">CORE-14412</a>
-                <span class="type">Bug</span>
-              </div>
-              <p class="summary">CAKE Affiliate Tracking - API Response Validation Failure</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 29, 2026, 8:46 PM</div>
-                <div><b>Components</b>GolfNowAPI</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14398">CORE-14398</a>
-                <span class="type">Bug</span>
-              </div>
-              <p class="summary">Update Stored Procedure to Resolve Timeout Error When Purchasing Product w/ Promo Code</p>
-              <div class="meta">
-                <div><b>Assignee</b>Nicole Greer</div>
-                <div><b>Priority</b><span class="priority p-none">None</span></div>
-                <div><b>Updated</b>Apr 29, 2026, 8:10 PM</div>
-                <div><b>Components</b>Database</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14409">CORE-14409</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">Add secrets</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 29, 2026, 12:30 AM</div>
-                <div><b>Components</b>Secrets</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14366">CORE-14366</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">Code changes for [CORE - 14332]</p>
-              <div class="meta">
-                <div><b>Assignee</b>Unassigned</div>
-                <div><b>Priority</b><span class="priority p-none">None</span></div>
-                <div><b>Updated</b>Apr 29, 2026, 12:23 AM</div>
-                <div><b>Components</b>GolfNow.API.TR, GolfNowAPI</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14329">CORE-14329</a>
-                <span class="type">Story</span>
-              </div>
-              <p class="summary">True-Up Not Switching to TSP Upon AL Deactivation</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-p0">P0</span></div>
-                <div><b>Updated</b>Apr 28, 2026, 1:11 PM</div>
-                <div><b>Components</b>Cache Manager, Cache Manager - QueueUtility</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14401">CORE-14401</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">Database changes.</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-none">None</span></div>
-                <div><b>Updated</b>Apr 28, 2026, 8:51 AM</div>
-                <div><b>Components</b>Database</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14400">CORE-14400</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">Code changes.</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-none">None</span></div>
-                <div><b>Updated</b>Apr 28, 2026, 8:51 AM</div>
-                <div><b>Components</b>GolfNow.Services.Reservation, GolfNow.Services.TeeSheet</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14399">CORE-14399</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">SQL code changes for [CORE - 14117]</p>
-              <div class="meta">
-                <div><b>Assignee</b>Unassigned</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 23, 2026, 5:41 PM</div>
-                <div><b>Components</b>Database</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14337">CORE-14337</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">Code changes for [CORE - 14117]</p>
-              <div class="meta">
-                <div><b>Assignee</b>Unassigned</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 23, 2026, 5:27 PM</div>
-                <div><b>Components</b>GolfNow.API.TR, GolfNowAPI</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14364">CORE-14364</a>
-                <span class="type">Bug</span>
-              </div>
-              <p class="summary">Customer Wallet - Deserialization Failure</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 21, 2026, 10:06 AM</div>
-                <div><b>Components</b>GolfNowAPI, GolfNowCentral</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14379">CORE-14379</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">Code changes for [CORE - 14364]</p>
-              <div class="meta">
-                <div><b>Assignee</b>Dewan Kabir</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 21, 2026, 10:04 AM</div>
-                <div><b>Components</b>GolfNowAPI, GolfNowCentral</div>
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <div class="column">
-          <div class="column-title">
-            <span>Closed</span>
-            <span class="count">2</span>
-          </div>
-          <div class="cards">
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14385">CORE-14385</a>
-                <span class="type">Task</span>
-              </div>
-              <p class="summary">Sufficient query parameter is not returning relevant result on the top where expected</p>
-              <div class="meta">
-                <div><b>Assignee</b>Unassigned</div>
-                <div><b>Priority</b><span class="priority p-none">None</span></div>
-                <div><b>Updated</b>Apr 28, 2026, 3:45 PM</div>
-                <div><b>Components</b>Geoplaces.NET</div>
-              </div>
-            </article>
-
-            <article class="ticket">
-              <div class="topline">
-                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14391">CORE-14391</a>
-                <span class="type">Developer Task (sub task)</span>
-              </div>
-              <p class="summary">Code changes for [CORE - 14386]</p>
-              <div class="meta">
-                <div><b>Assignee</b>Unassigned</div>
-                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
-                <div><b>Updated</b>Apr 23, 2026, 7:11 PM</div>
-                <div><b>Components</b>None</div>
-              </div>
-            </article>
-          </div>
-        </div>
+        <div class="chips" id="component-chips"></div>
       </section>
+
+      <section class="board" id="board" aria-label="Jira tickets by status"></section>
 
       <div class="footer">
-        <span>Source: live Jira JQL fixVersion = &quot;v3001.122.0&quot; ORDER BY updated DESC. Blocked count: 1.</span>
+        <span id="source-line"></span>
         <a href="https://golfnow.atlassian.net/issues/?jql=fixVersion%20%3D%20%22v3001.122.0%22%20ORDER%20BY%20updated%20DESC">Open Jira filter</a>
       </div>
     </section>
   </main>
+
+  <script id="jira-data" type="application/json">{"version":"v3001.122.0","siteUrl":"https://golfnow.atlassian.net","jql":"fixVersion = \"v3001.122.0\" ORDER BY updated DESC","pulledAt":"2026-05-01T14:57:18.084Z","pulledAtDisplay":"May 1, 2026, 10:57 AM","total":30,"issues":[{"key":"CORE-14426","url":"https://golfnow.atlassian.net/browse/CORE-14426","summary":"Code Changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Unassigned","updated":"2026-05-01T08:38:47.511-0400","updatedDisplay":"May 1, 2026, 8:38 AM","created":"2026-04-30T06:22:27.620-0400","createdDisplay":"Apr 30, 2026, 6:22 AM","components":["GolfNow.API.TR","GolfNow.Services.Product","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","type":"Story","status":"Pending Deployment (DEV)","priority":"P1"}},{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","type":"Story","isSubtask":false,"status":"Pending Deployment (DEV)","priority":"P1","assignee":"Raghav Kancherla","updated":"2026-05-01T08:35:08.239-0400","updatedDisplay":"May 1, 2026, 8:35 AM","created":"2026-03-06T10:21:50.055-0500","createdDisplay":"Mar 6, 2026, 10:21 AM","components":["GolfNow.Services.Product","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"B2C-70","url":"https://golfnow.atlassian.net/browse/B2C-70","summary":"NY Cancellation Validation","type":"Epic","status":"Backlog","priority":"None"}},{"key":"CORE-14342","url":"https://golfnow.atlassian.net/browse/CORE-14342","summary":"Integrate New EZL Contact Endpoint into NEW EZL Booking Flow","type":"Task","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:17.430-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-03-26T14:51:02.523-0400","createdDisplay":"Mar 26, 2026, 2:51 PM","components":["Database","GolfNow.Services.Reservation","GolfNow.Services.TeeSheet"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14332","url":"https://golfnow.atlassian.net/browse/CORE-14332","summary":"Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:17.043-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-03-24T09:25:03.489-0400","createdDisplay":"Mar 24, 2026, 9:25 AM","components":["GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13901","url":"https://golfnow.atlassian.net/browse/CORE-13901","summary":"Customizable transaction fees","type":"Epic","status":"Planning","priority":"P1"}},{"key":"CORE-14117","url":"https://golfnow.atlassian.net/browse/CORE-14117","summary":"Move Fee-Messaging to Post-Fee-Calculation \u0026 Use FeeConfiguration (API 2.1)","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:16.434-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-01-27T23:35:15.505-0500","createdDisplay":"Jan 27, 2026, 11:35 PM","components":["Database","GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13901","url":"https://golfnow.atlassian.net/browse/CORE-13901","summary":"Customizable transaction fees","type":"Epic","status":"Planning","priority":"P1"}},{"key":"CORE-14210","url":"https://golfnow.atlassian.net/browse/CORE-14210","summary":"CLONE - [Commerce] Convenience fee shown lower for Hot Deals on Checkout compared to GNC settings","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Nicole Greer","updated":"2026-04-30T23:30:15.366-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-02-25T15:14:47.770-0500","createdDisplay":"Feb 25, 2026, 3:14 PM","components":["GolfNow.Services.CommerceProxy"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13172","url":"https://golfnow.atlassian.net/browse/CORE-13172","summary":"Commerce Proxy API","type":"Epic","status":"Planning","priority":"None"}},{"key":"CORE-14420","url":"https://golfnow.atlassian.net/browse/CORE-14420","summary":"CRMCustomerPhone missing index on CustomerNumber causes timeouts in STG (phx-api-be-internal)","type":"Bug","isSubtask":false,"status":"Pending Deployment (DEV)","priority":"P1","assignee":"Daniel McNaughton","updated":"2026-04-30T23:30:15.045-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-04-29T15:03:20.779-0400","createdDisplay":"Apr 29, 2026, 3:03 PM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14215","url":"https://golfnow.atlassian.net/browse/CORE-14215","summary":"Cannot Add Account Balance Due to 'Missing' Wallet Option","type":"Bug","isSubtask":false,"status":"Blocked","priority":"P3","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:15.023-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-02-25T17:27:56.678-0500","createdDisplay":"Feb 25, 2026, 5:27 PM","components":["GolfNowCentral"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14435","url":"https://golfnow.atlassian.net/browse/CORE-14435","summary":"SQL changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-30T19:17:45.814-0400","updatedDisplay":"Apr 30, 2026, 7:17 PM","created":"2026-04-30T18:05:07.770-0400","createdDisplay":"Apr 30, 2026, 6:05 PM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14430","url":"https://golfnow.atlassian.net/browse/CORE-14430","summary":"Code changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-30T19:17:35.286-0400","updatedDisplay":"Apr 30, 2026, 7:17 PM","created":"2026-04-30T12:33:59.678-0400","createdDisplay":"Apr 30, 2026, 12:33 PM","components":["GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T19:17:25.006-0400","updatedDisplay":"Apr 30, 2026, 7:17 PM","created":"2026-03-06T10:11:37.546-0500","createdDisplay":"Mar 6, 2026, 10:11 AM","components":["GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"B2C-70","url":"https://golfnow.atlassian.net/browse/B2C-70","summary":"NY Cancellation Validation","type":"Epic","status":"Backlog","priority":"None"}},{"key":"CORE-14425","url":"https://golfnow.atlassian.net/browse/CORE-14425","summary":"SQL changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Unassigned","updated":"2026-04-30T17:23:51.019-0400","updatedDisplay":"Apr 30, 2026, 5:23 PM","created":"2026-04-30T06:21:55.485-0400","createdDisplay":"Apr 30, 2026, 6:21 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","type":"Story","status":"Pending Deployment (DEV)","priority":"P1"}},{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","isSubtask":false,"status":"Pending Deployment (DEV)","priority":"P0","assignee":"Yoel Martin Pardo","updated":"2026-04-30T17:14:38.589-0400","updatedDisplay":"Apr 30, 2026, 5:14 PM","created":"2026-04-30T14:03:02.725-0400","createdDisplay":"Apr 30, 2026, 2:03 PM","components":["Cache Manager","Cache Manager - QueueUtility","Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14434","url":"https://golfnow.atlassian.net/browse/CORE-14434","summary":"Database changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"Code Review","priority":"None","assignee":"Raghav Kancherla","updated":"2026-04-30T16:55:30.201-0400","updatedDisplay":"Apr 30, 2026, 4:55 PM","created":"2026-04-30T16:43:09.912-0400","createdDisplay":"Apr 30, 2026, 4:43 PM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"Pending Deployment (DEV)","priority":"P0"}},{"key":"CORE-14433","url":"https://golfnow.atlassian.net/browse/CORE-14433","summary":"Code changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"Code Review","priority":"None","assignee":"Raghav Kancherla","updated":"2026-04-30T16:48:44.704-0400","updatedDisplay":"Apr 30, 2026, 4:48 PM","created":"2026-04-30T16:42:59.027-0400","createdDisplay":"Apr 30, 2026, 4:42 PM","components":["Cache Manager","Cache Manager - QueueUtility"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"Pending Deployment (DEV)","priority":"P0"}},{"key":"CORE-14412","url":"https://golfnow.atlassian.net/browse/CORE-14412","summary":"CAKE Affiliate Tracking - API Response Validation Failure","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-29T20:46:46.788-0400","updatedDisplay":"Apr 29, 2026, 8:46 PM","created":"2026-04-27T18:12:28.289-0400","createdDisplay":"Apr 27, 2026, 6:12 PM","components":["GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14398","url":"https://golfnow.atlassian.net/browse/CORE-14398","summary":"Update Stored Procedure to Resolve Timeout Error When Purchasing Product w/ Promo Code","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"None","assignee":"Nicole Greer","updated":"2026-04-29T20:10:07.517-0400","updatedDisplay":"Apr 29, 2026, 8:10 PM","created":"2026-04-22T09:53:30.759-0400","createdDisplay":"Apr 22, 2026, 9:53 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14409","url":"https://golfnow.atlassian.net/browse/CORE-14409","summary":"Add secrets","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-29T00:30:03.869-0400","updatedDisplay":"Apr 29, 2026, 12:30 AM","created":"2026-04-27T12:07:20.016-0400","createdDisplay":"Apr 27, 2026, 12:07 PM","components":["Secrets"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14332","url":"https://golfnow.atlassian.net/browse/CORE-14332","summary":"Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14366","url":"https://golfnow.atlassian.net/browse/CORE-14366","summary":"Code changes for [CORE - 14332]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Unassigned","updated":"2026-04-29T00:23:20.074-0400","updatedDisplay":"Apr 29, 2026, 12:23 AM","created":"2026-04-07T11:00:10.265-0400","createdDisplay":"Apr 7, 2026, 11:00 AM","components":["GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14332","url":"https://golfnow.atlassian.net/browse/CORE-14332","summary":"Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14385","url":"https://golfnow.atlassian.net/browse/CORE-14385","summary":"Sufficient query parameter is not returning relevant result on the top where expected","type":"Task","isSubtask":false,"status":"Closed","priority":"None","assignee":"Unassigned","updated":"2026-04-28T15:45:59.342-0400","updatedDisplay":"Apr 28, 2026, 3:45 PM","created":"2026-04-14T18:59:32.248-0400","createdDisplay":"Apr 14, 2026, 6:59 PM","components":["Geoplaces.NET"],"fixVersions":["v3001.122.0"],"resolution":"Done","parent":null},{"key":"CORE-14329","url":"https://golfnow.atlassian.net/browse/CORE-14329","summary":"True-Up Not Switching to TSP Upon AL Deactivation","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P0","assignee":"Dewan Kabir","updated":"2026-04-28T13:11:48.547-0400","updatedDisplay":"Apr 28, 2026, 1:11 PM","created":"2026-03-23T12:36:55.266-0400","createdDisplay":"Mar 23, 2026, 12:36 PM","components":["Cache Manager","Cache Manager - QueueUtility"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14401","url":"https://golfnow.atlassian.net/browse/CORE-14401","summary":"Database changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-28T08:51:15.056-0400","updatedDisplay":"Apr 28, 2026, 8:51 AM","created":"2026-04-22T11:37:42.785-0400","createdDisplay":"Apr 22, 2026, 11:37 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14342","url":"https://golfnow.atlassian.net/browse/CORE-14342","summary":"Integrate New EZL Contact Endpoint into NEW EZL Booking Flow","type":"Task","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14400","url":"https://golfnow.atlassian.net/browse/CORE-14400","summary":"Code changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-28T08:51:08.687-0400","updatedDisplay":"Apr 28, 2026, 8:51 AM","created":"2026-04-22T11:37:35.069-0400","createdDisplay":"Apr 22, 2026, 11:37 AM","components":["GolfNow.Services.Reservation","GolfNow.Services.TeeSheet"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14342","url":"https://golfnow.atlassian.net/browse/CORE-14342","summary":"Integrate New EZL Contact Endpoint into NEW EZL Booking Flow","type":"Task","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14391","url":"https://golfnow.atlassian.net/browse/CORE-14391","summary":"Code changes for [CORE - 14386]","type":"Developer Task (sub task)","isSubtask":true,"status":"Closed","priority":"P1","assignee":"Unassigned","updated":"2026-04-23T19:11:34.326-0400","updatedDisplay":"Apr 23, 2026, 7:11 PM","created":"2026-04-16T17:33:20.119-0400","createdDisplay":"Apr 16, 2026, 5:33 PM","components":[],"fixVersions":["v3001.122.0"],"resolution":"Completed","parent":{"key":"CORE-14386","url":"https://golfnow.atlassian.net/browse/CORE-14386","summary":"Premier Card Miami - Subscriptions Being Created Despite Purchase Errors","type":"Bug","status":"Analysis","priority":"P1"}},{"key":"CORE-14399","url":"https://golfnow.atlassian.net/browse/CORE-14399","summary":"SQL code changes for [CORE - 14117]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Unassigned","updated":"2026-04-23T17:41:46.296-0400","updatedDisplay":"Apr 23, 2026, 5:41 PM","created":"2026-04-22T10:00:52.360-0400","createdDisplay":"Apr 22, 2026, 10:00 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14117","url":"https://golfnow.atlassian.net/browse/CORE-14117","summary":"Move Fee-Messaging to Post-Fee-Calculation \u0026 Use FeeConfiguration (API 2.1)","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14337","url":"https://golfnow.atlassian.net/browse/CORE-14337","summary":"Code changes for [CORE - 14117]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Unassigned","updated":"2026-04-23T17:27:52.226-0400","updatedDisplay":"Apr 23, 2026, 5:27 PM","created":"2026-03-25T09:20:49.055-0400","createdDisplay":"Mar 25, 2026, 9:20 AM","components":["GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14117","url":"https://golfnow.atlassian.net/browse/CORE-14117","summary":"Move Fee-Messaging to Post-Fee-Calculation \u0026 Use FeeConfiguration (API 2.1)","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14331","url":"https://golfnow.atlassian.net/browse/CORE-14331","summary":"Timelyst - QA testing","type":"Task","isSubtask":false,"status":"Pre Planning","priority":"None","assignee":"Yu-Sheng Tu","updated":"2026-04-21T14:19:45.069-0400","updatedDisplay":"Apr 21, 2026, 2:19 PM","created":"2026-03-24T08:32:42.971-0400","createdDisplay":"Mar 24, 2026, 8:32 AM","components":["gn-svc-timelyst"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13741","url":"https://golfnow.atlassian.net/browse/CORE-13741","summary":"Timelyst - Duration Based Inventory API","type":"Epic","status":"Analysis","priority":"P0"}},{"key":"CORE-14364","url":"https://golfnow.atlassian.net/browse/CORE-14364","summary":"Customer Wallet - Deserialization Failure","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-21T10:06:21.157-0400","updatedDisplay":"Apr 21, 2026, 10:06 AM","created":"2026-04-07T00:56:54.516-0400","createdDisplay":"Apr 7, 2026, 12:56 AM","components":["GolfNowAPI","GolfNowCentral"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14379","url":"https://golfnow.atlassian.net/browse/CORE-14379","summary":"Code changes for [CORE - 14364]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-21T10:04:41.887-0400","updatedDisplay":"Apr 21, 2026, 10:04 AM","created":"2026-04-13T17:25:31.613-0400","createdDisplay":"Apr 13, 2026, 5:25 PM","components":["GolfNowAPI","GolfNowCentral"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14364","url":"https://golfnow.atlassian.net/browse/CORE-14364","summary":"Customer Wallet - Deserialization Failure","type":"Bug","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14386","url":"https://golfnow.atlassian.net/browse/CORE-14386","summary":"Premier Card Miami - Subscriptions Being Created Despite Purchase Errors","type":"Bug","isSubtask":false,"status":"Analysis","priority":"P1","assignee":"Daniel McNaughton","updated":"2026-04-20T19:03:54.816-0400","updatedDisplay":"Apr 20, 2026, 7:03 PM","created":"2026-04-15T16:54:29.658-0400","createdDisplay":"Apr 15, 2026, 4:54 PM","components":[],"fixVersions":["v3001.122.0"],"resolution":"","parent":null}],"jiraFilterUrl":"https://golfnow.atlassian.net/issues/?jql=fixVersion%20%3D%20%22v3001.122.0%22%20ORDER%20BY%20updated%20DESC"}</script>
+  <script>
+    (function () {
+      "use strict";
+
+      var data = JSON.parse(document.getElementById("jira-data").textContent);
+      var state = {
+        showSubtasks: true,
+        activeComponent: "all",
+        collapsedStatuses: new Set()
+      };
+      var statusOrder = [
+        "Blocked",
+        "Analysis",
+        "Pre Planning",
+        "Code Review",
+        "Pending Deployment (DEV)",
+        "QA Testing (DEV)",
+        "Closed"
+      ];
+
+      function text(value) {
+        return String(value == null ? "" : value);
+      }
+
+      function escape(value) {
+        return text(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function priorityClass(priority) {
+        return "p-" + text(priority || "none").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      }
+
+      function issueComponents(issue) {
+        return Array.isArray(issue.components) ? issue.components : [];
+      }
+
+      function hasComponent(issue, component) {
+        if (component === "all") {
+          return true;
+        }
+
+        return issueComponents(issue).indexOf(component) !== -1;
+      }
+
+      function sortByUpdatedDesc(left, right) {
+        return new Date(right.updated || 0) - new Date(left.updated || 0);
+      }
+
+      function getStatusRank(status) {
+        var index = statusOrder.indexOf(status);
+        return index === -1 ? statusOrder.length : index;
+      }
+
+      function getComponentCounts() {
+        var counts = new Map();
+
+        data.issues.forEach(function (issue) {
+          issueComponents(issue).forEach(function (component) {
+            counts.set(component, (counts.get(component) || 0) + 1);
+          });
+        });
+
+        return Array.from(counts.entries()).sort(function (left, right) {
+          return right[1] - left[1] || left[0].localeCompare(right[0]);
+        });
+      }
+
+      function getIssueModel() {
+        var issueByKey = new Map();
+        var subtasksByParent = new Map();
+        var primaryIssues = [];
+        var orphanSubtasks = [];
+
+        data.issues.forEach(function (issue) {
+          issueByKey.set(issue.key, issue);
+        });
+
+        data.issues.forEach(function (issue) {
+          if (!issue.isSubtask) {
+            primaryIssues.push(issue);
+            return;
+          }
+
+          if (issue.parent && issueByKey.has(issue.parent.key)) {
+            if (!subtasksByParent.has(issue.parent.key)) {
+              subtasksByParent.set(issue.parent.key, []);
+            }
+            subtasksByParent.get(issue.parent.key).push(issue);
+          } else {
+            orphanSubtasks.push(issue);
+          }
+        });
+
+        subtasksByParent.forEach(function (items) {
+          items.sort(sortByUpdatedDesc);
+        });
+
+        var cards = primaryIssues.map(function (issue) {
+          return {
+            issue: issue,
+            subtasks: subtasksByParent.get(issue.key) || [],
+            isParentStub: false
+          };
+        });
+
+        var orphanGroups = new Map();
+        orphanSubtasks.forEach(function (issue) {
+          var parentKey = issue.parent ? issue.parent.key : "No parent";
+          var groupKey = parentKey + "|" + issue.status;
+
+          if (!orphanGroups.has(groupKey)) {
+            orphanGroups.set(groupKey, {
+              issue: {
+                key: parentKey,
+                url: issue.parent ? issue.parent.url : data.jiraFilterUrl,
+                summary: issue.parent && issue.parent.summary ? issue.parent.summary : "Subtasks without a parent in this release",
+                type: issue.parent && issue.parent.type ? issue.parent.type : "Parent",
+                status: issue.status,
+                priority: issue.parent && issue.parent.priority ? issue.parent.priority : "None",
+                assignee: "Parent outside this release",
+                updated: issue.updated,
+                updatedDisplay: issue.updatedDisplay,
+                components: [],
+                isSubtask: false
+              },
+              subtasks: [],
+              isParentStub: true
+            });
+          }
+
+          orphanGroups.get(groupKey).subtasks.push(issue);
+        });
+
+        orphanGroups.forEach(function (card) {
+          card.subtasks.sort(sortByUpdatedDesc);
+          cards.push(card);
+        });
+
+        cards.sort(function (left, right) {
+          var rank = getStatusRank(left.issue.status) - getStatusRank(right.issue.status);
+          return rank || sortByUpdatedDesc(left.issue, right.issue);
+        });
+
+        return cards;
+      }
+
+      function cardMatchesComponent(card) {
+        return hasComponent(card.issue, state.activeComponent) ||
+          card.subtasks.some(function (subtask) {
+            return hasComponent(subtask, state.activeComponent);
+          });
+      }
+
+      function buildMetrics(cards) {
+        var visibleIssues = [];
+        cards.forEach(function (card) {
+          visibleIssues.push(card.issue);
+          card.subtasks.forEach(function (subtask) {
+            visibleIssues.push(subtask);
+          });
+        });
+
+        var subtaskCount = data.issues.filter(function (issue) { return issue.isSubtask; }).length;
+        var qaCount = data.issues.filter(function (issue) { return issue.status === "QA Testing (DEV)"; }).length;
+        var pendingDevCount = data.issues.filter(function (issue) { return issue.status === "Pending Deployment (DEV)"; }).length;
+        var highPriorityCount = data.issues.filter(function (issue) {
+          return issue.priority === "P0" || issue.priority === "P1";
+        }).length;
+
+        var metrics = [
+          { value: data.total, label: "Tracked tickets" },
+          { value: qaCount, label: "QA Testing (DEV)" },
+          { value: pendingDevCount, label: "Pending Deployment (DEV)" },
+          { value: highPriorityCount, label: "P0/P1 priority items" },
+          { value: subtaskCount, label: "Subtasks linked" }
+        ];
+
+        document.getElementById("metrics").innerHTML = metrics.map(function (metric) {
+          return "<div class=\"metric\"><div class=\"value\">" + escape(metric.value) + "</div><div class=\"label\">" + escape(metric.label) + "</div></div>";
+        }).join("");
+      }
+
+      function renderComponentChips() {
+        var chips = [
+          "<button class=\"chip " + (state.activeComponent === "all" ? "active" : "") + "\" type=\"button\" data-component=\"all\"><span class=\"chip-name\">All components</span><span class=\"chip-count\">" + data.total + "</span></button>"
+        ];
+
+        getComponentCounts().forEach(function (entry) {
+          var component = entry[0];
+          var count = entry[1];
+          chips.push(
+            "<button class=\"chip " + (state.activeComponent === component ? "active" : "") + "\" type=\"button\" data-component=\"" + escape(component) + "\">" +
+              "<span class=\"chip-name\">" + escape(component) + "</span>" +
+              "<span class=\"chip-count\">" + escape(count) + "</span>" +
+            "</button>"
+          );
+        });
+
+        document.getElementById("component-chips").innerHTML = chips.join("");
+      }
+
+      function renderComponents(components) {
+        if (!components || !components.length) {
+          return "<span class=\"component-pill\">None</span>";
+        }
+
+        return components.map(function (component) {
+          return "<span class=\"component-pill\">" + escape(component) + "</span>";
+        }).join("");
+      }
+
+      function renderMeta(issue, includeStatus) {
+        var status = includeStatus ? "<div><b>Status</b>" + escape(issue.status) + "</div>" : "";
+        return "<div class=\"meta\">" +
+          "<div><b>Assignee</b>" + escape(issue.assignee) + "</div>" +
+          "<div><b>Priority</b><span class=\"priority " + escape(priorityClass(issue.priority)) + "\">" + escape(issue.priority) + "</span></div>" +
+          status +
+          "<div><b>Updated</b>" + escape(issue.updatedDisplay) + "</div>" +
+          "<div><b>Components</b><div class=\"components-list\">" + renderComponents(issueComponents(issue)) + "</div></div>" +
+        "</div>";
+      }
+
+      function renderSubtask(subtask) {
+        return "<article class=\"subtask\">" +
+          "<div class=\"topline\">" +
+            "<a class=\"key\" href=\"" + escape(subtask.url) + "\">" + escape(subtask.key) + "</a>" +
+            "<span class=\"type\">" + escape(subtask.type) + "</span>" +
+          "</div>" +
+          "<p class=\"summary\">" + escape(subtask.summary) + "</p>" +
+          renderMeta(subtask, true) +
+        "</article>";
+      }
+
+      function renderCard(card) {
+        var issue = card.issue;
+        var visibleSubtasks = card.subtasks.filter(function (subtask) {
+          return state.activeComponent === "all" || hasComponent(subtask, state.activeComponent);
+        });
+        var className = "ticket" + (card.isParentStub ? " parent-stub" : "");
+        var subtaskBlock = "";
+
+        if (visibleSubtasks.length && state.showSubtasks) {
+          subtaskBlock =
+            "<div class=\"subtask-shell\">" +
+              "<div class=\"subtask-heading\"><span>Subtasks</span><span>" + visibleSubtasks.length + "</span></div>" +
+              "<div class=\"subtask-list\">" + visibleSubtasks.map(renderSubtask).join("") + "</div>" +
+            "</div>";
+        } else if (visibleSubtasks.length) {
+          subtaskBlock = "<div class=\"hidden-subtasks\">" + visibleSubtasks.length + " subtasks hidden by board setting</div>";
+        }
+
+        return "<article class=\"" + className + "\">" +
+          "<div class=\"topline\">" +
+            "<a class=\"key\" href=\"" + escape(issue.url) + "\">" + escape(issue.key) + "</a>" +
+            "<span class=\"type\">" + escape(issue.type) + "</span>" +
+          "</div>" +
+          "<p class=\"summary\">" + escape(issue.summary) + "</p>" +
+          renderMeta(issue, false) +
+          subtaskBlock +
+        "</article>";
+      }
+
+      function groupCards(cards) {
+        var groups = new Map();
+
+        cards.forEach(function (card) {
+          var status = card.issue.status || "No status";
+          if (!groups.has(status)) {
+            groups.set(status, []);
+          }
+          groups.get(status).push(card);
+        });
+
+        return Array.from(groups.entries()).sort(function (left, right) {
+          return getStatusRank(left[0]) - getStatusRank(right[0]) || left[0].localeCompare(right[0]);
+        });
+      }
+
+      function renderBoard() {
+        var cards = getIssueModel().filter(cardMatchesComponent);
+        var board = document.getElementById("board");
+        var groups = groupCards(cards);
+
+        buildMetrics(cards);
+        renderComponentChips();
+
+        if (!groups.length) {
+          board.innerHTML = "<div class=\"empty\">No tickets match the selected component.</div>";
+          return;
+        }
+
+        board.innerHTML = groups.map(function (entry) {
+          var status = entry[0];
+          var statusCards = entry[1];
+          var issueCount = statusCards.reduce(function (total, card) {
+            return total + 1 + card.subtasks.length;
+          }, 0);
+          var collapsed = state.collapsedStatuses.has(status);
+
+          return "<section class=\"section " + (collapsed ? "collapsed" : "") + "\" data-status=\"" + escape(status) + "\">" +
+            "<button class=\"section-toggle\" type=\"button\" aria-expanded=\"" + (!collapsed) + "\" data-status=\"" + escape(status) + "\">" +
+              "<span class=\"title\">" + escape(status) + "</span>" +
+              "<span class=\"count\">" + issueCount + "</span>" +
+              "<span class=\"chevron\">v</span>" +
+            "</button>" +
+            "<div class=\"cards\">" + statusCards.map(renderCard).join("") + "</div>" +
+          "</section>";
+        }).join("");
+      }
+
+      function renderFilterState() {
+        document.getElementById("filter-state").textContent = state.activeComponent === "all"
+          ? "Showing all components"
+          : "Filtered to " + state.activeComponent;
+      }
+
+      function renderAll() {
+        renderFilterState();
+        renderBoard();
+        document.getElementById("pulled-at").textContent = data.pulledAtDisplay;
+        document.getElementById("source-line").textContent = "Source: live Jira JQL " + data.jql + ". Components and subtasks are generated from the current ticket snapshot.";
+        var toggle = document.getElementById("toggle-subtasks");
+        toggle.setAttribute("aria-pressed", state.showSubtasks ? "true" : "false");
+        toggle.textContent = state.showSubtasks ? "Hide subtasks" : "Show subtasks";
+      }
+
+      document.getElementById("component-chips").addEventListener("click", function (event) {
+        var chip = event.target.closest("[data-component]");
+        if (!chip) {
+          return;
+        }
+
+        state.activeComponent = chip.getAttribute("data-component");
+        renderAll();
+      });
+
+      document.getElementById("board").addEventListener("click", function (event) {
+        var toggle = event.target.closest(".section-toggle");
+        if (!toggle) {
+          return;
+        }
+
+        var status = toggle.getAttribute("data-status");
+        if (state.collapsedStatuses.has(status)) {
+          state.collapsedStatuses.delete(status);
+        } else {
+          state.collapsedStatuses.add(status);
+        }
+        renderAll();
+      });
+
+      document.getElementById("toggle-subtasks").addEventListener("click", function () {
+        state.showSubtasks = !state.showSubtasks;
+        renderAll();
+      });
+
+      document.getElementById("expand-all").addEventListener("click", function () {
+        state.collapsedStatuses.clear();
+        renderAll();
+      });
+
+      document.getElementById("collapse-all").addEventListener("click", function () {
+        groupCards(getIssueModel().filter(cardMatchesComponent)).forEach(function (entry) {
+          state.collapsedStatuses.add(entry[0]);
+        });
+        renderAll();
+      });
+
+      renderAll();
+    })();
+  </script>
 </body>
 </html>
