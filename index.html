@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GolfNow CORE Jira Board - v3001.122.0</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #60708d;
+      --line: #d8dee9;
+      --paper: #f7f9fc;
+      --panel: #ffffff;
+      --blue: #0c66e4;
+      --teal: #118d7c;
+      --amber: #b76e00;
+      --red: #c9372c;
+      --shadow: 0 18px 45px rgba(23, 32, 51, .13);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--paper);
+      font: 13px/1.42 "Segoe UI", Arial, sans-serif;
+    }
+
+    .page {
+      width: 1400px;
+      min-height: 900px;
+      padding: 28px;
+    }
+
+    .shell {
+      min-height: 832px;
+      border: 1px solid rgba(96, 112, 141, .18);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .94);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 26px 30px 22px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(90deg, #fff, #f5f8ff 58%, #f2fbf8);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 32px;
+      line-height: 1.08;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 840px;
+    }
+
+    .stamp {
+      min-width: 288px;
+      padding: 12px 14px;
+      border: 1px solid #cdd7e7;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--muted);
+      line-height: 1.55;
+      text-align: right;
+    }
+
+    .stamp strong {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 18px 30px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcff;
+    }
+
+    .metric {
+      border: 1px solid #dce3ef;
+      border-radius: 8px;
+      background: #fff;
+      padding: 12px 14px;
+    }
+
+    .value {
+      font-size: 28px;
+      font-weight: 780;
+      line-height: 1;
+    }
+
+    .label {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      text-transform: uppercase;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: start;
+      gap: 16px;
+      padding: 22px 30px 26px;
+    }
+
+    .column {
+      min-width: 0;
+    }
+
+    .column-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding: 9px 10px;
+      border-top: 3px solid var(--blue);
+      border-radius: 6px;
+      background: #eef4ff;
+      color: #0b3f8a;
+      font-weight: 780;
+    }
+
+    .count {
+      min-width: 24px;
+      border-radius: 999px;
+      background: #fff;
+      padding: 2px 8px;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .cards {
+      display: grid;
+      gap: 10px;
+    }
+
+    .ticket {
+      border: 1px solid #dce3ef;
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 12px;
+      break-inside: avoid;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .key {
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .type {
+      border: 1px solid #cfd8e6;
+      border-radius: 999px;
+      padding: 2px 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .summary {
+      margin: 8px 0 10px;
+      font-size: 13px;
+      font-weight: 680;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px 12px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .meta b {
+      display: block;
+      color: #41506a;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .priority {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 1px 7px;
+      background: #eef2f7;
+      color: #41506a;
+      font-weight: 750;
+    }
+
+    .p-p0 {
+      background: #ffe9e7;
+      color: var(--red);
+    }
+
+    .p-p1 {
+      background: #fff3d9;
+      color: var(--amber);
+    }
+
+    .p-p3 {
+      background: #eaf8f5;
+      color: var(--teal);
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px 30px 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .footer a {
+      color: var(--blue);
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="shell">
+      <header>
+        <div>
+          <h1>GolfNow CORE Jira Board</h1>
+          <div class="subtitle">Latest Jira snapshot for fixVersion v3001.122.0, grouped by workflow status and ordered by most recent Jira update.</div>
+        </div>
+        <div class="stamp">
+          <strong>Pulled from Jira</strong>
+          May 1, 2026, 9:36 AM ET<br>
+          golfnow.atlassian.net
+        </div>
+      </header>
+
+      <section class="metrics" aria-label="Board metrics">
+        <div class="metric">
+          <div class="value">30</div>
+          <div class="label">Tracked tickets</div>
+        </div>
+        <div class="metric">
+          <div class="value">20</div>
+          <div class="label">QA Testing (DEV)</div>
+        </div>
+        <div class="metric">
+          <div class="value">3</div>
+          <div class="label">Pending Deployment (DEV)</div>
+        </div>
+        <div class="metric">
+          <div class="value">17</div>
+          <div class="label">P0/P1 priority items</div>
+        </div>
+      </section>
+
+      <section class="board" aria-label="Jira tickets by status">
+
+        <div class="column">
+          <div class="column-title">
+            <span>Blocked</span>
+            <span class="count">1</span>
+          </div>
+          <div class="cards">
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14215">CORE-14215</a>
+                <span class="type">Bug</span>
+              </div>
+              <p class="summary">Cannot Add Account Balance Due to 'Missing' Wallet Option</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-p3">P3</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 11:30 PM</div>
+                <div><b>Components</b>GolfNowCentral</div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="column-title">
+            <span>Analysis</span>
+            <span class="count">1</span>
+          </div>
+          <div class="cards">
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14386">CORE-14386</a>
+                <span class="type">Bug</span>
+              </div>
+              <p class="summary">Premier Card Miami - Subscriptions Being Created Despite Purchase Errors</p>
+              <div class="meta">
+                <div><b>Assignee</b>Daniel McNaughton</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 20, 2026, 7:03 PM</div>
+                <div><b>Components</b>None</div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="column-title">
+            <span>Pre Planning</span>
+            <span class="count">1</span>
+          </div>
+          <div class="cards">
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14331">CORE-14331</a>
+                <span class="type">Task</span>
+              </div>
+              <p class="summary">Timelyst - QA testing</p>
+              <div class="meta">
+                <div><b>Assignee</b>Yu-Sheng Tu</div>
+                <div><b>Priority</b><span class="priority p-none">None</span></div>
+                <div><b>Updated</b>Apr 21, 2026, 2:19 PM</div>
+                <div><b>Components</b>gn-svc-timelyst</div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="column-title">
+            <span>Code Review</span>
+            <span class="count">2</span>
+          </div>
+          <div class="cards">
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14434">CORE-14434</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">Database changes.</p>
+              <div class="meta">
+                <div><b>Assignee</b>Raghav Kancherla</div>
+                <div><b>Priority</b><span class="priority p-none">None</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 4:55 PM</div>
+                <div><b>Components</b>Database</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14433">CORE-14433</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">Code changes.</p>
+              <div class="meta">
+                <div><b>Assignee</b>Raghav Kancherla</div>
+                <div><b>Priority</b><span class="priority p-none">None</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 4:48 PM</div>
+                <div><b>Components</b>Cache Manager, Cache Manager - QueueUtility</div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="column-title">
+            <span>Pending Deployment (DEV)</span>
+            <span class="count">3</span>
+          </div>
+          <div class="cards">
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14272">CORE-14272</a>
+                <span class="type">Story</span>
+              </div>
+              <p class="summary">Create endpoint to validate cancellation eligibility for Products</p>
+              <div class="meta">
+                <div><b>Assignee</b>Raghav Kancherla</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>May 1, 2026, 8:35 AM</div>
+                <div><b>Components</b>GolfNow.Services.Product, GolfNowAPI</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14420">CORE-14420</a>
+                <span class="type">Bug</span>
+              </div>
+              <p class="summary">CRMCustomerPhone missing index on CustomerNumber causes timeouts in STG (phx-api-be-internal)</p>
+              <div class="meta">
+                <div><b>Assignee</b>Daniel McNaughton</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 11:30 PM</div>
+                <div><b>Components</b>Database</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14431">CORE-14431</a>
+                <span class="type">Bug</span>
+              </div>
+              <p class="summary">Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL</p>
+              <div class="meta">
+                <div><b>Assignee</b>Yoel Martin Pardo</div>
+                <div><b>Priority</b><span class="priority p-p0">P0</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 5:14 PM</div>
+                <div><b>Components</b>Cache Manager, Cache Manager - QueueUtility, Database</div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="column-title">
+            <span>QA Testing (DEV)</span>
+            <span class="count">20</span>
+          </div>
+          <div class="cards">
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14426">CORE-14426</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">Code Changes</p>
+              <div class="meta">
+                <div><b>Assignee</b>Unassigned</div>
+                <div><b>Priority</b><span class="priority p-none">None</span></div>
+                <div><b>Updated</b>May 1, 2026, 8:38 AM</div>
+                <div><b>Components</b>GolfNow.API.TR, GolfNow.Services.Product, GolfNowAPI</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14342">CORE-14342</a>
+                <span class="type">Task</span>
+              </div>
+              <p class="summary">Integrate New EZL Contact Endpoint into NEW EZL Booking Flow</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 11:30 PM</div>
+                <div><b>Components</b>Database, GolfNow.Services.Reservation, GolfNow.Services.TeeSheet</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14332">CORE-14332</a>
+                <span class="type">Story</span>
+              </div>
+              <p class="summary">Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 11:30 PM</div>
+                <div><b>Components</b>GolfNow.API.TR, GolfNowAPI</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14117">CORE-14117</a>
+                <span class="type">Story</span>
+              </div>
+              <p class="summary">Move Fee-Messaging to Post-Fee-Calculation &amp; Use FeeConfiguration (API 2.1)</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 11:30 PM</div>
+                <div><b>Components</b>Database, GolfNow.API.TR, GolfNowAPI</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14210">CORE-14210</a>
+                <span class="type">Bug</span>
+              </div>
+              <p class="summary">CLONE - [Commerce] Convenience fee shown lower for Hot Deals on Checkout compared to GNC settings</p>
+              <div class="meta">
+                <div><b>Assignee</b>Nicole Greer</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 11:30 PM</div>
+                <div><b>Components</b>GolfNow.Services.CommerceProxy</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14435">CORE-14435</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">SQL changes</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-none">None</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 7:17 PM</div>
+                <div><b>Components</b>Database</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14430">CORE-14430</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">Code changes</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-none">None</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 7:17 PM</div>
+                <div><b>Components</b>GolfNowAPI</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14271">CORE-14271</a>
+                <span class="type">Story</span>
+              </div>
+              <p class="summary">Support Product Refunds</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 7:17 PM</div>
+                <div><b>Components</b>GolfNowAPI</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14425">CORE-14425</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">SQL changes</p>
+              <div class="meta">
+                <div><b>Assignee</b>Unassigned</div>
+                <div><b>Priority</b><span class="priority p-none">None</span></div>
+                <div><b>Updated</b>Apr 30, 2026, 5:23 PM</div>
+                <div><b>Components</b>Database</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14412">CORE-14412</a>
+                <span class="type">Bug</span>
+              </div>
+              <p class="summary">CAKE Affiliate Tracking - API Response Validation Failure</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 29, 2026, 8:46 PM</div>
+                <div><b>Components</b>GolfNowAPI</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14398">CORE-14398</a>
+                <span class="type">Bug</span>
+              </div>
+              <p class="summary">Update Stored Procedure to Resolve Timeout Error When Purchasing Product w/ Promo Code</p>
+              <div class="meta">
+                <div><b>Assignee</b>Nicole Greer</div>
+                <div><b>Priority</b><span class="priority p-none">None</span></div>
+                <div><b>Updated</b>Apr 29, 2026, 8:10 PM</div>
+                <div><b>Components</b>Database</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14409">CORE-14409</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">Add secrets</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 29, 2026, 12:30 AM</div>
+                <div><b>Components</b>Secrets</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14366">CORE-14366</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">Code changes for [CORE - 14332]</p>
+              <div class="meta">
+                <div><b>Assignee</b>Unassigned</div>
+                <div><b>Priority</b><span class="priority p-none">None</span></div>
+                <div><b>Updated</b>Apr 29, 2026, 12:23 AM</div>
+                <div><b>Components</b>GolfNow.API.TR, GolfNowAPI</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14329">CORE-14329</a>
+                <span class="type">Story</span>
+              </div>
+              <p class="summary">True-Up Not Switching to TSP Upon AL Deactivation</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-p0">P0</span></div>
+                <div><b>Updated</b>Apr 28, 2026, 1:11 PM</div>
+                <div><b>Components</b>Cache Manager, Cache Manager - QueueUtility</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14401">CORE-14401</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">Database changes.</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-none">None</span></div>
+                <div><b>Updated</b>Apr 28, 2026, 8:51 AM</div>
+                <div><b>Components</b>Database</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14400">CORE-14400</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">Code changes.</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-none">None</span></div>
+                <div><b>Updated</b>Apr 28, 2026, 8:51 AM</div>
+                <div><b>Components</b>GolfNow.Services.Reservation, GolfNow.Services.TeeSheet</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14399">CORE-14399</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">SQL code changes for [CORE - 14117]</p>
+              <div class="meta">
+                <div><b>Assignee</b>Unassigned</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 23, 2026, 5:41 PM</div>
+                <div><b>Components</b>Database</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14337">CORE-14337</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">Code changes for [CORE - 14117]</p>
+              <div class="meta">
+                <div><b>Assignee</b>Unassigned</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 23, 2026, 5:27 PM</div>
+                <div><b>Components</b>GolfNow.API.TR, GolfNowAPI</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14364">CORE-14364</a>
+                <span class="type">Bug</span>
+              </div>
+              <p class="summary">Customer Wallet - Deserialization Failure</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 21, 2026, 10:06 AM</div>
+                <div><b>Components</b>GolfNowAPI, GolfNowCentral</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14379">CORE-14379</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">Code changes for [CORE - 14364]</p>
+              <div class="meta">
+                <div><b>Assignee</b>Dewan Kabir</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 21, 2026, 10:04 AM</div>
+                <div><b>Components</b>GolfNowAPI, GolfNowCentral</div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="column-title">
+            <span>Closed</span>
+            <span class="count">2</span>
+          </div>
+          <div class="cards">
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14385">CORE-14385</a>
+                <span class="type">Task</span>
+              </div>
+              <p class="summary">Sufficient query parameter is not returning relevant result on the top where expected</p>
+              <div class="meta">
+                <div><b>Assignee</b>Unassigned</div>
+                <div><b>Priority</b><span class="priority p-none">None</span></div>
+                <div><b>Updated</b>Apr 28, 2026, 3:45 PM</div>
+                <div><b>Components</b>Geoplaces.NET</div>
+              </div>
+            </article>
+
+            <article class="ticket">
+              <div class="topline">
+                <a class="key" href="https://golfnow.atlassian.net/browse/CORE-14391">CORE-14391</a>
+                <span class="type">Developer Task (sub task)</span>
+              </div>
+              <p class="summary">Code changes for [CORE - 14386]</p>
+              <div class="meta">
+                <div><b>Assignee</b>Unassigned</div>
+                <div><b>Priority</b><span class="priority p-p1">P1</span></div>
+                <div><b>Updated</b>Apr 23, 2026, 7:11 PM</div>
+                <div><b>Components</b>None</div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">
+        <span>Source: live Jira JQL fixVersion = &quot;v3001.122.0&quot; ORDER BY updated DESC. Blocked count: 1.</span>
+        <a href="https://golfnow.atlassian.net/issues/?jql=fixVersion%20%3D%20%22v3001.122.0%22%20ORDER%20BY%20updated%20DESC">Open Jira filter</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
