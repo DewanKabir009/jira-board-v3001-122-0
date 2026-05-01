@@ -534,6 +534,122 @@
       font-weight: 700;
     }
 
+    .data-pull {
+      margin: 0 clamp(18px, 2.3vw, 30px) 24px;
+      border: 1px solid #dce3ef;
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .data-pull summary {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      background: #fbfcff;
+      cursor: pointer;
+      font-weight: 780;
+    }
+
+    .data-pull summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .pull-meta {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      text-align: right;
+    }
+
+    .pull-body {
+      display: grid;
+      gap: 14px;
+      padding: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .pull-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+    }
+
+    .pull-stat {
+      border: 1px solid #e1e7f0;
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px 12px;
+    }
+
+    .pull-stat strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .pull-stat span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    .pull-group {
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .pull-group h3 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .pull-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .pull-item {
+      border: 1px solid #e1e7f0;
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .pull-item-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 7px;
+      font-weight: 750;
+    }
+
+    .change-list {
+      display: grid;
+      gap: 5px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .change-list b {
+      color: #334968;
+    }
+
+    .no-changes {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
     .footer {
       display: flex;
       align-items: center;
@@ -577,6 +693,14 @@
       .meta {
         grid-template-columns: 1fr;
       }
+
+      .data-pull summary {
+        grid-template-columns: 1fr;
+      }
+
+      .pull-meta {
+        text-align: left;
+      }
     }
   </style>
 </head>
@@ -619,6 +743,14 @@
 
       <section class="board" id="board" aria-label="Jira tickets by status"></section>
 
+      <details class="data-pull" id="data-pull">
+        <summary>
+          <span>Data Pull</span>
+          <span class="pull-meta" id="pull-meta"></span>
+        </summary>
+        <div class="pull-body" id="pull-body"></div>
+      </details>
+
       <div class="footer">
         <span id="source-line"></span>
         <a href="https://golfnow.atlassian.net/issues/?jql=fixVersion%20%3D%20%22v3001.122.0%22%20ORDER%20BY%20updated%20DESC">Open Jira filter</a>
@@ -626,7 +758,7 @@
     </section>
   </main>
 
-  <script id="jira-data" type="application/json">{"version":"v3001.122.0","siteUrl":"https://golfnow.atlassian.net","jql":"fixVersion = \"v3001.122.0\" ORDER BY updated DESC","pulledAt":"2026-05-01T15:31:12.283Z","pulledAtDisplay":"May 1, 2026, 11:31 AM","total":30,"issues":[{"key":"CORE-14426","url":"https://golfnow.atlassian.net/browse/CORE-14426","summary":"Code Changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Unassigned","updated":"2026-05-01T08:38:47.511-0400","updatedDisplay":"May 1, 2026, 8:38 AM","created":"2026-04-30T06:22:27.620-0400","createdDisplay":"Apr 30, 2026, 6:22 AM","components":["GolfNow.API.TR","GolfNow.Services.Product","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","type":"Story","status":"Pending Deployment (DEV)","priority":"P1"}},{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","type":"Story","isSubtask":false,"status":"Pending Deployment (DEV)","priority":"P1","assignee":"Raghav Kancherla","updated":"2026-05-01T08:35:08.239-0400","updatedDisplay":"May 1, 2026, 8:35 AM","created":"2026-03-06T10:21:50.055-0500","createdDisplay":"Mar 6, 2026, 10:21 AM","components":["GolfNow.Services.Product","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"B2C-70","url":"https://golfnow.atlassian.net/browse/B2C-70","summary":"NY Cancellation Validation","type":"Epic","status":"Backlog","priority":"None"}},{"key":"CORE-14342","url":"https://golfnow.atlassian.net/browse/CORE-14342","summary":"Integrate New EZL Contact Endpoint into NEW EZL Booking Flow","type":"Task","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:17.430-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-03-26T14:51:02.523-0400","createdDisplay":"Mar 26, 2026, 2:51 PM","components":["Database","GolfNow.Services.Reservation","GolfNow.Services.TeeSheet"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14332","url":"https://golfnow.atlassian.net/browse/CORE-14332","summary":"Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:17.043-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-03-24T09:25:03.489-0400","createdDisplay":"Mar 24, 2026, 9:25 AM","components":["GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13901","url":"https://golfnow.atlassian.net/browse/CORE-13901","summary":"Customizable transaction fees","type":"Epic","status":"Planning","priority":"P1"}},{"key":"CORE-14117","url":"https://golfnow.atlassian.net/browse/CORE-14117","summary":"Move Fee-Messaging to Post-Fee-Calculation \u0026 Use FeeConfiguration (API 2.1)","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:16.434-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-01-27T23:35:15.505-0500","createdDisplay":"Jan 27, 2026, 11:35 PM","components":["Database","GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13901","url":"https://golfnow.atlassian.net/browse/CORE-13901","summary":"Customizable transaction fees","type":"Epic","status":"Planning","priority":"P1"}},{"key":"CORE-14210","url":"https://golfnow.atlassian.net/browse/CORE-14210","summary":"CLONE - [Commerce] Convenience fee shown lower for Hot Deals on Checkout compared to GNC settings","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Nicole Greer","updated":"2026-04-30T23:30:15.366-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-02-25T15:14:47.770-0500","createdDisplay":"Feb 25, 2026, 3:14 PM","components":["GolfNow.Services.CommerceProxy"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13172","url":"https://golfnow.atlassian.net/browse/CORE-13172","summary":"Commerce Proxy API","type":"Epic","status":"Planning","priority":"None"}},{"key":"CORE-14420","url":"https://golfnow.atlassian.net/browse/CORE-14420","summary":"CRMCustomerPhone missing index on CustomerNumber causes timeouts in STG (phx-api-be-internal)","type":"Bug","isSubtask":false,"status":"Pending Deployment (DEV)","priority":"P1","assignee":"Daniel McNaughton","updated":"2026-04-30T23:30:15.045-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-04-29T15:03:20.779-0400","createdDisplay":"Apr 29, 2026, 3:03 PM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14215","url":"https://golfnow.atlassian.net/browse/CORE-14215","summary":"Cannot Add Account Balance Due to 'Missing' Wallet Option","type":"Bug","isSubtask":false,"status":"Blocked","priority":"P3","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:15.023-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-02-25T17:27:56.678-0500","createdDisplay":"Feb 25, 2026, 5:27 PM","components":["GolfNowCentral"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14435","url":"https://golfnow.atlassian.net/browse/CORE-14435","summary":"SQL changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-30T19:17:45.814-0400","updatedDisplay":"Apr 30, 2026, 7:17 PM","created":"2026-04-30T18:05:07.770-0400","createdDisplay":"Apr 30, 2026, 6:05 PM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14430","url":"https://golfnow.atlassian.net/browse/CORE-14430","summary":"Code changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-30T19:17:35.286-0400","updatedDisplay":"Apr 30, 2026, 7:17 PM","created":"2026-04-30T12:33:59.678-0400","createdDisplay":"Apr 30, 2026, 12:33 PM","components":["GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T19:17:25.006-0400","updatedDisplay":"Apr 30, 2026, 7:17 PM","created":"2026-03-06T10:11:37.546-0500","createdDisplay":"Mar 6, 2026, 10:11 AM","components":["GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"B2C-70","url":"https://golfnow.atlassian.net/browse/B2C-70","summary":"NY Cancellation Validation","type":"Epic","status":"Backlog","priority":"None"}},{"key":"CORE-14425","url":"https://golfnow.atlassian.net/browse/CORE-14425","summary":"SQL changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Unassigned","updated":"2026-04-30T17:23:51.019-0400","updatedDisplay":"Apr 30, 2026, 5:23 PM","created":"2026-04-30T06:21:55.485-0400","createdDisplay":"Apr 30, 2026, 6:21 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","type":"Story","status":"Pending Deployment (DEV)","priority":"P1"}},{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","isSubtask":false,"status":"Pending Deployment (DEV)","priority":"P0","assignee":"Yoel Martin Pardo","updated":"2026-04-30T17:14:38.589-0400","updatedDisplay":"Apr 30, 2026, 5:14 PM","created":"2026-04-30T14:03:02.725-0400","createdDisplay":"Apr 30, 2026, 2:03 PM","components":["Cache Manager","Cache Manager - QueueUtility","Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14434","url":"https://golfnow.atlassian.net/browse/CORE-14434","summary":"Database changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"Code Review","priority":"None","assignee":"Raghav Kancherla","updated":"2026-04-30T16:55:30.201-0400","updatedDisplay":"Apr 30, 2026, 4:55 PM","created":"2026-04-30T16:43:09.912-0400","createdDisplay":"Apr 30, 2026, 4:43 PM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"Pending Deployment (DEV)","priority":"P0"}},{"key":"CORE-14433","url":"https://golfnow.atlassian.net/browse/CORE-14433","summary":"Code changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"Code Review","priority":"None","assignee":"Raghav Kancherla","updated":"2026-04-30T16:48:44.704-0400","updatedDisplay":"Apr 30, 2026, 4:48 PM","created":"2026-04-30T16:42:59.027-0400","createdDisplay":"Apr 30, 2026, 4:42 PM","components":["Cache Manager","Cache Manager - QueueUtility"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"Pending Deployment (DEV)","priority":"P0"}},{"key":"CORE-14412","url":"https://golfnow.atlassian.net/browse/CORE-14412","summary":"CAKE Affiliate Tracking - API Response Validation Failure","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-29T20:46:46.788-0400","updatedDisplay":"Apr 29, 2026, 8:46 PM","created":"2026-04-27T18:12:28.289-0400","createdDisplay":"Apr 27, 2026, 6:12 PM","components":["GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14398","url":"https://golfnow.atlassian.net/browse/CORE-14398","summary":"Update Stored Procedure to Resolve Timeout Error When Purchasing Product w/ Promo Code","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"None","assignee":"Nicole Greer","updated":"2026-04-29T20:10:07.517-0400","updatedDisplay":"Apr 29, 2026, 8:10 PM","created":"2026-04-22T09:53:30.759-0400","createdDisplay":"Apr 22, 2026, 9:53 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14409","url":"https://golfnow.atlassian.net/browse/CORE-14409","summary":"Add secrets","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-29T00:30:03.869-0400","updatedDisplay":"Apr 29, 2026, 12:30 AM","created":"2026-04-27T12:07:20.016-0400","createdDisplay":"Apr 27, 2026, 12:07 PM","components":["Secrets"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14332","url":"https://golfnow.atlassian.net/browse/CORE-14332","summary":"Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14366","url":"https://golfnow.atlassian.net/browse/CORE-14366","summary":"Code changes for [CORE - 14332]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Unassigned","updated":"2026-04-29T00:23:20.074-0400","updatedDisplay":"Apr 29, 2026, 12:23 AM","created":"2026-04-07T11:00:10.265-0400","createdDisplay":"Apr 7, 2026, 11:00 AM","components":["GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14332","url":"https://golfnow.atlassian.net/browse/CORE-14332","summary":"Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14385","url":"https://golfnow.atlassian.net/browse/CORE-14385","summary":"Sufficient query parameter is not returning relevant result on the top where expected","type":"Task","isSubtask":false,"status":"Closed","priority":"None","assignee":"Unassigned","updated":"2026-04-28T15:45:59.342-0400","updatedDisplay":"Apr 28, 2026, 3:45 PM","created":"2026-04-14T18:59:32.248-0400","createdDisplay":"Apr 14, 2026, 6:59 PM","components":["Geoplaces.NET"],"fixVersions":["v3001.122.0"],"resolution":"Done","parent":null},{"key":"CORE-14329","url":"https://golfnow.atlassian.net/browse/CORE-14329","summary":"True-Up Not Switching to TSP Upon AL Deactivation","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P0","assignee":"Dewan Kabir","updated":"2026-04-28T13:11:48.547-0400","updatedDisplay":"Apr 28, 2026, 1:11 PM","created":"2026-03-23T12:36:55.266-0400","createdDisplay":"Mar 23, 2026, 12:36 PM","components":["Cache Manager","Cache Manager - QueueUtility"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14401","url":"https://golfnow.atlassian.net/browse/CORE-14401","summary":"Database changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-28T08:51:15.056-0400","updatedDisplay":"Apr 28, 2026, 8:51 AM","created":"2026-04-22T11:37:42.785-0400","createdDisplay":"Apr 22, 2026, 11:37 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14342","url":"https://golfnow.atlassian.net/browse/CORE-14342","summary":"Integrate New EZL Contact Endpoint into NEW EZL Booking Flow","type":"Task","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14400","url":"https://golfnow.atlassian.net/browse/CORE-14400","summary":"Code changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-28T08:51:08.687-0400","updatedDisplay":"Apr 28, 2026, 8:51 AM","created":"2026-04-22T11:37:35.069-0400","createdDisplay":"Apr 22, 2026, 11:37 AM","components":["GolfNow.Services.Reservation","GolfNow.Services.TeeSheet"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14342","url":"https://golfnow.atlassian.net/browse/CORE-14342","summary":"Integrate New EZL Contact Endpoint into NEW EZL Booking Flow","type":"Task","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14391","url":"https://golfnow.atlassian.net/browse/CORE-14391","summary":"Code changes for [CORE - 14386]","type":"Developer Task (sub task)","isSubtask":true,"status":"Closed","priority":"P1","assignee":"Unassigned","updated":"2026-04-23T19:11:34.326-0400","updatedDisplay":"Apr 23, 2026, 7:11 PM","created":"2026-04-16T17:33:20.119-0400","createdDisplay":"Apr 16, 2026, 5:33 PM","components":[],"fixVersions":["v3001.122.0"],"resolution":"Completed","parent":{"key":"CORE-14386","url":"https://golfnow.atlassian.net/browse/CORE-14386","summary":"Premier Card Miami - Subscriptions Being Created Despite Purchase Errors","type":"Bug","status":"Analysis","priority":"P1"}},{"key":"CORE-14399","url":"https://golfnow.atlassian.net/browse/CORE-14399","summary":"SQL code changes for [CORE - 14117]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Unassigned","updated":"2026-04-23T17:41:46.296-0400","updatedDisplay":"Apr 23, 2026, 5:41 PM","created":"2026-04-22T10:00:52.360-0400","createdDisplay":"Apr 22, 2026, 10:00 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14117","url":"https://golfnow.atlassian.net/browse/CORE-14117","summary":"Move Fee-Messaging to Post-Fee-Calculation \u0026 Use FeeConfiguration (API 2.1)","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14337","url":"https://golfnow.atlassian.net/browse/CORE-14337","summary":"Code changes for [CORE - 14117]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Unassigned","updated":"2026-04-23T17:27:52.226-0400","updatedDisplay":"Apr 23, 2026, 5:27 PM","created":"2026-03-25T09:20:49.055-0400","createdDisplay":"Mar 25, 2026, 9:20 AM","components":["GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14117","url":"https://golfnow.atlassian.net/browse/CORE-14117","summary":"Move Fee-Messaging to Post-Fee-Calculation \u0026 Use FeeConfiguration (API 2.1)","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14331","url":"https://golfnow.atlassian.net/browse/CORE-14331","summary":"Timelyst - QA testing","type":"Task","isSubtask":false,"status":"Pre Planning","priority":"None","assignee":"Yu-Sheng Tu","updated":"2026-04-21T14:19:45.069-0400","updatedDisplay":"Apr 21, 2026, 2:19 PM","created":"2026-03-24T08:32:42.971-0400","createdDisplay":"Mar 24, 2026, 8:32 AM","components":["gn-svc-timelyst"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13741","url":"https://golfnow.atlassian.net/browse/CORE-13741","summary":"Timelyst - Duration Based Inventory API","type":"Epic","status":"Analysis","priority":"P0"}},{"key":"CORE-14364","url":"https://golfnow.atlassian.net/browse/CORE-14364","summary":"Customer Wallet - Deserialization Failure","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-21T10:06:21.157-0400","updatedDisplay":"Apr 21, 2026, 10:06 AM","created":"2026-04-07T00:56:54.516-0400","createdDisplay":"Apr 7, 2026, 12:56 AM","components":["GolfNowAPI","GolfNowCentral"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14379","url":"https://golfnow.atlassian.net/browse/CORE-14379","summary":"Code changes for [CORE - 14364]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-21T10:04:41.887-0400","updatedDisplay":"Apr 21, 2026, 10:04 AM","created":"2026-04-13T17:25:31.613-0400","createdDisplay":"Apr 13, 2026, 5:25 PM","components":["GolfNowAPI","GolfNowCentral"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14364","url":"https://golfnow.atlassian.net/browse/CORE-14364","summary":"Customer Wallet - Deserialization Failure","type":"Bug","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14386","url":"https://golfnow.atlassian.net/browse/CORE-14386","summary":"Premier Card Miami - Subscriptions Being Created Despite Purchase Errors","type":"Bug","isSubtask":false,"status":"Analysis","priority":"P1","assignee":"Daniel McNaughton","updated":"2026-04-20T19:03:54.816-0400","updatedDisplay":"Apr 20, 2026, 7:03 PM","created":"2026-04-15T16:54:29.658-0400","createdDisplay":"Apr 15, 2026, 4:54 PM","components":[],"fixVersions":["v3001.122.0"],"resolution":"","parent":null}],"jiraFilterUrl":"https://golfnow.atlassian.net/issues/?jql=fixVersion%20%3D%20%22v3001.122.0%22%20ORDER%20BY%20updated%20DESC"}</script>
+  <script id="jira-data" type="application/json">{"version":"v3001.122.0","siteUrl":"https://golfnow.atlassian.net","jql":"fixVersion = \"v3001.122.0\" ORDER BY updated DESC","pulledAt":"2026-05-01T15:53:25.016Z","pulledAtDisplay":"May 1, 2026, 11:53 AM","total":30,"issues":[{"key":"CORE-14426","url":"https://golfnow.atlassian.net/browse/CORE-14426","summary":"Code Changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Unassigned","updated":"2026-05-01T08:38:47.511-0400","updatedDisplay":"May 1, 2026, 8:38 AM","created":"2026-04-30T06:22:27.620-0400","createdDisplay":"Apr 30, 2026, 6:22 AM","components":["GolfNow.API.TR","GolfNow.Services.Product","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","type":"Story","status":"Pending Deployment (DEV)","priority":"P1"}},{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","type":"Story","isSubtask":false,"status":"Pending Deployment (DEV)","priority":"P1","assignee":"Raghav Kancherla","updated":"2026-05-01T08:35:08.239-0400","updatedDisplay":"May 1, 2026, 8:35 AM","created":"2026-03-06T10:21:50.055-0500","createdDisplay":"Mar 6, 2026, 10:21 AM","components":["GolfNow.Services.Product","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"B2C-70","url":"https://golfnow.atlassian.net/browse/B2C-70","summary":"NY Cancellation Validation","type":"Epic","status":"Backlog","priority":"None"}},{"key":"CORE-14342","url":"https://golfnow.atlassian.net/browse/CORE-14342","summary":"Integrate New EZL Contact Endpoint into NEW EZL Booking Flow","type":"Task","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:17.430-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-03-26T14:51:02.523-0400","createdDisplay":"Mar 26, 2026, 2:51 PM","components":["Database","GolfNow.Services.Reservation","GolfNow.Services.TeeSheet"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14332","url":"https://golfnow.atlassian.net/browse/CORE-14332","summary":"Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:17.043-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-03-24T09:25:03.489-0400","createdDisplay":"Mar 24, 2026, 9:25 AM","components":["GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13901","url":"https://golfnow.atlassian.net/browse/CORE-13901","summary":"Customizable transaction fees","type":"Epic","status":"Planning","priority":"P1"}},{"key":"CORE-14117","url":"https://golfnow.atlassian.net/browse/CORE-14117","summary":"Move Fee-Messaging to Post-Fee-Calculation \u0026 Use FeeConfiguration (API 2.1)","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:16.434-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-01-27T23:35:15.505-0500","createdDisplay":"Jan 27, 2026, 11:35 PM","components":["Database","GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13901","url":"https://golfnow.atlassian.net/browse/CORE-13901","summary":"Customizable transaction fees","type":"Epic","status":"Planning","priority":"P1"}},{"key":"CORE-14210","url":"https://golfnow.atlassian.net/browse/CORE-14210","summary":"CLONE - [Commerce] Convenience fee shown lower for Hot Deals on Checkout compared to GNC settings","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Nicole Greer","updated":"2026-04-30T23:30:15.366-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-02-25T15:14:47.770-0500","createdDisplay":"Feb 25, 2026, 3:14 PM","components":["GolfNow.Services.CommerceProxy"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13172","url":"https://golfnow.atlassian.net/browse/CORE-13172","summary":"Commerce Proxy API","type":"Epic","status":"Planning","priority":"None"}},{"key":"CORE-14420","url":"https://golfnow.atlassian.net/browse/CORE-14420","summary":"CRMCustomerPhone missing index on CustomerNumber causes timeouts in STG (phx-api-be-internal)","type":"Bug","isSubtask":false,"status":"Pending Deployment (DEV)","priority":"P1","assignee":"Daniel McNaughton","updated":"2026-04-30T23:30:15.045-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-04-29T15:03:20.779-0400","createdDisplay":"Apr 29, 2026, 3:03 PM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14215","url":"https://golfnow.atlassian.net/browse/CORE-14215","summary":"Cannot Add Account Balance Due to 'Missing' Wallet Option","type":"Bug","isSubtask":false,"status":"Blocked","priority":"P3","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:15.023-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-02-25T17:27:56.678-0500","createdDisplay":"Feb 25, 2026, 5:27 PM","components":["GolfNowCentral"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14435","url":"https://golfnow.atlassian.net/browse/CORE-14435","summary":"SQL changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-30T19:17:45.814-0400","updatedDisplay":"Apr 30, 2026, 7:17 PM","created":"2026-04-30T18:05:07.770-0400","createdDisplay":"Apr 30, 2026, 6:05 PM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14430","url":"https://golfnow.atlassian.net/browse/CORE-14430","summary":"Code changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-30T19:17:35.286-0400","updatedDisplay":"Apr 30, 2026, 7:17 PM","created":"2026-04-30T12:33:59.678-0400","createdDisplay":"Apr 30, 2026, 12:33 PM","components":["GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T19:17:25.006-0400","updatedDisplay":"Apr 30, 2026, 7:17 PM","created":"2026-03-06T10:11:37.546-0500","createdDisplay":"Mar 6, 2026, 10:11 AM","components":["GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"B2C-70","url":"https://golfnow.atlassian.net/browse/B2C-70","summary":"NY Cancellation Validation","type":"Epic","status":"Backlog","priority":"None"}},{"key":"CORE-14425","url":"https://golfnow.atlassian.net/browse/CORE-14425","summary":"SQL changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Unassigned","updated":"2026-04-30T17:23:51.019-0400","updatedDisplay":"Apr 30, 2026, 5:23 PM","created":"2026-04-30T06:21:55.485-0400","createdDisplay":"Apr 30, 2026, 6:21 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","type":"Story","status":"Pending Deployment (DEV)","priority":"P1"}},{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","isSubtask":false,"status":"Pending Deployment (DEV)","priority":"P0","assignee":"Yoel Martin Pardo","updated":"2026-04-30T17:14:38.589-0400","updatedDisplay":"Apr 30, 2026, 5:14 PM","created":"2026-04-30T14:03:02.725-0400","createdDisplay":"Apr 30, 2026, 2:03 PM","components":["Cache Manager","Cache Manager - QueueUtility","Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14434","url":"https://golfnow.atlassian.net/browse/CORE-14434","summary":"Database changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"Code Review","priority":"None","assignee":"Raghav Kancherla","updated":"2026-04-30T16:55:30.201-0400","updatedDisplay":"Apr 30, 2026, 4:55 PM","created":"2026-04-30T16:43:09.912-0400","createdDisplay":"Apr 30, 2026, 4:43 PM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"Pending Deployment (DEV)","priority":"P0"}},{"key":"CORE-14433","url":"https://golfnow.atlassian.net/browse/CORE-14433","summary":"Code changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"Code Review","priority":"None","assignee":"Raghav Kancherla","updated":"2026-04-30T16:48:44.704-0400","updatedDisplay":"Apr 30, 2026, 4:48 PM","created":"2026-04-30T16:42:59.027-0400","createdDisplay":"Apr 30, 2026, 4:42 PM","components":["Cache Manager","Cache Manager - QueueUtility"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"Pending Deployment (DEV)","priority":"P0"}},{"key":"CORE-14412","url":"https://golfnow.atlassian.net/browse/CORE-14412","summary":"CAKE Affiliate Tracking - API Response Validation Failure","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-29T20:46:46.788-0400","updatedDisplay":"Apr 29, 2026, 8:46 PM","created":"2026-04-27T18:12:28.289-0400","createdDisplay":"Apr 27, 2026, 6:12 PM","components":["GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14398","url":"https://golfnow.atlassian.net/browse/CORE-14398","summary":"Update Stored Procedure to Resolve Timeout Error When Purchasing Product w/ Promo Code","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"None","assignee":"Nicole Greer","updated":"2026-04-29T20:10:07.517-0400","updatedDisplay":"Apr 29, 2026, 8:10 PM","created":"2026-04-22T09:53:30.759-0400","createdDisplay":"Apr 22, 2026, 9:53 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14409","url":"https://golfnow.atlassian.net/browse/CORE-14409","summary":"Add secrets","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-29T00:30:03.869-0400","updatedDisplay":"Apr 29, 2026, 12:30 AM","created":"2026-04-27T12:07:20.016-0400","createdDisplay":"Apr 27, 2026, 12:07 PM","components":["Secrets"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14332","url":"https://golfnow.atlassian.net/browse/CORE-14332","summary":"Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14366","url":"https://golfnow.atlassian.net/browse/CORE-14366","summary":"Code changes for [CORE - 14332]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Unassigned","updated":"2026-04-29T00:23:20.074-0400","updatedDisplay":"Apr 29, 2026, 12:23 AM","created":"2026-04-07T11:00:10.265-0400","createdDisplay":"Apr 7, 2026, 11:00 AM","components":["GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14332","url":"https://golfnow.atlassian.net/browse/CORE-14332","summary":"Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14385","url":"https://golfnow.atlassian.net/browse/CORE-14385","summary":"Sufficient query parameter is not returning relevant result on the top where expected","type":"Task","isSubtask":false,"status":"Closed","priority":"None","assignee":"Unassigned","updated":"2026-04-28T15:45:59.342-0400","updatedDisplay":"Apr 28, 2026, 3:45 PM","created":"2026-04-14T18:59:32.248-0400","createdDisplay":"Apr 14, 2026, 6:59 PM","components":["Geoplaces.NET"],"fixVersions":["v3001.122.0"],"resolution":"Done","parent":null},{"key":"CORE-14329","url":"https://golfnow.atlassian.net/browse/CORE-14329","summary":"True-Up Not Switching to TSP Upon AL Deactivation","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P0","assignee":"Dewan Kabir","updated":"2026-04-28T13:11:48.547-0400","updatedDisplay":"Apr 28, 2026, 1:11 PM","created":"2026-03-23T12:36:55.266-0400","createdDisplay":"Mar 23, 2026, 12:36 PM","components":["Cache Manager","Cache Manager - QueueUtility"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14401","url":"https://golfnow.atlassian.net/browse/CORE-14401","summary":"Database changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-28T08:51:15.056-0400","updatedDisplay":"Apr 28, 2026, 8:51 AM","created":"2026-04-22T11:37:42.785-0400","createdDisplay":"Apr 22, 2026, 11:37 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14342","url":"https://golfnow.atlassian.net/browse/CORE-14342","summary":"Integrate New EZL Contact Endpoint into NEW EZL Booking Flow","type":"Task","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14400","url":"https://golfnow.atlassian.net/browse/CORE-14400","summary":"Code changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-28T08:51:08.687-0400","updatedDisplay":"Apr 28, 2026, 8:51 AM","created":"2026-04-22T11:37:35.069-0400","createdDisplay":"Apr 22, 2026, 11:37 AM","components":["GolfNow.Services.Reservation","GolfNow.Services.TeeSheet"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14342","url":"https://golfnow.atlassian.net/browse/CORE-14342","summary":"Integrate New EZL Contact Endpoint into NEW EZL Booking Flow","type":"Task","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14391","url":"https://golfnow.atlassian.net/browse/CORE-14391","summary":"Code changes for [CORE - 14386]","type":"Developer Task (sub task)","isSubtask":true,"status":"Closed","priority":"P1","assignee":"Unassigned","updated":"2026-04-23T19:11:34.326-0400","updatedDisplay":"Apr 23, 2026, 7:11 PM","created":"2026-04-16T17:33:20.119-0400","createdDisplay":"Apr 16, 2026, 5:33 PM","components":[],"fixVersions":["v3001.122.0"],"resolution":"Completed","parent":{"key":"CORE-14386","url":"https://golfnow.atlassian.net/browse/CORE-14386","summary":"Premier Card Miami - Subscriptions Being Created Despite Purchase Errors","type":"Bug","status":"Analysis","priority":"P1"}},{"key":"CORE-14399","url":"https://golfnow.atlassian.net/browse/CORE-14399","summary":"SQL code changes for [CORE - 14117]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Unassigned","updated":"2026-04-23T17:41:46.296-0400","updatedDisplay":"Apr 23, 2026, 5:41 PM","created":"2026-04-22T10:00:52.360-0400","createdDisplay":"Apr 22, 2026, 10:00 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14117","url":"https://golfnow.atlassian.net/browse/CORE-14117","summary":"Move Fee-Messaging to Post-Fee-Calculation \u0026 Use FeeConfiguration (API 2.1)","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14337","url":"https://golfnow.atlassian.net/browse/CORE-14337","summary":"Code changes for [CORE - 14117]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Unassigned","updated":"2026-04-23T17:27:52.226-0400","updatedDisplay":"Apr 23, 2026, 5:27 PM","created":"2026-03-25T09:20:49.055-0400","createdDisplay":"Mar 25, 2026, 9:20 AM","components":["GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14117","url":"https://golfnow.atlassian.net/browse/CORE-14117","summary":"Move Fee-Messaging to Post-Fee-Calculation \u0026 Use FeeConfiguration (API 2.1)","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14331","url":"https://golfnow.atlassian.net/browse/CORE-14331","summary":"Timelyst - QA testing","type":"Task","isSubtask":false,"status":"Pre Planning","priority":"None","assignee":"Yu-Sheng Tu","updated":"2026-04-21T14:19:45.069-0400","updatedDisplay":"Apr 21, 2026, 2:19 PM","created":"2026-03-24T08:32:42.971-0400","createdDisplay":"Mar 24, 2026, 8:32 AM","components":["gn-svc-timelyst"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13741","url":"https://golfnow.atlassian.net/browse/CORE-13741","summary":"Timelyst - Duration Based Inventory API","type":"Epic","status":"Analysis","priority":"P0"}},{"key":"CORE-14364","url":"https://golfnow.atlassian.net/browse/CORE-14364","summary":"Customer Wallet - Deserialization Failure","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-21T10:06:21.157-0400","updatedDisplay":"Apr 21, 2026, 10:06 AM","created":"2026-04-07T00:56:54.516-0400","createdDisplay":"Apr 7, 2026, 12:56 AM","components":["GolfNowAPI","GolfNowCentral"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14379","url":"https://golfnow.atlassian.net/browse/CORE-14379","summary":"Code changes for [CORE - 14364]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-21T10:04:41.887-0400","updatedDisplay":"Apr 21, 2026, 10:04 AM","created":"2026-04-13T17:25:31.613-0400","createdDisplay":"Apr 13, 2026, 5:25 PM","components":["GolfNowAPI","GolfNowCentral"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14364","url":"https://golfnow.atlassian.net/browse/CORE-14364","summary":"Customer Wallet - Deserialization Failure","type":"Bug","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14386","url":"https://golfnow.atlassian.net/browse/CORE-14386","summary":"Premier Card Miami - Subscriptions Being Created Despite Purchase Errors","type":"Bug","isSubtask":false,"status":"Analysis","priority":"P1","assignee":"Daniel McNaughton","updated":"2026-04-20T19:03:54.816-0400","updatedDisplay":"Apr 20, 2026, 7:03 PM","created":"2026-04-15T16:54:29.658-0400","createdDisplay":"Apr 15, 2026, 4:54 PM","components":[],"fixVersions":["v3001.122.0"],"resolution":"","parent":null}],"pullDiff":{"previousPulledAt":"2026-05-01T15:31:12.283Z","previousPulledAtDisplay":"May 1, 2026, 11:31 AM","currentPulledAt":"2026-05-01T15:53:25.016Z","currentPulledAtDisplay":"May 1, 2026, 11:53 AM","isBaseline":false,"added":[],"removed":[],"updated":[],"statusChanges":[]},"jiraFilterUrl":"https://golfnow.atlassian.net/issues/?jql=fixVersion%20%3D%20%22v3001.122.0%22%20ORDER%20BY%20updated%20DESC"}</script>
   <script>
     (function () {
       "use strict";
@@ -1002,9 +1134,89 @@
           : "Filtered to " + state.activeComponent;
       }
 
+      function renderPullIssue(issue) {
+        return "<span class=\"pull-item-title\">" +
+          renderKeyLink(issue) +
+          "<span>" + escape(issue.summary || "") + "</span>" +
+        "</span>";
+      }
+
+      function renderChange(change) {
+        return "<div><b>" + escape(change.label) + ":</b> " +
+          "<span>" + escape(change.before) + "</span> -> " +
+          "<span>" + escape(change.after) + "</span></div>";
+      }
+
+      function renderPullGroup(title, items, renderer) {
+        if (!items.length) {
+          return "";
+        }
+
+        return "<section class=\"pull-group\">" +
+          "<h3>" + escape(title) + "</h3>" +
+          "<ul class=\"pull-list\">" + items.map(function (item) {
+            return "<li class=\"pull-item\">" + renderer(item) + "</li>";
+          }).join("") + "</ul>" +
+        "</section>";
+      }
+
+      function renderDataPull() {
+        var diff = data.pullDiff || {};
+        var added = diff.added || [];
+        var removed = diff.removed || [];
+        var updated = diff.updated || [];
+        var statusChanges = diff.statusChanges || [];
+        var hasChanges = added.length || removed.length || updated.length || statusChanges.length;
+        var previous = diff.previousPulledAtDisplay || "No previous pull";
+        var current = diff.currentPulledAtDisplay || data.pulledAtDisplay;
+
+        document.getElementById("pull-meta").textContent = "Latest pull: " + current + " ET";
+
+        var baselineNote = diff.isBaseline
+          ? "<div class=\"no-changes\">Baseline pull captured. Future pulls will compare against this snapshot.</div>"
+          : "";
+        var emptyNote = !diff.isBaseline && !hasChanges
+          ? "<div class=\"no-changes\">No ticket field changes detected since the previous pull.</div>"
+          : "";
+        var stats = [
+          { value: added.length, label: "Added" },
+          { value: updated.length, label: "Updated" },
+          { value: statusChanges.length, label: "Status moves" },
+          { value: removed.length, label: "Removed" }
+        ].map(function (stat) {
+          return "<div class=\"pull-stat\"><strong>" + escape(stat.value) + "</strong><span>" + escape(stat.label) + "</span></div>";
+        }).join("");
+
+        document.getElementById("pull-body").innerHTML =
+          "<div class=\"change-list\">" +
+            "<div><b>Previous pull:</b> " + escape(previous) + "</div>" +
+            "<div><b>Most recent pull:</b> " + escape(current) + " ET</div>" +
+          "</div>" +
+          "<div class=\"pull-stats\">" + stats + "</div>" +
+          baselineNote +
+          emptyNote +
+          renderPullGroup("Added tickets", added, function (issue) {
+            return renderPullIssue(issue) +
+              "<div class=\"change-list\"><div><b>Status:</b> " + escape(issue.status) + "</div><div><b>Updated:</b> " + escape(issue.updatedDisplay) + "</div></div>";
+          }) +
+          renderPullGroup("Updated tickets", updated, function (item) {
+            return renderPullIssue(item) +
+              "<div class=\"change-list\">" + item.changes.map(renderChange).join("") + "</div>";
+          }) +
+          renderPullGroup("Status changes", statusChanges, function (item) {
+            return renderPullIssue(item) +
+              "<div class=\"change-list\"><div><b>Status:</b> " + escape(item.before) + " -> " + escape(item.after) + "</div></div>";
+          }) +
+          renderPullGroup("Removed tickets", removed, function (issue) {
+            return renderPullIssue(issue) +
+              "<div class=\"change-list\"><div><b>Last known status:</b> " + escape(issue.status) + "</div></div>";
+          });
+      }
+
       function renderAll() {
         renderFilterState();
         renderBoard();
+        renderDataPull();
         document.getElementById("pulled-at").textContent = data.pulledAtDisplay;
         document.getElementById("source-line").textContent = "Source: live Jira JQL " + data.jql + ". Components and subtasks are generated from the current ticket snapshot.";
         document.getElementById("copy-components").innerHTML = copyIcon();
@@ -1034,6 +1246,17 @@
 
         copyText(components.join("\n")).then(function () {
           markCopied(event.currentTarget);
+        });
+      });
+
+      document.getElementById("data-pull").addEventListener("click", function (event) {
+        var copyButton = event.target.closest("[data-copy-link]");
+        if (!copyButton) {
+          return;
+        }
+
+        copyText(copyButton.getAttribute("data-copy-link")).then(function () {
+          markCopied(copyButton);
         });
       });
 
