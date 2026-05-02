@@ -16,8 +16,6 @@ on:
           - Nicole Greer
           - Alex Mcnay
           - Anton Yurkevich
-  issues:
-    types: [opened]
 
 concurrency:
   group: jira-assignee-update
@@ -25,7 +23,6 @@ concurrency:
 
 permissions:
   contents: write
-  issues: write
 
 jobs:
   update:
@@ -63,23 +60,3 @@ jobs:
           git add index.html
           git commit -m "Update Jira assignee ${{ steps.assign.outputs.issue_key }}"
           git push
-
-      - name: Comment on request issue
-        if: always() && github.event_name == 'issues' && hashFiles('assignment-comment.md') != ''
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require("fs");
-            const body = fs.readFileSync("assignment-comment.md", "utf8");
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body,
-            });
-            await github.rest.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              state: "closed",
-            });

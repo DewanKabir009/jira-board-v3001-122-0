@@ -4,7 +4,7 @@ Interactive release dashboard for Jira fixVersion `v3001.122.0`.
 
 - Live dashboard: <https://dewankabir009.github.io/jira-board-v3001-122-0/>
 - Jira source: `fixVersion = "v3001.122.0" ORDER BY updated DESC`
-- Current dashboard version: `v1.1`
+- Current dashboard version: `v1.2`
 
 The board groups release tickets by workflow status, keeps component and QA filters at the top, tracks subtask relationships, and preserves a Data Pull history so status movement is visible over time.
 
@@ -44,10 +44,11 @@ The repo also includes `.github/workflows/update-jira-assignee.yml`.
 Behavior:
 
 - The dashboard shows an assignee picker on every ticket and subtask.
-- Submit opens a GitHub request with the issue key and requested assignee.
+- Submit calls a local workflow dispatch bridge on `http://127.0.0.1:3991/assign`.
+- The bridge uses the already-authenticated GitHub CLI session to start the secured GitHub Actions workflow.
 - The GitHub Action runs only for the trusted GitHub actor `DewanKabir009`.
 - Jira credentials stay in GitHub Secrets and are never sent to the browser.
-- The Action resolves the Jira account, updates the issue assignee, refreshes the board, commits `index.html` when the board changes, comments on the request issue, and closes it.
+- The Action resolves the Jira account, updates the issue assignee, refreshes the board, and commits `index.html` when the board changes.
 - Repo admins can also run the workflow manually with `workflow_dispatch` inputs.
 
 Current allowed assignees:
@@ -56,6 +57,14 @@ Current allowed assignees:
 - Nicole Greer
 - Alex Mcnay
 - Anton Yurkevich
+
+Start the local bridge when using the live dashboard to update assignees:
+
+```powershell
+node scripts/dispatch-assignee-workflow-server.cjs
+```
+
+The bridge does not hold the Jira token. It only dispatches the GitHub Actions workflow through `gh`, and the workflow reads the Jira token from GitHub Secrets.
 
 ## Local Refresh
 
@@ -181,8 +190,17 @@ Screenshot: `screenshots/jira-board-versions/10-secure-assignee-picker.png`
 - Replaced the Update assignee link with a compact assignee picker and submit action.
 - Added a secured GitHub Actions workflow for Jira assignee updates.
 - Kept Jira credentials inside GitHub Secrets instead of the public dashboard.
-- Added an Action script that updates Jira, refreshes the board, commits changed dashboard data, and closes the GitHub request issue.
+- Added an Action script that updates Jira and refreshes the board.
 - Added manual workflow dispatch inputs as a repo-admin fallback.
+
+### v1.2 - Direct Workflow Dispatch Bridge
+
+Screenshot: `screenshots/jira-board-versions/11-workflow-dispatch-bridge.png`
+
+- Removed the GitHub Issue request trigger path from the dashboard.
+- Added a local dispatch bridge so Submit starts `update-jira-assignee.yml` without creating GitHub issues.
+- Kept Jira updates inside GitHub Actions with Jira credentials stored only in GitHub Secrets.
+- Added an Actions shortcut on each ticket for visibility into workflow runs.
 
 ## Planned Next Steps
 

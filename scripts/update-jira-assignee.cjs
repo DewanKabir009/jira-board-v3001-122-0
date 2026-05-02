@@ -13,7 +13,6 @@ const safeVersion = version.replace(/[^a-zA-Z0-9._-]/g, "_");
 const jsonPath = path.join(workspace, `jira-${safeVersion}-tickets.json`);
 const htmlPath = path.join(workspace, "jira-board-latest.html");
 const indexPath = path.join(workspace, "index.html");
-const commentPath = path.join(workspace, "assignment-comment.md");
 
 const allowedAssignees = [
   "Dewan Kabir",
@@ -32,10 +31,6 @@ function writeOutput(name, value) {
   }
 
   fs.appendFileSync(process.env.GITHUB_OUTPUT, `${name}=${String(value).replace(/\r?\n/g, " ")}\n`);
-}
-
-function writeComment(markdown) {
-  fs.writeFileSync(commentPath, `${markdown.trim()}\n`);
 }
 
 function writeSummary(markdown) {
@@ -60,39 +55,6 @@ function getTrustedActors() {
     .filter(Boolean);
 }
 
-function readEvent() {
-  if (!process.env.GITHUB_EVENT_PATH || !fs.existsSync(process.env.GITHUB_EVENT_PATH)) {
-    return null;
-  }
-
-  return JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8"));
-}
-
-function parseRequestBody(body) {
-  const match = String(body || "").match(/<!--\s*jira-board-assignee-request([\s\S]*?)-->/i);
-  if (!match) {
-    return {};
-  }
-
-  const values = {};
-  for (const rawLine of match[1].split(/\r?\n/)) {
-    const line = rawLine.trim();
-    const separator = line.indexOf(":");
-    if (separator === -1) {
-      continue;
-    }
-    const key = line.slice(0, separator).trim();
-    const value = line.slice(separator + 1).trim();
-    values[key] = value;
-  }
-
-  return {
-    issueKey: values.issue_key,
-    assigneeDisplayName: values.assignee_display_name,
-    dashboardUrl: values.dashboard_url,
-  };
-}
-
 function getRequest() {
   const eventName = process.env.GITHUB_EVENT_NAME || "";
 
@@ -102,23 +64,6 @@ function getRequest() {
       assigneeDisplayName: process.env.INPUT_ASSIGNEE_DISPLAY_NAME || process.env.ASSIGNEE_DISPLAY_NAME,
       dashboardUrl,
       source: "workflow_dispatch",
-    };
-  }
-
-  const event = readEvent();
-  if (eventName === "issues" && event?.action === "opened") {
-    const labels = (event.issue?.labels || []).map((label) => label.name);
-    const parsed = parseRequestBody(event.issue?.body);
-    if (!labels.includes("jira-assignee-update") && !parsed.issueKey) {
-      return { skip: true, reason: "Issue is not a Jira assignee update request." };
-    }
-
-    return {
-      ...parsed,
-      dashboardUrl,
-      source: "issue",
-      issueNumber: event.issue?.number,
-      issueUrl: event.issue?.html_url,
     };
   }
 
@@ -257,7 +202,6 @@ async function main() {
     writeOutput("issue_key", request.issueKey);
     writeOutput("assignee_display_name", assignee.displayName);
     writeOutput("board_changed", refresh.boardChanged ? "true" : "false");
-    writeComment(comment);
     writeSummary(comment);
   } catch (error) {
     const message = error && error.stack ? error.stack : String(error);
@@ -272,7 +216,6 @@ async function main() {
     writeOutput("processed", "true");
     writeOutput("success", "false");
     writeOutput("board_changed", "false");
-    writeComment(comment);
     writeSummary(comment);
     throw error;
   }

@@ -3,9 +3,10 @@ const path = require("path");
 
 const workspace = __dirname;
 const siteUrl = "https://golfnow.atlassian.net";
-const dashboardVersion = "v1.1";
+const dashboardVersion = "v1.2";
 const repositorySlug = "DewanKabir009/jira-board-v3001-122-0";
 const dashboardUrl = "https://dewankabir009.github.io/jira-board-v3001-122-0/";
+const assigneeDispatchEndpoint = "http://127.0.0.1:3991/assign";
 const assigneeOptions = [
   "Dewan Kabir",
   "Nicole Greer",
@@ -365,6 +366,7 @@ function renderHtml(data) {
     dashboardVersion,
     repositorySlug,
     dashboardUrl,
+    assigneeDispatchEndpoint,
     assigneeOptions,
   });
 
@@ -872,7 +874,7 @@ function renderHtml(data) {
 
     .assign-controls {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto;
+      grid-template-columns: minmax(0, 1fr) auto auto auto;
       align-items: center;
       gap: 6px;
       min-width: 0;
@@ -913,6 +915,11 @@ function renderHtml(data) {
 
     .assign-submit {
       cursor: pointer;
+    }
+
+    .assign-submit:disabled {
+      cursor: wait;
+      opacity: .68;
     }
 
     .assign-submit:hover,
@@ -1379,6 +1386,7 @@ function renderHtml(data) {
       };
       var githubRepo = data.repositorySlug || "DewanKabir009/jira-board-v3001-122-0";
       var dashboardUrl = data.dashboardUrl || "https://dewankabir009.github.io/jira-board-v3001-122-0/";
+      var assigneeDispatchEndpoint = data.assigneeDispatchEndpoint || "http://127.0.0.1:3991/assign";
       var assigneeNames = data.assigneeOptions || [
         "Dewan Kabir",
         "Nicole Greer",
@@ -1430,29 +1438,9 @@ function renderHtml(data) {
         return text(left).toLowerCase() === text(right).toLowerCase() ? " selected" : "";
       }
 
-      function getAssigneeRequestUrl(issueKey, issueSummary, currentAssignee, requestedAssignee) {
-        var title = "Assign " + issueKey + " to " + requestedAssignee;
-        var body = [
-          "Jira assignee update request from the CORE release dashboard.",
-          "",
-          "- Issue: " + issueKey,
-          "- Summary: " + issueSummary,
-          "- Current assignee: " + currentAssignee,
-          "- Requested assignee: " + requestedAssignee,
-          "- Dashboard: " + dashboardUrl,
-          "",
-          "<!-- jira-board-assignee-request",
-          "issue_key: " + issueKey,
-          "assignee_display_name: " + requestedAssignee,
-          "dashboard_url: " + dashboardUrl,
-          "requested_at: " + new Date().toISOString(),
-          "-->"
-        ].join("\\n");
-
+      function getActionsWorkflowUrl() {
         return "https://github.com/" + encodeURIComponent(githubRepo).replace("%2F", "/") +
-          "/issues/new?title=" + encodeURIComponent(title) +
-          "&body=" + encodeURIComponent(body) +
-          "&labels=jira-assignee-update";
+          "/actions/workflows/update-jira-assignee.yml";
       }
 
       function fallbackCopyText(value) {
@@ -1726,6 +1714,7 @@ function renderHtml(data) {
 
       function renderIssueActions(issue) {
         var selectId = "assign-" + escape(issue.key);
+        var actionsUrl = getActionsWorkflowUrl();
         var options = [
           "<option value=\\"\\">Assignee</option>"
         ].concat(assigneeNames.map(function (name) {
@@ -1738,6 +1727,7 @@ function renderHtml(data) {
             "<div class=\\"assign-controls\\">" +
               "<select class=\\"assign-select\\" id=\\"" + selectId + "\\" name=\\"assignee\\" aria-label=\\"Assignee for " + escape(issue.key) + "\\">" + options + "</select>" +
               "<button class=\\"assign-submit\\" type=\\"submit\\">Submit</button>" +
+              "<a class=\\"assign-jira-link\\" href=\\"" + escape(actionsUrl) + "\\" target=\\"_blank\\" rel=\\"noopener\\">Actions</a>" +
               "<a class=\\"assign-jira-link\\" href=\\"" + escape(issue.url) + "\\" target=\\"_blank\\" rel=\\"noopener\\">Jira</a>" +
             "</div>" +
             "<span class=\\"assign-status\\" role=\\"status\\"></span>" +
@@ -2161,23 +2151,51 @@ function renderHtml(data) {
 
         event.preventDefault();
         var select = form.querySelector("[name='assignee']");
+        var submit = form.querySelector(".assign-submit");
         var status = form.querySelector(".assign-status");
         var requestedAssignee = select ? select.value : "";
+        var issueKey = form.getAttribute("data-issue-key");
 
         if (!requestedAssignee) {
           status.textContent = "Choose an assignee.";
           return;
         }
 
-        var url = getAssigneeRequestUrl(
-          form.getAttribute("data-issue-key"),
-          form.getAttribute("data-issue-summary"),
-          form.getAttribute("data-current-assignee"),
-          requestedAssignee
-        );
+        status.textContent = "Starting secure workflow...";
+        if (submit) {
+          submit.disabled = true;
+        }
 
-        window.open(url, "_blank", "noopener,noreferrer");
-        status.textContent = "Secure request opened.";
+        fetch(assigneeDispatchEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            issueKey: issueKey,
+            assigneeDisplayName: requestedAssignee
+          })
+        })
+          .then(function (response) {
+            return response.json().catch(function () {
+              return { ok: false, error: "The dispatch bridge returned an unreadable response." };
+            }).then(function (payload) {
+              if (!response.ok || !payload.ok) {
+                throw new Error(payload.error || "The dispatch bridge rejected the request.");
+              }
+              return payload;
+            });
+          })
+          .then(function () {
+            status.textContent = "Workflow started. Jira will refresh shortly.";
+          })
+          .catch(function (error) {
+            status.textContent = "Bridge offline. Open Actions to run it.";
+            console.error(error);
+          })
+          .finally(function () {
+            if (submit) {
+              submit.disabled = false;
+            }
+          });
       });
 
       document.getElementById("board").addEventListener("click", function (event) {
