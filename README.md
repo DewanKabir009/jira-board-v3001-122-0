@@ -4,7 +4,7 @@ Interactive release dashboard for Jira fixVersion `v3001.122.0`.
 
 - Live dashboard: <https://dewankabir009.github.io/jira-board-v3001-122-0/>
 - Jira source: `fixVersion = "v3001.122.0" ORDER BY updated DESC`
-- Current dashboard version: `v1.2`
+- Current dashboard version: `v1.3`
 
 The board groups release tickets by workflow status, keeps component and QA filters at the top, tracks subtask relationships, and preserves a Data Pull history so status movement is visible over time.
 
@@ -50,6 +50,7 @@ Behavior:
 - Jira credentials stay in GitHub Secrets and are never sent to the browser.
 - The Action resolves the Jira account, updates the issue assignee, refreshes the board, and commits `index.html` when the board changes.
 - Repo admins can also run the workflow manually with `workflow_dispatch` inputs.
+- The footer shows `Assignee Bridge Status` and turns green when the local bridge is reachable and GitHub CLI auth is ready.
 
 Current allowed assignees:
 
@@ -201,6 +202,15 @@ Screenshot: `screenshots/jira-board-versions/11-workflow-dispatch-bridge.png`
 - Added a local dispatch bridge so Submit starts `update-jira-assignee.yml` without creating GitHub issues.
 - Kept Jira updates inside GitHub Actions with Jira credentials stored only in GitHub Secrets.
 - Added an Actions shortcut on each ticket for visibility into workflow runs.
+
+### v1.3 - Assignee Bridge Status Indicator
+
+Screenshot: `screenshots/jira-board-versions/12-assignee-bridge-status.png`
+
+- Added an `Assignee Bridge Status` indicator in the dashboard footer.
+- Added a non-mutating `/status` endpoint to the local bridge.
+- The indicator shows green when the bridge is reachable and GitHub CLI auth is ready.
+- The indicator shows offline when assignee updates cannot currently be dispatched from the page.
 
 ## Planned Next Steps
 

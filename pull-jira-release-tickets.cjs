@@ -3,7 +3,7 @@ const path = require("path");
 
 const workspace = __dirname;
 const siteUrl = "https://golfnow.atlassian.net";
-const dashboardVersion = "v1.2";
+const dashboardVersion = "v1.3";
 const repositorySlug = "DewanKabir009/jira-board-v3001-122-0";
 const dashboardUrl = "https://dewankabir009.github.io/jira-board-v3001-122-0/";
 const assigneeDispatchEndpoint = "http://127.0.0.1:3991/assign";
@@ -1257,8 +1257,63 @@ function renderHtml(data) {
     .footer-links {
       display: inline-flex;
       flex-wrap: wrap;
+      align-items: center;
       justify-content: flex-end;
       gap: 10px 16px;
+    }
+
+    .bridge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 30px;
+      border: 1px solid #d6deea;
+      border-radius: 999px;
+      background: #fff;
+      padding: 5px 10px;
+      color: #41506a;
+      white-space: nowrap;
+    }
+
+    .bridge-dot {
+      width: 10px;
+      height: 10px;
+      flex: 0 0 10px;
+      border-radius: 999px;
+      background: #f59e0b;
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, .16);
+    }
+
+    .bridge-status b {
+      color: #334968;
+      font-weight: 800;
+    }
+
+    .bridge-status small {
+      margin-left: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .bridge-status.online {
+      border-color: #b9ead2;
+      background: #effcf6;
+    }
+
+    .bridge-status.online .bridge-dot {
+      background: #12b76a;
+      box-shadow: 0 0 0 4px rgba(18, 183, 106, .16);
+    }
+
+    .bridge-status.offline {
+      border-color: #ffd5d2;
+      background: #fff3f1;
+    }
+
+    .bridge-status.offline .bridge-dot {
+      background: #ef4444;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, .14);
     }
 
     @media (max-width: 760px) {
@@ -1301,6 +1356,12 @@ function renderHtml(data) {
 
       .footer-links {
         justify-content: flex-start;
+      }
+
+      .bridge-status {
+        width: 100%;
+        justify-content: flex-start;
+        white-space: normal;
       }
     }
   </style>
@@ -1365,6 +1426,10 @@ function renderHtml(data) {
       <div class="footer">
         <span id="source-line"></span>
         <span class="footer-links">
+          <span class="bridge-status" id="bridge-status" role="status" aria-live="polite">
+            <span class="bridge-dot" aria-hidden="true"></span>
+            <span><b>Assignee Bridge Status</b><small id="bridge-status-text">Checking</small></span>
+          </span>
           <a href="${escapeHtml(readmeUrl)}">Dashboard ${escapeHtml(dashboardVersion)} notes</a>
           <a href="${escapeHtml(jiraFilterUrl)}">Open Jira filter</a>
         </span>
@@ -1441,6 +1506,46 @@ function renderHtml(data) {
       function getActionsWorkflowUrl() {
         return "https://github.com/" + encodeURIComponent(githubRepo).replace("%2F", "/") +
           "/actions/workflows/update-jira-assignee.yml";
+      }
+
+      function getAssigneeStatusEndpoint() {
+        return assigneeDispatchEndpoint.replace(/\\/assign$/, "/status");
+      }
+
+      function setBridgeStatus(mode, message) {
+        var badge = document.getElementById("bridge-status");
+        var textNode = document.getElementById("bridge-status-text");
+        if (!badge || !textNode) {
+          return;
+        }
+
+        badge.classList.remove("online", "offline");
+        if (mode) {
+          badge.classList.add(mode);
+        }
+        textNode.textContent = message;
+        badge.title = "Assignee Bridge Status: " + message;
+      }
+
+      function checkBridgeStatus() {
+        setBridgeStatus("", "Checking");
+        fetch(getAssigneeStatusEndpoint(), { method: "GET", cache: "no-store" })
+          .then(function (response) {
+            return response.json().catch(function () {
+              return { ok: false, message: "Unreadable bridge response." };
+            }).then(function (payload) {
+              if (!response.ok || !payload.ok) {
+                throw new Error(payload.message || payload.error || "Bridge is not ready.");
+              }
+              return payload;
+            });
+          })
+          .then(function () {
+            setBridgeStatus("online", "Ready");
+          })
+          .catch(function () {
+            setBridgeStatus("offline", "Offline");
+          });
       }
 
       function fallbackCopyText(value) {
@@ -2270,6 +2375,8 @@ function renderHtml(data) {
       });
 
       renderAll();
+      checkBridgeStatus();
+      window.setInterval(checkBridgeStatus, 30000);
     })();
   </script>
 </body>

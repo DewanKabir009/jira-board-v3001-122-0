@@ -38,10 +38,42 @@ function writeJson(response, status, payload, origin) {
   response.writeHead(status, {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": origin && allowedOrigins.has(origin) ? origin : "https://dewankabir009.github.io",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   });
   response.end(JSON.stringify(payload));
+}
+
+function getBridgeStatus() {
+  const gh = findGh();
+  if (!gh) {
+    return {
+      ok: false,
+      bridge: "running",
+      githubCli: "missing",
+      message: "Bridge running, GitHub CLI missing.",
+    };
+  }
+
+  try {
+    cp.execFileSync(gh, ["auth", "status", "--hostname", "github.com"], {
+      stdio: "pipe",
+      windowsHide: true,
+    });
+    return {
+      ok: true,
+      bridge: "running",
+      githubCli: "authenticated",
+      message: "Bridge ready.",
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      bridge: "running",
+      githubCli: "not authenticated",
+      message: "Bridge running, GitHub CLI auth needs attention.",
+    };
+  }
 }
 
 function readBody(request) {
@@ -103,6 +135,11 @@ const server = http.createServer(async (request, response) => {
 
   if (request.method === "OPTIONS") {
     writeJson(response, 204, {}, origin);
+    return;
+  }
+
+  if (request.method === "GET" && request.url === "/status") {
+    writeJson(response, 200, getBridgeStatus(), origin);
     return;
   }
 
