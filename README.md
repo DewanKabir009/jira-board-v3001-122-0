@@ -1,0 +1,162 @@
+# GolfNow CORE Jira Board
+
+Interactive release dashboard for Jira fixVersion `v3001.122.0`.
+
+- Live dashboard: <https://dewankabir009.github.io/jira-board-v3001-122-0/>
+- Jira source: `fixVersion = "v3001.122.0" ORDER BY updated DESC`
+- Current dashboard version: `v1.0`
+
+The board groups release tickets by workflow status, keeps component and QA filters at the top, tracks subtask relationships, and preserves a Data Pull history so status movement is visible over time.
+
+## GitHub Actions Refresh
+
+The repo includes `.github/workflows/refresh-jira-board.yml`.
+
+Behavior:
+
+- Runs every 5 minutes with `cron: */5 * * * *`.
+- Can also be run manually from the GitHub Actions tab.
+- Pulls the latest Jira data for `v3001.122.0`.
+- Compares the new Jira snapshot against the snapshot embedded in `index.html`.
+- Commits and pushes `index.html` only when Jira ticket data changes.
+- Skips dashboard commits for `No Change` pulls to avoid noisy history.
+
+Required repository secrets:
+
+- `JIRA_MCP_TOKEN`: Jira API token used by the pull script.
+- `JIRA_EMAIL`: Jira email address for API auth, for example `dewan.kabir@versantmedia.com`.
+- `JIRA_CLOUD_ID`: Jira Cloud ID, currently `24a77690-829a-4704-94eb-fafef6370d21`.
+
+Recommended setup:
+
+```powershell
+gh secret set JIRA_EMAIL --body "dewan.kabir@versantmedia.com" --repo DewanKabir009/jira-board-v3001-122-0
+gh secret set JIRA_CLOUD_ID --body "24a77690-829a-4704-94eb-fafef6370d21" --repo DewanKabir009/jira-board-v3001-122-0
+gh secret set JIRA_MCP_TOKEN --repo DewanKabir009/jira-board-v3001-122-0
+```
+
+For `JIRA_MCP_TOKEN`, paste the token only into the GitHub CLI prompt or GitHub repository secret UI. Do not commit it to the repository.
+
+## Local Refresh
+
+The local generator can still be run from the workspace:
+
+```powershell
+node pull-jira-release-tickets.cjs v3001.122.0
+Copy-Item -Path jira-board-latest.html -Destination index.html
+```
+
+The generator writes:
+
+- `jira-board-latest.html`: latest generated dashboard.
+- `jira-v3001.122.0-tickets.json`: latest local Jira snapshot.
+- `index.html`: published dashboard when copied or committed.
+
+## Dashboard Features
+
+- Status sections are grouped and can be expanded or collapsed.
+- Subtasks can be expanded per parent ticket or globally.
+- Components are auto-built from Jira and can be used as filters.
+- The Components header includes a copy action that copies component names as a bullet list.
+- QA filters support Dewan Kabir, Nicole Greer, Alex Mcnay, and Anton Yurkevich.
+- Ticket keys include copy-link buttons.
+- Data Pull history shows added tickets, updated tickets, status moves, removed tickets, and retained historical changes.
+- Subtask changes in Data Pull include the parent ticket key and parent summary.
+- Each ticket includes an Update assignee action that opens the Jira ticket.
+
+Security note: the dashboard is static GitHub Pages, so it does not store Jira credentials and does not directly write to Jira. Direct assignee writes from the dashboard would require a backend or serverless endpoint that keeps the Jira token private.
+
+## Version History
+
+### v0.1 - Initial Board
+
+Screenshot: `screenshots/jira-board-versions/01-initial-board.png`
+
+- Published the first static Jira board for `v3001.122.0`.
+- Grouped tickets by Jira workflow status.
+- Showed ticket key, summary, assignee, priority, updated date, and components.
+- Published the board through GitHub Pages.
+
+### v0.2 - Responsive Interactive Board
+
+Screenshot: `screenshots/jira-board-versions/02-responsive-interactive.png`
+
+- Made the board responsive for desktop and smaller screens.
+- Added top-level metrics.
+- Added component filters.
+- Added expand and collapse controls for status sections.
+- Improved card sizing and layout behavior.
+
+### v0.3 - Collapsible Subtasks
+
+Screenshot: `screenshots/jira-board-versions/03-collapsible-subtasks.png`
+
+- Added subtask layering under parent tickets.
+- Added per-ticket subtask expand/collapse controls.
+- Added a global Expand all subtasks / Collapse all subtasks control.
+- Kept subtasks available without letting them dominate the main ticket view.
+
+### v0.4 - Copy Actions
+
+Screenshot: `screenshots/jira-board-versions/04-copy-actions.png`
+
+- Added copy icons beside every Jira ticket key.
+- Added a Components copy action.
+- Component copying outputs only names, formatted as a bullet list.
+
+### v0.5 - Data Pull Diff Panel
+
+Screenshot: `screenshots/jira-board-versions/05-data-pull-diff-panel.png`
+
+- Added the Data Pull section at the bottom of the page.
+- Displayed previous pull and most recent pull timestamps.
+- Added counts for added, updated, status moves, and removed tickets.
+- Included detailed field-level changes when Jira data changed.
+
+### v0.6 - Packed Status Layout
+
+Screenshot: `screenshots/jira-board-versions/06-packed-status-layout.png`
+
+- Improved board packing so shorter status columns leave less empty space.
+- Balanced status sections across columns.
+- Kept later statuses easier to find near the upper part of the page.
+
+### v0.7 - Retained Data Pull History
+
+Screenshot: `screenshots/jira-board-versions/07-retained-data-pull-history.png`
+
+- Added retained Data Pull history.
+- Prevented no-change pulls from hiding previous meaningful changes.
+- Restored the previously captured `CORE-14210` status move history.
+
+### v0.8 - No Change State
+
+Screenshot: `screenshots/jira-board-versions/08-no-change-data-pull-state.png`
+
+- Added a clear modern `No Change` state to the Data Pull panel.
+- Kept latest pull timestamps visible while preserving prior change history.
+- Updated refresh summaries to use `No Change` language.
+
+### v0.9 - QA Filters, Parent Context, Assignee Actions
+
+Screenshot: `screenshots/jira-board-versions/09-qa-filter-parent-assignee-actions.png`
+
+- Added a QA section under Components.
+- Added filters for Dewan Kabir, Nicole Greer, Alex Mcnay, and Anton Yurkevich.
+- Made QA filters combinable with component filters.
+- Added parent ticket key and parent summary to subtask changes in Data Pull.
+- Added Update assignee links that open Jira safely from each ticket card.
+
+### v1.0 - GitHub Actions Automation and Release Notes Link
+
+- Added a GitHub Actions workflow to poll Jira every 5 minutes.
+- Added an action runner script that commits only when Jira ticket data changes.
+- Added this README with dashboard version history.
+- Added a dashboard footer link to these release notes.
+
+## Planned Next Steps
+
+- Configure GitHub repository secrets for Jira auth.
+- Run the workflow manually once from the GitHub Actions tab.
+- Decide whether the dashboard should later use a private backend for direct Jira writes, including assignee updates.
+- Add email notification support that sends the dashboard link and pull summary without attaching the HTML file.

@@ -1,9 +1,368 @@
-<!doctype html>
+const fs = require("fs");
+const path = require("path");
+
+const workspace = __dirname;
+const siteUrl = "https://golfnow.atlassian.net";
+const dashboardVersion = "v1.0";
+const cloudId = process.env.JIRA_CLOUD_ID || "24a77690-829a-4704-94eb-fafef6370d21";
+const email = process.env.JIRA_EMAIL || "dewan.kabir@versantmedia.com";
+const token = process.env.JIRA_MCP_TOKEN;
+const version = process.argv[2] || process.env.JIRA_FIX_VERSION || "v3001.122.0";
+
+if (!token) {
+  console.error("JIRA_MCP_TOKEN is not set.");
+  process.exit(2);
+}
+
+const fields = [
+  "summary",
+  "status",
+  "issuetype",
+  "priority",
+  "assignee",
+  "updated",
+  "created",
+  "fixVersions",
+  "components",
+  "resolution",
+  "parent",
+];
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function jiraUrl(key) {
+  return `${siteUrl}/browse/${key}`;
+}
+
+function formatDate(input) {
+  if (!input) {
+    return "";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(input));
+}
+
+function serializeJsonForScript(value) {
+  return JSON.stringify(value)
+    .replace(/&/g, "\\u0026")
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
+function readDataFromHtml(htmlPath) {
+  if (!fs.existsSync(htmlPath)) {
+    return null;
+  }
+
+  const html = fs.readFileSync(htmlPath, "utf8");
+  const start = '<script id="jira-data" type="application/json">';
+  const end = "</script>";
+  const startIndex = html.indexOf(start);
+  if (startIndex === -1) {
+    return null;
+  }
+
+  const endIndex = html.indexOf(end, startIndex);
+  if (endIndex === -1) {
+    return null;
+  }
+
+  return JSON.parse(html.slice(startIndex + start.length, endIndex));
+}
+
+async function fetchIssues() {
+  const jql = `fixVersion = "${version}" ORDER BY updated DESC`;
+  const endpoint = `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/search/jql`;
+  const auth = Buffer.from(`${email}:${token}`).toString("base64");
+  const issues = [];
+  let nextPageToken;
+
+  do {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${auth}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jql,
+        maxResults: 100,
+        nextPageToken,
+        fields,
+      }),
+    });
+
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(`Jira search failed: HTTP ${response.status} ${response.statusText}\n${text}`);
+    }
+
+    const payload = JSON.parse(text);
+    issues.push(...(payload.issues || []));
+    nextPageToken = payload.nextPageToken;
+  } while (nextPageToken);
+
+  return { jql, issues };
+}
+
+function normalizeIssue(issue) {
+  const issueFields = issue.fields || {};
+  const issueType = issueFields.issuetype || {};
+  const parentFields = issueFields.parent?.fields || {};
+
+  return {
+    key: issue.key,
+    url: jiraUrl(issue.key),
+    summary: issueFields.summary || "",
+    type: issueType.name || "",
+    isSubtask: Boolean(issueType.subtask),
+    status: issueFields.status?.name || "",
+    priority: issueFields.priority?.name || "None",
+    assignee: issueFields.assignee?.displayName || "Unassigned",
+    updated: issueFields.updated || "",
+    updatedDisplay: formatDate(issueFields.updated),
+    created: issueFields.created || "",
+    createdDisplay: formatDate(issueFields.created),
+    components: (issueFields.components || []).map((component) => component.name),
+    fixVersions: (issueFields.fixVersions || []).map((fixVersion) => fixVersion.name),
+    resolution: issueFields.resolution?.name || "",
+    parent: issueFields.parent ? {
+      key: issueFields.parent.key,
+      url: jiraUrl(issueFields.parent.key),
+      summary: parentFields.summary || "",
+      type: parentFields.issuetype?.name || "Parent",
+      status: parentFields.status?.name || "",
+      priority: parentFields.priority?.name || "",
+    } : null,
+  };
+}
+
+function normalizeList(values) {
+  return [...(values || [])].sort((left, right) => left.localeCompare(right));
+}
+
+function listsEqual(left, right) {
+  const normalizedLeft = normalizeList(left);
+  const normalizedRight = normalizeList(right);
+
+  return normalizedLeft.length === normalizedRight.length &&
+    normalizedLeft.every((value, index) => value === normalizedRight[index]);
+}
+
+function formatList(values) {
+  return normalizeList(values).join(", ") || "None";
+}
+
+function compareIssues(previous, current) {
+  const changes = [];
+  const scalarFields = [
+    ["summary", "Summary"],
+    ["type", "Type"],
+    ["status", "Status"],
+    ["priority", "Priority"],
+    ["assignee", "Assignee"],
+    ["resolution", "Resolution"],
+    ["updatedDisplay", "Jira updated"],
+  ];
+
+  for (const [field, label] of scalarFields) {
+    const before = previous[field] || "None";
+    const after = current[field] || "None";
+    if (before !== after) {
+      changes.push({ field, label, before, after });
+    }
+  }
+
+  if (!listsEqual(previous.components, current.components)) {
+    changes.push({
+      field: "components",
+      label: "Components",
+      before: formatList(previous.components),
+      after: formatList(current.components),
+    });
+  }
+
+  if ((previous.parent?.key || "") !== (current.parent?.key || "")) {
+    changes.push({
+      field: "parent",
+      label: "Parent",
+      before: previous.parent?.key || "None",
+      after: current.parent?.key || "None",
+    });
+  }
+
+  return changes;
+}
+
+function issueContext(issue) {
+  if (!issue) {
+    return {};
+  }
+
+  return {
+    type: issue.type || "",
+    isSubtask: Boolean(issue.isSubtask),
+    assignee: issue.assignee || "Unassigned",
+    status: issue.status || "",
+    parent: issue.parent || null,
+  };
+}
+
+function enrichPullItem(item, issuesByKey) {
+  const issue = issuesByKey.get(item.key);
+  return {
+    ...item,
+    ...issueContext(issue),
+  };
+}
+
+function enrichPullDiff(diff, issuesByKey) {
+  if (!diff) {
+    return diff;
+  }
+
+  return {
+    ...diff,
+    added: (diff.added || []).map((issue) => ({
+      ...issue,
+      ...issueContext(issuesByKey.get(issue.key) || issue),
+    })),
+    removed: (diff.removed || []).map((issue) => ({
+      ...issue,
+      ...issueContext(issuesByKey.get(issue.key) || issue),
+    })),
+    updated: (diff.updated || []).map((item) => enrichPullItem(item, issuesByKey)),
+    statusChanges: (diff.statusChanges || []).map((item) => enrichPullItem(item, issuesByKey)),
+  };
+}
+
+function buildPullDiff(previousData, issues, pulledAt, pulledAtDisplay) {
+  const previousIssues = previousData?.issues || [];
+  const previousByKey = new Map(previousIssues.map((issue) => [issue.key, issue]));
+  const currentByKey = new Map(issues.map((issue) => [issue.key, issue]));
+  const added = [];
+  const removed = [];
+  const updated = [];
+  const statusChanges = [];
+
+  for (const issue of issues) {
+    const previous = previousByKey.get(issue.key);
+    if (!previous) {
+      added.push(issue);
+      continue;
+    }
+
+    const changes = compareIssues(previous, issue);
+    if (changes.length) {
+      updated.push({
+        key: issue.key,
+        url: issue.url,
+        summary: issue.summary,
+        changes,
+      });
+    }
+
+    if ((previous.status || "") !== (issue.status || "")) {
+      statusChanges.push({
+        key: issue.key,
+        url: issue.url,
+        summary: issue.summary,
+        before: previous.status || "None",
+        after: issue.status || "None",
+      });
+    }
+  }
+
+  for (const issue of previousIssues) {
+    if (!currentByKey.has(issue.key)) {
+      removed.push(issue);
+    }
+  }
+
+  return {
+    previousPulledAt: previousData?.pulledAt || null,
+    previousPulledAtDisplay: previousData?.pulledAtDisplay || null,
+    currentPulledAt: pulledAt,
+    currentPulledAtDisplay: pulledAtDisplay,
+    isBaseline: !previousData?.issues?.length,
+    added,
+    removed,
+    updated,
+    statusChanges,
+  };
+}
+
+function buildPullHistory(previousData, currentDiff) {
+  const previousHistory = Array.isArray(previousData?.pullHistory)
+    ? previousData.pullHistory
+    : (previousData?.pullDiff ? [previousData.pullDiff] : []);
+  const seen = new Set();
+  const history = [];
+
+  for (const entry of [currentDiff, ...previousHistory]) {
+    if (!entry?.currentPulledAt || seen.has(entry.currentPulledAt)) {
+      continue;
+    }
+    seen.add(entry.currentPulledAt);
+    history.push(entry);
+  }
+
+  return history.slice(0, 168);
+}
+
+function buildJson(issues, jql, previousData) {
+  const pulledAt = new Date().toISOString();
+  const pulledAtDisplay = formatDate(pulledAt);
+  const issuesByKey = new Map(issues.map((issue) => [issue.key, issue]));
+  const pullDiff = enrichPullDiff(
+    buildPullDiff(previousData, issues, pulledAt, pulledAtDisplay),
+    issuesByKey,
+  );
+
+  return {
+    version,
+    siteUrl,
+    jql,
+    pulledAt,
+    pulledAtDisplay,
+    total: issues.length,
+    issues,
+    pullDiff,
+    pullHistory: buildPullHistory(previousData, pullDiff).map((entry) => enrichPullDiff(entry, issuesByKey)),
+  };
+}
+
+function renderHtml(data) {
+  const jiraFilterUrl = `${siteUrl}/issues/?jql=${encodeURIComponent(data.jql)}`;
+  const readmeUrl = "https://github.com/DewanKabir009/jira-board-v3001-122-0#version-history";
+  const dataJson = serializeJsonForScript({
+    ...data,
+    jiraFilterUrl,
+    dashboardVersion,
+  });
+
+  return `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GolfNow CORE Jira Board - v3001.122.0</title>
+  <title>GolfNow CORE Jira Board - ${escapeHtml(version)}</title>
   <style>
     :root {
       --ink: #172033;
@@ -872,12 +1231,12 @@
       <header>
         <div>
           <h1>GolfNow CORE Jira Board</h1>
-          <div class="subtitle">Latest Jira snapshot for fixVersion v3001.122.0, grouped by workflow status and ordered by most recent Jira update.</div>
+          <div class="subtitle">Latest Jira snapshot for fixVersion ${escapeHtml(version)}, grouped by workflow status and ordered by most recent Jira update.</div>
         </div>
         <div class="stamp">
           <strong>Pulled from Jira</strong>
           <span id="pulled-at"></span> ET<br>
-          golfnow.atlassian.net
+          ${escapeHtml(siteUrl.replace("https://", ""))}
         </div>
       </header>
 
@@ -926,14 +1285,14 @@
       <div class="footer">
         <span id="source-line"></span>
         <span class="footer-links">
-          <a href="https://github.com/DewanKabir009/jira-board-v3001-122-0#version-history">Dashboard v1.0 notes</a>
-          <a href="https://golfnow.atlassian.net/issues/?jql=fixVersion%20%3D%20%22v3001.122.0%22%20ORDER%20BY%20updated%20DESC">Open Jira filter</a>
+          <a href="${escapeHtml(readmeUrl)}">Dashboard ${escapeHtml(dashboardVersion)} notes</a>
+          <a href="${escapeHtml(jiraFilterUrl)}">Open Jira filter</a>
         </span>
       </div>
     </section>
   </main>
 
-  <script id="jira-data" type="application/json">{"version":"v3001.122.0","siteUrl":"https://golfnow.atlassian.net","jql":"fixVersion = \"v3001.122.0\" ORDER BY updated DESC","pulledAt":"2026-05-02T15:48:15.900Z","pulledAtDisplay":"May 2, 2026, 11:48 AM","total":30,"issues":[{"key":"CORE-14434","url":"https://golfnow.atlassian.net/browse/CORE-14434","summary":"Database changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"Pending Deployment (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-05-02T11:20:29.736-0400","updatedDisplay":"May 2, 2026, 11:20 AM","created":"2026-04-30T16:43:09.912-0400","createdDisplay":"Apr 30, 2026, 4:43 PM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"QA Testing (DEV)","priority":"P0"}},{"key":"CORE-14433","url":"https://golfnow.atlassian.net/browse/CORE-14433","summary":"Code changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"Pending Deployment (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-05-02T11:20:23.565-0400","updatedDisplay":"May 2, 2026, 11:20 AM","created":"2026-04-30T16:42:59.027-0400","createdDisplay":"Apr 30, 2026, 4:42 PM","components":["Cache Manager","Cache Manager - QueueUtility"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"QA Testing (DEV)","priority":"P0"}},{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-05-02T11:14:06.111-0400","updatedDisplay":"May 2, 2026, 11:14 AM","created":"2026-03-06T10:21:50.055-0500","createdDisplay":"Mar 6, 2026, 10:21 AM","components":["GolfNow.Services.Product","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"B2C-70","url":"https://golfnow.atlassian.net/browse/B2C-70","summary":"NY Cancellation Validation","type":"Epic","status":"Backlog","priority":"None"}},{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"P0","assignee":"Dewan Kabir","updated":"2026-05-01T23:14:53.059-0400","updatedDisplay":"May 1, 2026, 11:14 PM","created":"2026-04-30T14:03:02.725-0400","createdDisplay":"Apr 30, 2026, 2:03 PM","components":["Cache Manager","Cache Manager - QueueUtility","Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-05-01T13:14:04.881-0400","updatedDisplay":"May 1, 2026, 1:14 PM","created":"2026-03-06T10:11:37.546-0500","createdDisplay":"Mar 6, 2026, 10:11 AM","components":["GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"B2C-70","url":"https://golfnow.atlassian.net/browse/B2C-70","summary":"NY Cancellation Validation","type":"Epic","status":"Backlog","priority":"None"}},{"key":"CORE-14210","url":"https://golfnow.atlassian.net/browse/CORE-14210","summary":"CLONE - [Commerce] Convenience fee shown lower for Hot Deals on Checkout compared to GNC settings","type":"Bug","isSubtask":false,"status":"Regression Testing (STG)","priority":"P1","assignee":"Nicole Greer","updated":"2026-05-01T12:48:19.932-0400","updatedDisplay":"May 1, 2026, 12:48 PM","created":"2026-02-25T15:14:47.770-0500","createdDisplay":"Feb 25, 2026, 3:14 PM","components":["GolfNow.Services.CommerceProxy"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13172","url":"https://golfnow.atlassian.net/browse/CORE-13172","summary":"Commerce Proxy API","type":"Epic","status":"Planning","priority":"None"}},{"key":"CORE-14426","url":"https://golfnow.atlassian.net/browse/CORE-14426","summary":"Code Changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Unassigned","updated":"2026-05-01T08:38:47.511-0400","updatedDisplay":"May 1, 2026, 8:38 AM","created":"2026-04-30T06:22:27.620-0400","createdDisplay":"Apr 30, 2026, 6:22 AM","components":["GolfNow.API.TR","GolfNow.Services.Product","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14342","url":"https://golfnow.atlassian.net/browse/CORE-14342","summary":"Integrate New EZL Contact Endpoint into NEW EZL Booking Flow","type":"Task","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:17.430-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-03-26T14:51:02.523-0400","createdDisplay":"Mar 26, 2026, 2:51 PM","components":["Database","GolfNow.Services.Reservation","GolfNow.Services.TeeSheet"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14332","url":"https://golfnow.atlassian.net/browse/CORE-14332","summary":"Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:17.043-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-03-24T09:25:03.489-0400","createdDisplay":"Mar 24, 2026, 9:25 AM","components":["GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13901","url":"https://golfnow.atlassian.net/browse/CORE-13901","summary":"Customizable transaction fees","type":"Epic","status":"Planning","priority":"P1"}},{"key":"CORE-14117","url":"https://golfnow.atlassian.net/browse/CORE-14117","summary":"Move Fee-Messaging to Post-Fee-Calculation \u0026 Use FeeConfiguration (API 2.1)","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:16.434-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-01-27T23:35:15.505-0500","createdDisplay":"Jan 27, 2026, 11:35 PM","components":["Database","GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13901","url":"https://golfnow.atlassian.net/browse/CORE-13901","summary":"Customizable transaction fees","type":"Epic","status":"Planning","priority":"P1"}},{"key":"CORE-14420","url":"https://golfnow.atlassian.net/browse/CORE-14420","summary":"CRMCustomerPhone missing index on CustomerNumber causes timeouts in STG (phx-api-be-internal)","type":"Bug","isSubtask":false,"status":"Pending Deployment (DEV)","priority":"P1","assignee":"Daniel McNaughton","updated":"2026-04-30T23:30:15.045-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-04-29T15:03:20.779-0400","createdDisplay":"Apr 29, 2026, 3:03 PM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14215","url":"https://golfnow.atlassian.net/browse/CORE-14215","summary":"Cannot Add Account Balance Due to 'Missing' Wallet Option","type":"Bug","isSubtask":false,"status":"Blocked","priority":"P3","assignee":"Dewan Kabir","updated":"2026-04-30T23:30:15.023-0400","updatedDisplay":"Apr 30, 2026, 11:30 PM","created":"2026-02-25T17:27:56.678-0500","createdDisplay":"Feb 25, 2026, 5:27 PM","components":["GolfNowCentral"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14435","url":"https://golfnow.atlassian.net/browse/CORE-14435","summary":"SQL changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-30T19:17:45.814-0400","updatedDisplay":"Apr 30, 2026, 7:17 PM","created":"2026-04-30T18:05:07.770-0400","createdDisplay":"Apr 30, 2026, 6:05 PM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14430","url":"https://golfnow.atlassian.net/browse/CORE-14430","summary":"Code changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-30T19:17:35.286-0400","updatedDisplay":"Apr 30, 2026, 7:17 PM","created":"2026-04-30T12:33:59.678-0400","createdDisplay":"Apr 30, 2026, 12:33 PM","components":["GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14425","url":"https://golfnow.atlassian.net/browse/CORE-14425","summary":"SQL changes","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Unassigned","updated":"2026-04-30T17:23:51.019-0400","updatedDisplay":"Apr 30, 2026, 5:23 PM","created":"2026-04-30T06:21:55.485-0400","createdDisplay":"Apr 30, 2026, 6:21 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14412","url":"https://golfnow.atlassian.net/browse/CORE-14412","summary":"CAKE Affiliate Tracking - API Response Validation Failure","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-29T20:46:46.788-0400","updatedDisplay":"Apr 29, 2026, 8:46 PM","created":"2026-04-27T18:12:28.289-0400","createdDisplay":"Apr 27, 2026, 6:12 PM","components":["GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14398","url":"https://golfnow.atlassian.net/browse/CORE-14398","summary":"Update Stored Procedure to Resolve Timeout Error When Purchasing Product w/ Promo Code","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"None","assignee":"Nicole Greer","updated":"2026-04-29T20:10:07.517-0400","updatedDisplay":"Apr 29, 2026, 8:10 PM","created":"2026-04-22T09:53:30.759-0400","createdDisplay":"Apr 22, 2026, 9:53 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14409","url":"https://golfnow.atlassian.net/browse/CORE-14409","summary":"Add secrets","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-29T00:30:03.869-0400","updatedDisplay":"Apr 29, 2026, 12:30 AM","created":"2026-04-27T12:07:20.016-0400","createdDisplay":"Apr 27, 2026, 12:07 PM","components":["Secrets"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14332","url":"https://golfnow.atlassian.net/browse/CORE-14332","summary":"Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14366","url":"https://golfnow.atlassian.net/browse/CORE-14366","summary":"Code changes for [CORE - 14332]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Unassigned","updated":"2026-04-29T00:23:20.074-0400","updatedDisplay":"Apr 29, 2026, 12:23 AM","created":"2026-04-07T11:00:10.265-0400","createdDisplay":"Apr 7, 2026, 11:00 AM","components":["GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14332","url":"https://golfnow.atlassian.net/browse/CORE-14332","summary":"Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14385","url":"https://golfnow.atlassian.net/browse/CORE-14385","summary":"Sufficient query parameter is not returning relevant result on the top where expected","type":"Task","isSubtask":false,"status":"Closed","priority":"None","assignee":"Unassigned","updated":"2026-04-28T15:45:59.342-0400","updatedDisplay":"Apr 28, 2026, 3:45 PM","created":"2026-04-14T18:59:32.248-0400","createdDisplay":"Apr 14, 2026, 6:59 PM","components":["Geoplaces.NET"],"fixVersions":["v3001.122.0"],"resolution":"Done","parent":null},{"key":"CORE-14329","url":"https://golfnow.atlassian.net/browse/CORE-14329","summary":"True-Up Not Switching to TSP Upon AL Deactivation","type":"Story","isSubtask":false,"status":"QA Testing (DEV)","priority":"P0","assignee":"Dewan Kabir","updated":"2026-04-28T13:11:48.547-0400","updatedDisplay":"Apr 28, 2026, 1:11 PM","created":"2026-03-23T12:36:55.266-0400","createdDisplay":"Mar 23, 2026, 12:36 PM","components":["Cache Manager","Cache Manager - QueueUtility"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14401","url":"https://golfnow.atlassian.net/browse/CORE-14401","summary":"Database changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-28T08:51:15.056-0400","updatedDisplay":"Apr 28, 2026, 8:51 AM","created":"2026-04-22T11:37:42.785-0400","createdDisplay":"Apr 22, 2026, 11:37 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14342","url":"https://golfnow.atlassian.net/browse/CORE-14342","summary":"Integrate New EZL Contact Endpoint into NEW EZL Booking Flow","type":"Task","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14400","url":"https://golfnow.atlassian.net/browse/CORE-14400","summary":"Code changes.","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"None","assignee":"Dewan Kabir","updated":"2026-04-28T08:51:08.687-0400","updatedDisplay":"Apr 28, 2026, 8:51 AM","created":"2026-04-22T11:37:35.069-0400","createdDisplay":"Apr 22, 2026, 11:37 AM","components":["GolfNow.Services.Reservation","GolfNow.Services.TeeSheet"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14342","url":"https://golfnow.atlassian.net/browse/CORE-14342","summary":"Integrate New EZL Contact Endpoint into NEW EZL Booking Flow","type":"Task","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14391","url":"https://golfnow.atlassian.net/browse/CORE-14391","summary":"Code changes for [CORE - 14386]","type":"Developer Task (sub task)","isSubtask":true,"status":"Closed","priority":"P1","assignee":"Unassigned","updated":"2026-04-23T19:11:34.326-0400","updatedDisplay":"Apr 23, 2026, 7:11 PM","created":"2026-04-16T17:33:20.119-0400","createdDisplay":"Apr 16, 2026, 5:33 PM","components":[],"fixVersions":["v3001.122.0"],"resolution":"Completed","parent":{"key":"CORE-14386","url":"https://golfnow.atlassian.net/browse/CORE-14386","summary":"Premier Card Miami - Subscriptions Being Created Despite Purchase Errors","type":"Bug","status":"Analysis","priority":"P1"}},{"key":"CORE-14399","url":"https://golfnow.atlassian.net/browse/CORE-14399","summary":"SQL code changes for [CORE - 14117]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Unassigned","updated":"2026-04-23T17:41:46.296-0400","updatedDisplay":"Apr 23, 2026, 5:41 PM","created":"2026-04-22T10:00:52.360-0400","createdDisplay":"Apr 22, 2026, 10:00 AM","components":["Database"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14117","url":"https://golfnow.atlassian.net/browse/CORE-14117","summary":"Move Fee-Messaging to Post-Fee-Calculation \u0026 Use FeeConfiguration (API 2.1)","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14337","url":"https://golfnow.atlassian.net/browse/CORE-14337","summary":"Code changes for [CORE - 14117]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Unassigned","updated":"2026-04-23T17:27:52.226-0400","updatedDisplay":"Apr 23, 2026, 5:27 PM","created":"2026-03-25T09:20:49.055-0400","createdDisplay":"Mar 25, 2026, 9:20 AM","components":["GolfNow.API.TR","GolfNowAPI"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14117","url":"https://golfnow.atlassian.net/browse/CORE-14117","summary":"Move Fee-Messaging to Post-Fee-Calculation \u0026 Use FeeConfiguration (API 2.1)","type":"Story","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14331","url":"https://golfnow.atlassian.net/browse/CORE-14331","summary":"Timelyst - QA testing","type":"Task","isSubtask":false,"status":"Pre Planning","priority":"None","assignee":"Yu-Sheng Tu","updated":"2026-04-21T14:19:45.069-0400","updatedDisplay":"Apr 21, 2026, 2:19 PM","created":"2026-03-24T08:32:42.971-0400","createdDisplay":"Mar 24, 2026, 8:32 AM","components":["gn-svc-timelyst"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-13741","url":"https://golfnow.atlassian.net/browse/CORE-13741","summary":"Timelyst - Duration Based Inventory API","type":"Epic","status":"Analysis","priority":"P0"}},{"key":"CORE-14364","url":"https://golfnow.atlassian.net/browse/CORE-14364","summary":"Customer Wallet - Deserialization Failure","type":"Bug","isSubtask":false,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-21T10:06:21.157-0400","updatedDisplay":"Apr 21, 2026, 10:06 AM","created":"2026-04-07T00:56:54.516-0400","createdDisplay":"Apr 7, 2026, 12:56 AM","components":["GolfNowAPI","GolfNowCentral"],"fixVersions":["v3001.122.0"],"resolution":"","parent":null},{"key":"CORE-14379","url":"https://golfnow.atlassian.net/browse/CORE-14379","summary":"Code changes for [CORE - 14364]","type":"Developer Task (sub task)","isSubtask":true,"status":"QA Testing (DEV)","priority":"P1","assignee":"Dewan Kabir","updated":"2026-04-21T10:04:41.887-0400","updatedDisplay":"Apr 21, 2026, 10:04 AM","created":"2026-04-13T17:25:31.613-0400","createdDisplay":"Apr 13, 2026, 5:25 PM","components":["GolfNowAPI","GolfNowCentral"],"fixVersions":["v3001.122.0"],"resolution":"","parent":{"key":"CORE-14364","url":"https://golfnow.atlassian.net/browse/CORE-14364","summary":"Customer Wallet - Deserialization Failure","type":"Bug","status":"QA Testing (DEV)","priority":"P1"}},{"key":"CORE-14386","url":"https://golfnow.atlassian.net/browse/CORE-14386","summary":"Premier Card Miami - Subscriptions Being Created Despite Purchase Errors","type":"Bug","isSubtask":false,"status":"Analysis","priority":"P1","assignee":"Daniel McNaughton","updated":"2026-04-20T19:03:54.816-0400","updatedDisplay":"Apr 20, 2026, 7:03 PM","created":"2026-04-15T16:54:29.658-0400","createdDisplay":"Apr 15, 2026, 4:54 PM","components":[],"fixVersions":["v3001.122.0"],"resolution":"","parent":null}],"pullDiff":{"previousPulledAt":"2026-05-02T15:41:00.542Z","previousPulledAtDisplay":"May 2, 2026, 11:41 AM","currentPulledAt":"2026-05-02T15:48:15.900Z","currentPulledAtDisplay":"May 2, 2026, 11:48 AM","isBaseline":false,"added":[],"removed":[],"updated":[],"statusChanges":[]},"pullHistory":[{"previousPulledAt":"2026-05-02T15:41:00.542Z","previousPulledAtDisplay":"May 2, 2026, 11:41 AM","currentPulledAt":"2026-05-02T15:48:15.900Z","currentPulledAtDisplay":"May 2, 2026, 11:48 AM","isBaseline":false,"added":[],"removed":[],"updated":[],"statusChanges":[]},{"previousPulledAt":"2026-05-02T15:34:50.732Z","previousPulledAtDisplay":"May 2, 2026, 11:34 AM","currentPulledAt":"2026-05-02T15:41:00.542Z","currentPulledAtDisplay":"May 2, 2026, 11:41 AM","isBaseline":false,"added":[],"removed":[],"updated":[],"statusChanges":[]},{"previousPulledAt":"2026-05-02T15:29:28.597Z","previousPulledAtDisplay":"May 2, 2026, 11:29 AM","currentPulledAt":"2026-05-02T15:34:50.732Z","currentPulledAtDisplay":"May 2, 2026, 11:34 AM","isBaseline":false,"added":[],"removed":[],"updated":[],"statusChanges":[]},{"previousPulledAt":"2026-05-02T15:23:37.917Z","previousPulledAtDisplay":"May 2, 2026, 11:23 AM","currentPulledAt":"2026-05-02T15:29:28.597Z","currentPulledAtDisplay":"May 2, 2026, 11:29 AM","isBaseline":false,"added":[],"removed":[],"updated":[],"statusChanges":[]},{"previousPulledAt":"2026-05-02T15:12:51.346Z","previousPulledAtDisplay":"May 2, 2026, 11:12 AM","currentPulledAt":"2026-05-02T15:23:37.917Z","currentPulledAtDisplay":"May 2, 2026, 11:23 AM","isBaseline":false,"added":[],"removed":[],"updated":[{"key":"CORE-14434","url":"https://golfnow.atlassian.net/browse/CORE-14434","summary":"Database changes.","changes":[{"field":"assignee","label":"Assignee","before":"Yoel Martin Pardo","after":"Dewan Kabir"},{"field":"updatedDisplay","label":"Jira updated","before":"May 2, 2026, 11:12 AM","after":"May 2, 2026, 11:20 AM"}],"type":"Developer Task (sub task)","isSubtask":true,"assignee":"Dewan Kabir","status":"Pending Deployment (DEV)","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"QA Testing (DEV)","priority":"P0"}},{"key":"CORE-14433","url":"https://golfnow.atlassian.net/browse/CORE-14433","summary":"Code changes.","changes":[{"field":"assignee","label":"Assignee","before":"Yoel Martin Pardo","after":"Dewan Kabir"},{"field":"updatedDisplay","label":"Jira updated","before":"May 2, 2026, 11:11 AM","after":"May 2, 2026, 11:20 AM"}],"type":"Developer Task (sub task)","isSubtask":true,"assignee":"Dewan Kabir","status":"Pending Deployment (DEV)","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"QA Testing (DEV)","priority":"P0"}},{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","changes":[{"field":"status","label":"Status","before":"Pending Deployment (DEV)","after":"QA Testing (DEV)"},{"field":"assignee","label":"Assignee","before":"Raghav Kancherla","after":"Dewan Kabir"},{"field":"updatedDisplay","label":"Jira updated","before":"May 1, 2026, 1:14 PM","after":"May 2, 2026, 11:14 AM"}],"type":"Story","isSubtask":false,"assignee":"Dewan Kabir","status":"QA Testing (DEV)","parent":{"key":"B2C-70","url":"https://golfnow.atlassian.net/browse/B2C-70","summary":"NY Cancellation Validation","type":"Epic","status":"Backlog","priority":"None"}}],"statusChanges":[{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","before":"Pending Deployment (DEV)","after":"QA Testing (DEV)","type":"Story","isSubtask":false,"assignee":"Dewan Kabir","status":"QA Testing (DEV)","parent":{"key":"B2C-70","url":"https://golfnow.atlassian.net/browse/B2C-70","summary":"NY Cancellation Validation","type":"Epic","status":"Backlog","priority":"None"}}]},{"previousPulledAt":"2026-05-02T05:39:18.709Z","previousPulledAtDisplay":"May 2, 2026, 1:39 AM","currentPulledAt":"2026-05-02T15:12:51.346Z","currentPulledAtDisplay":"May 2, 2026, 11:12 AM","isBaseline":false,"added":[],"removed":[],"updated":[{"key":"CORE-14434","url":"https://golfnow.atlassian.net/browse/CORE-14434","summary":"Database changes.","changes":[{"field":"status","label":"Status","before":"Code Review","after":"Pending Deployment (DEV)"},{"field":"assignee","label":"Assignee","before":"Raghav Kancherla","after":"Yoel Martin Pardo"},{"field":"updatedDisplay","label":"Jira updated","before":"Apr 30, 2026, 4:55 PM","after":"May 2, 2026, 11:12 AM"}],"type":"Developer Task (sub task)","isSubtask":true,"assignee":"Dewan Kabir","status":"Pending Deployment (DEV)","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"QA Testing (DEV)","priority":"P0"}},{"key":"CORE-14433","url":"https://golfnow.atlassian.net/browse/CORE-14433","summary":"Code changes.","changes":[{"field":"status","label":"Status","before":"Code Review","after":"Pending Deployment (DEV)"},{"field":"assignee","label":"Assignee","before":"Raghav Kancherla","after":"Yoel Martin Pardo"},{"field":"updatedDisplay","label":"Jira updated","before":"Apr 30, 2026, 4:48 PM","after":"May 2, 2026, 11:11 AM"}],"type":"Developer Task (sub task)","isSubtask":true,"assignee":"Dewan Kabir","status":"Pending Deployment (DEV)","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"QA Testing (DEV)","priority":"P0"}}],"statusChanges":[{"key":"CORE-14434","url":"https://golfnow.atlassian.net/browse/CORE-14434","summary":"Database changes.","before":"Code Review","after":"Pending Deployment (DEV)","type":"Developer Task (sub task)","isSubtask":true,"assignee":"Dewan Kabir","status":"Pending Deployment (DEV)","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"QA Testing (DEV)","priority":"P0"}},{"key":"CORE-14433","url":"https://golfnow.atlassian.net/browse/CORE-14433","summary":"Code changes.","before":"Code Review","after":"Pending Deployment (DEV)","type":"Developer Task (sub task)","isSubtask":true,"assignee":"Dewan Kabir","status":"Pending Deployment (DEV)","parent":{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","type":"Bug","status":"QA Testing (DEV)","priority":"P0"}}]},{"previousPulledAt":"2026-05-02T04:22:53.928Z","previousPulledAtDisplay":"May 2, 2026, 12:22 AM","currentPulledAt":"2026-05-02T05:39:18.709Z","currentPulledAtDisplay":"May 2, 2026, 1:39 AM","isBaseline":false,"added":[],"removed":[],"updated":[],"statusChanges":[]},{"previousPulledAt":"2026-05-02T04:16:50.918Z","previousPulledAtDisplay":"May 2, 2026, 12:16 AM","currentPulledAt":"2026-05-02T04:22:53.928Z","currentPulledAtDisplay":"May 2, 2026, 12:22 AM","isBaseline":false,"added":[],"removed":[],"updated":[],"statusChanges":[]},{"previousPulledAt":"2026-05-01T16:43:19.346Z","previousPulledAtDisplay":"May 1, 2026, 12:43 PM","currentPulledAt":"2026-05-02T04:16:50.918Z","currentPulledAtDisplay":"May 2, 2026, 12:16 AM","isBaseline":false,"added":[],"removed":[],"updated":[{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","changes":[{"field":"status","label":"Status","before":"Pending Deployment (DEV)","after":"QA Testing (DEV)"},{"field":"assignee","label":"Assignee","before":"Yoel Martin Pardo","after":"Dewan Kabir"},{"field":"updatedDisplay","label":"Jira updated","before":"Apr 30, 2026, 5:14 PM","after":"May 1, 2026, 11:14 PM"}],"type":"Bug","isSubtask":false,"assignee":"Dewan Kabir","status":"QA Testing (DEV)","parent":null},{"key":"CORE-14272","url":"https://golfnow.atlassian.net/browse/CORE-14272","summary":"Create endpoint to validate cancellation eligibility for Products","changes":[{"field":"updatedDisplay","label":"Jira updated","before":"May 1, 2026, 8:35 AM","after":"May 1, 2026, 1:14 PM"}],"type":"Story","isSubtask":false,"assignee":"Dewan Kabir","status":"QA Testing (DEV)","parent":{"key":"B2C-70","url":"https://golfnow.atlassian.net/browse/B2C-70","summary":"NY Cancellation Validation","type":"Epic","status":"Backlog","priority":"None"}},{"key":"CORE-14271","url":"https://golfnow.atlassian.net/browse/CORE-14271","summary":"Support Product Refunds","changes":[{"field":"updatedDisplay","label":"Jira updated","before":"Apr 30, 2026, 7:17 PM","after":"May 1, 2026, 1:14 PM"}],"type":"Story","isSubtask":false,"assignee":"Dewan Kabir","status":"QA Testing (DEV)","parent":{"key":"B2C-70","url":"https://golfnow.atlassian.net/browse/B2C-70","summary":"NY Cancellation Validation","type":"Epic","status":"Backlog","priority":"None"}},{"key":"CORE-14210","url":"https://golfnow.atlassian.net/browse/CORE-14210","summary":"CLONE - [Commerce] Convenience fee shown lower for Hot Deals on Checkout compared to GNC settings","changes":[{"field":"status","label":"Status","before":"Pending Deployment (STG)","after":"Regression Testing (STG)"},{"field":"updatedDisplay","label":"Jira updated","before":"May 1, 2026, 12:09 PM","after":"May 1, 2026, 12:48 PM"}],"type":"Bug","isSubtask":false,"assignee":"Nicole Greer","status":"Regression Testing (STG)","parent":{"key":"CORE-13172","url":"https://golfnow.atlassian.net/browse/CORE-13172","summary":"Commerce Proxy API","type":"Epic","status":"Planning","priority":"None"}}],"statusChanges":[{"key":"CORE-14431","url":"https://golfnow.atlassian.net/browse/CORE-14431","summary":"Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL","before":"Pending Deployment (DEV)","after":"QA Testing (DEV)","type":"Bug","isSubtask":false,"assignee":"Dewan Kabir","status":"QA Testing (DEV)","parent":null},{"key":"CORE-14210","url":"https://golfnow.atlassian.net/browse/CORE-14210","summary":"CLONE - [Commerce] Convenience fee shown lower for Hot Deals on Checkout compared to GNC settings","before":"Pending Deployment (STG)","after":"Regression Testing (STG)","type":"Bug","isSubtask":false,"assignee":"Nicole Greer","status":"Regression Testing (STG)","parent":{"key":"CORE-13172","url":"https://golfnow.atlassian.net/browse/CORE-13172","summary":"Commerce Proxy API","type":"Epic","status":"Planning","priority":"None"}}]},{"previousPulledAt":"2026-05-01T16:37:05.523Z","previousPulledAtDisplay":"May 1, 2026, 12:37 PM","currentPulledAt":"2026-05-01T16:43:19.346Z","currentPulledAtDisplay":"May 1, 2026, 12:43 PM","isBaseline":false,"added":[],"removed":[],"updated":[],"statusChanges":[]},{"previousPulledAt":"2026-05-01T16:25:38.792Z","previousPulledAtDisplay":"May 1, 2026, 12:25 PM","currentPulledAt":"2026-05-01T16:37:05.523Z","currentPulledAtDisplay":"May 1, 2026, 12:37 PM","isBaseline":false,"added":[],"removed":[],"updated":[],"statusChanges":[]},{"previousPulledAt":"2026-05-01T16:10:13.962Z","previousPulledAtDisplay":"May 1, 2026, 12:10 PM","currentPulledAt":"2026-05-01T16:25:38.792Z","currentPulledAtDisplay":"May 1, 2026, 12:25 PM","isBaseline":false,"added":[],"removed":[],"updated":[],"statusChanges":[]},{"previousPulledAt":"2026-05-01T15:53:25.016Z","previousPulledAtDisplay":"May 1, 2026, 11:53 AM","currentPulledAt":"2026-05-01T16:10:13.962Z","currentPulledAtDisplay":"May 1, 2026, 12:10 PM","isBaseline":false,"added":[],"removed":[],"updated":[{"key":"CORE-14210","url":"https://golfnow.atlassian.net/browse/CORE-14210","summary":"CLONE - [Commerce] Convenience fee shown lower for Hot Deals on Checkout compared to GNC settings","changes":[{"field":"status","label":"Status","before":"QA Testing (DEV)","after":"Pending Deployment (STG)"},{"field":"updatedDisplay","label":"Jira updated","before":"Apr 30, 2026, 11:30 PM","after":"May 1, 2026, 12:09 PM"}],"type":"Bug","isSubtask":false,"assignee":"Nicole Greer","status":"Regression Testing (STG)","parent":{"key":"CORE-13172","url":"https://golfnow.atlassian.net/browse/CORE-13172","summary":"Commerce Proxy API","type":"Epic","status":"Planning","priority":"None"}}],"statusChanges":[{"key":"CORE-14210","url":"https://golfnow.atlassian.net/browse/CORE-14210","summary":"CLONE - [Commerce] Convenience fee shown lower for Hot Deals on Checkout compared to GNC settings","before":"QA Testing (DEV)","after":"Pending Deployment (STG)","type":"Bug","isSubtask":false,"assignee":"Nicole Greer","status":"Regression Testing (STG)","parent":{"key":"CORE-13172","url":"https://golfnow.atlassian.net/browse/CORE-13172","summary":"Commerce Proxy API","type":"Epic","status":"Planning","priority":"None"}}]}],"jiraFilterUrl":"https://golfnow.atlassian.net/issues/?jql=fixVersion%20%3D%20%22v3001.122.0%22%20ORDER%20BY%20updated%20DESC","dashboardVersion":"v1.0"}</script>
+  <script id="jira-data" type="application/json">${dataJson}</script>
   <script>
     (function () {
       "use strict";
@@ -981,13 +1340,13 @@
       }
 
       function copyIcon() {
-        return "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"9\" y=\"9\" width=\"13\" height=\"13\" rx=\"2\" ry=\"2\"></rect><path d=\"M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1\"></path></svg>";
+        return "<svg viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\"><rect x=\\"9\\" y=\\"9\\" width=\\"13\\" height=\\"13\\" rx=\\"2\\" ry=\\"2\\"></rect><path d=\\"M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1\\"></path></svg>";
       }
 
       function renderKeyLink(issue) {
-        return "<span class=\"key-row\">" +
-          "<a class=\"key\" href=\"" + escape(issue.url) + "\">" + escape(issue.key) + "</a>" +
-          "<button class=\"copy-button\" type=\"button\" data-copy-link=\"" + escape(issue.url) + "\" aria-label=\"Copy " + escape(issue.key) + " link\" title=\"Copy " + escape(issue.key) + " link\">" + copyIcon() + "</button>" +
+        return "<span class=\\"key-row\\">" +
+          "<a class=\\"key\\" href=\\"" + escape(issue.url) + "\\">" + escape(issue.key) + "</a>" +
+          "<button class=\\"copy-button\\" type=\\"button\\" data-copy-link=\\"" + escape(issue.url) + "\\" aria-label=\\"Copy " + escape(issue.key) + " link\\" title=\\"Copy " + escape(issue.key) + " link\\">" + copyIcon() + "</button>" +
         "</span>";
       }
 
@@ -1197,22 +1556,22 @@
         ];
 
         document.getElementById("metrics").innerHTML = metrics.map(function (metric) {
-          return "<div class=\"metric\"><div class=\"value\">" + escape(metric.value) + "</div><div class=\"label\">" + escape(metric.label) + "</div></div>";
+          return "<div class=\\"metric\\"><div class=\\"value\\">" + escape(metric.value) + "</div><div class=\\"label\\">" + escape(metric.label) + "</div></div>";
         }).join("");
       }
 
       function renderComponentChips() {
         var chips = [
-          "<button class=\"chip " + (state.activeComponent === "all" ? "active" : "") + "\" type=\"button\" data-component=\"all\"><span class=\"chip-name\">All components</span><span class=\"chip-count\">" + data.total + "</span></button>"
+          "<button class=\\"chip " + (state.activeComponent === "all" ? "active" : "") + "\\" type=\\"button\\" data-component=\\"all\\"><span class=\\"chip-name\\">All components</span><span class=\\"chip-count\\">" + data.total + "</span></button>"
         ];
 
         getComponentCounts().forEach(function (entry) {
           var component = entry[0];
           var count = entry[1];
           chips.push(
-            "<button class=\"chip " + (state.activeComponent === component ? "active" : "") + "\" type=\"button\" data-component=\"" + escape(component) + "\">" +
-              "<span class=\"chip-name\">" + escape(component) + "</span>" +
-              "<span class=\"chip-count\">" + escape(count) + "</span>" +
+            "<button class=\\"chip " + (state.activeComponent === component ? "active" : "") + "\\" type=\\"button\\" data-component=\\"" + escape(component) + "\\">" +
+              "<span class=\\"chip-name\\">" + escape(component) + "</span>" +
+              "<span class=\\"chip-count\\">" + escape(count) + "</span>" +
             "</button>"
           );
         });
@@ -1222,16 +1581,16 @@
 
       function renderQaChips() {
         var chips = [
-          "<button class=\"chip " + (state.activeQa === "all" ? "active" : "") + "\" type=\"button\" data-qa=\"all\"><span class=\"chip-name\">All QAs</span><span class=\"chip-count\">" + data.total + "</span></button>"
+          "<button class=\\"chip " + (state.activeQa === "all" ? "active" : "") + "\\" type=\\"button\\" data-qa=\\"all\\"><span class=\\"chip-name\\">All QAs</span><span class=\\"chip-count\\">" + data.total + "</span></button>"
         ];
 
         getQaCounts().forEach(function (entry) {
           var qaName = entry[0];
           var count = entry[1];
           chips.push(
-            "<button class=\"chip " + (state.activeQa === qaName ? "active" : "") + "\" type=\"button\" data-qa=\"" + escape(qaName) + "\">" +
-              "<span class=\"chip-name\">" + escape(qaName) + "</span>" +
-              "<span class=\"chip-count\">" + escape(count) + "</span>" +
+            "<button class=\\"chip " + (state.activeQa === qaName ? "active" : "") + "\\" type=\\"button\\" data-qa=\\"" + escape(qaName) + "\\">" +
+              "<span class=\\"chip-name\\">" + escape(qaName) + "</span>" +
+              "<span class=\\"chip-count\\">" + escape(count) + "</span>" +
             "</button>"
           );
         });
@@ -1241,38 +1600,38 @@
 
       function renderComponents(components) {
         if (!components || !components.length) {
-          return "<span class=\"component-pill\">None</span>";
+          return "<span class=\\"component-pill\\">None</span>";
         }
 
         return components.map(function (component) {
-          return "<span class=\"component-pill\">" + escape(component) + "</span>";
+          return "<span class=\\"component-pill\\">" + escape(component) + "</span>";
         }).join("");
       }
 
       function renderMeta(issue, includeStatus) {
         var status = includeStatus ? "<div><b>Status</b>" + escape(issue.status) + "</div>" : "";
-        return "<div class=\"meta\">" +
+        return "<div class=\\"meta\\">" +
           "<div><b>Assignee</b>" + escape(issue.assignee) + "</div>" +
-          "<div><b>Priority</b><span class=\"priority " + escape(priorityClass(issue.priority)) + "\">" + escape(issue.priority) + "</span></div>" +
+          "<div><b>Priority</b><span class=\\"priority " + escape(priorityClass(issue.priority)) + "\\">" + escape(issue.priority) + "</span></div>" +
           status +
           "<div><b>Updated</b>" + escape(issue.updatedDisplay) + "</div>" +
-          "<div><b>Components</b><div class=\"components-list\">" + renderComponents(issueComponents(issue)) + "</div></div>" +
+          "<div><b>Components</b><div class=\\"components-list\\">" + renderComponents(issueComponents(issue)) + "</div></div>" +
         "</div>";
       }
 
       function renderIssueActions(issue) {
-        return "<div class=\"ticket-actions\">" +
-          "<a class=\"assign-link\" href=\"" + escape(issue.url) + "\" target=\"_blank\" rel=\"noopener\" title=\"Open Jira to update assignee\">Update assignee</a>" +
+        return "<div class=\\"ticket-actions\\">" +
+          "<a class=\\"assign-link\\" href=\\"" + escape(issue.url) + "\\" target=\\"_blank\\" rel=\\"noopener\\" title=\\"Open Jira to update assignee\\">Update assignee</a>" +
         "</div>";
       }
 
       function renderSubtask(subtask) {
-        return "<article class=\"subtask\">" +
-          "<div class=\"topline\">" +
+        return "<article class=\\"subtask\\">" +
+          "<div class=\\"topline\\">" +
             renderKeyLink(subtask) +
-            "<span class=\"type\">" + escape(subtask.type) + "</span>" +
+            "<span class=\\"type\\">" + escape(subtask.type) + "</span>" +
           "</div>" +
-          "<p class=\"summary\">" + escape(subtask.summary) + "</p>" +
+          "<p class=\\"summary\\">" + escape(subtask.summary) + "</p>" +
           renderMeta(subtask, true) +
           renderIssueActions(subtask) +
         "</article>";
@@ -1287,24 +1646,24 @@
         if (visibleSubtasks.length) {
           var expanded = state.expandedSubtasks.has(issue.key);
           subtaskBlock =
-            "<div class=\"subtask-shell\">" +
-              "<button class=\"subtask-toggle\" type=\"button\" aria-expanded=\"" + expanded + "\" data-subtasks-for=\"" + escape(issue.key) + "\">" +
+            "<div class=\\"subtask-shell\\">" +
+              "<button class=\\"subtask-toggle\\" type=\\"button\\" aria-expanded=\\"" + expanded + "\\" data-subtasks-for=\\"" + escape(issue.key) + "\\">" +
                 "<span>Subtasks</span>" +
-                "<span class=\"count\">" + visibleSubtasks.length + "</span>" +
-                "<span class=\"chevron\">" + (expanded ? "v" : ">") + "</span>" +
+                "<span class=\\"count\\">" + visibleSubtasks.length + "</span>" +
+                "<span class=\\"chevron\\">" + (expanded ? "v" : ">") + "</span>" +
               "</button>" +
               (expanded
-                ? "<div class=\"subtask-list\">" + visibleSubtasks.map(renderSubtask).join("") + "</div>"
-                : "<div class=\"subtasks-collapsed\">Main ticket only. Expand to review linked subtasks.</div>") +
+                ? "<div class=\\"subtask-list\\">" + visibleSubtasks.map(renderSubtask).join("") + "</div>"
+                : "<div class=\\"subtasks-collapsed\\">Main ticket only. Expand to review linked subtasks.</div>") +
             "</div>";
         }
 
-        return "<article class=\"" + className + "\">" +
-          "<div class=\"topline\">" +
+        return "<article class=\\"" + className + "\\">" +
+          "<div class=\\"topline\\">" +
             renderKeyLink(issue) +
-            "<span class=\"type\">" + escape(issue.type) + "</span>" +
+            "<span class=\\"type\\">" + escape(issue.type) + "</span>" +
           "</div>" +
-          "<p class=\"summary\">" + escape(issue.summary) + "</p>" +
+          "<p class=\\"summary\\">" + escape(issue.summary) + "</p>" +
           renderMeta(issue, false) +
           renderIssueActions(issue) +
           subtaskBlock +
@@ -1372,13 +1731,13 @@
         }, 0);
         var collapsed = state.collapsedStatuses.has(status);
 
-        return "<section class=\"section " + (collapsed ? "collapsed" : "") + "\" data-status=\"" + escape(status) + "\">" +
-          "<button class=\"section-toggle\" type=\"button\" aria-expanded=\"" + (!collapsed) + "\" data-status=\"" + escape(status) + "\">" +
-            "<span class=\"title\">" + escape(status) + "</span>" +
-            "<span class=\"count\">" + issueCount + "</span>" +
-            "<span class=\"chevron\">v</span>" +
+        return "<section class=\\"section " + (collapsed ? "collapsed" : "") + "\\" data-status=\\"" + escape(status) + "\\">" +
+          "<button class=\\"section-toggle\\" type=\\"button\\" aria-expanded=\\"" + (!collapsed) + "\\" data-status=\\"" + escape(status) + "\\">" +
+            "<span class=\\"title\\">" + escape(status) + "</span>" +
+            "<span class=\\"count\\">" + issueCount + "</span>" +
+            "<span class=\\"chevron\\">v</span>" +
           "</button>" +
-          "<div class=\"cards\">" + statusCards.map(renderCard).join("") + "</div>" +
+          "<div class=\\"cards\\">" + statusCards.map(renderCard).join("") + "</div>" +
         "</section>";
       }
 
@@ -1392,7 +1751,7 @@
         renderQaChips();
 
         if (!groups.length) {
-          board.innerHTML = "<div class=\"empty\">No tickets match the selected filters.</div>";
+          board.innerHTML = "<div class=\\"empty\\">No tickets match the selected filters.</div>";
           return;
         }
 
@@ -1412,7 +1771,7 @@
         });
 
         board.innerHTML = columns.map(function (column) {
-          return "<div class=\"board-column\">" + column.sections.join("") + "</div>";
+          return "<div class=\\"board-column\\">" + column.sections.join("") + "</div>";
         }).join("");
       }
 
@@ -1435,15 +1794,15 @@
           return "";
         }
 
-        return "<div class=\"parent-context\">" +
+        return "<div class=\\"parent-context\\">" +
           "<b>Parent:</b>" +
-          "<a href=\"" + escape(issue.parent.url) + "\">" + escape(issue.parent.key) + "</a>" +
+          "<a href=\\"" + escape(issue.parent.url) + "\\">" + escape(issue.parent.key) + "</a>" +
           "<span>" + escape(issue.parent.summary || "") + "</span>" +
         "</div>";
       }
 
       function renderPullIssue(issue) {
-        return "<span class=\"pull-item-title\">" +
+        return "<span class=\\"pull-item-title\\">" +
           renderKeyLink(issue) +
           "<span>" + escape(issue.summary || "") + "</span>" +
         "</span>" +
@@ -1461,10 +1820,10 @@
           return "";
         }
 
-        return "<section class=\"pull-group\">" +
+        return "<section class=\\"pull-group\\">" +
           "<h3>" + escape(title) + "</h3>" +
-          "<ul class=\"pull-list\">" + items.map(function (item) {
-            return "<li class=\"pull-item\">" + renderer(item) + "</li>";
+          "<ul class=\\"pull-list\\">" + items.map(function (item) {
+            return "<li class=\\"pull-item\\">" + renderer(item) + "</li>";
           }).join("") + "</ul>" +
         "</section>";
       }
@@ -1501,7 +1860,7 @@
         }
 
         return stats.map(function (stat) {
-          return "<div class=\"pull-stat" + (stat.className || "") + "\"><strong>" + escape(stat.value) + "</strong><span>" + escape(stat.label) + "</span></div>";
+          return "<div class=\\"pull-stat" + (stat.className || "") + "\\"><strong>" + escape(stat.value) + "</strong><span>" + escape(stat.label) + "</span></div>";
         }).join("");
       }
 
@@ -1509,7 +1868,7 @@
         var previous = diff.previousPulledAtDisplay || "No previous pull";
         var current = diff.currentPulledAtDisplay || data.pulledAtDisplay;
 
-        return "<div class=\"change-list\">" +
+        return "<div class=\\"change-list\\">" +
           "<div><b>Previous pull:</b> " + escape(previous) + "</div>" +
           "<div><b>Most recent pull:</b> " + escape(current) + " ET</div>" +
         "</div>";
@@ -1519,37 +1878,37 @@
         var lists = getDiffLists(diff || {});
         var hasChanges = pullHasChanges(diff);
         var baselineNote = diff.isBaseline
-          ? "<div class=\"no-changes\">Baseline pull captured. Future pulls will compare against this snapshot.</div>"
+          ? "<div class=\\"no-changes\\">Baseline pull captured. Future pulls will compare against this snapshot.</div>"
           : "";
         var emptyNote = !diff.isBaseline && !hasChanges
-          ? "<div class=\"pull-no-change\"><strong>No Change</strong><span>Latest Jira pull completed. Ticket fields match the previous snapshot.</span></div>"
+          ? "<div class=\\"pull-no-change\\"><strong>No Change</strong><span>Latest Jira pull completed. Ticket fields match the previous snapshot.</span></div>"
           : "";
 
         return baselineNote +
           emptyNote +
           renderPullGroup("Added tickets", lists.added, function (issue) {
             return renderPullIssue(issue) +
-              "<div class=\"change-list\"><div><b>Status:</b> " + escape(issue.status) + "</div><div><b>Updated:</b> " + escape(issue.updatedDisplay) + "</div></div>";
+              "<div class=\\"change-list\\"><div><b>Status:</b> " + escape(issue.status) + "</div><div><b>Updated:</b> " + escape(issue.updatedDisplay) + "</div></div>";
           }) +
           renderPullGroup("Updated tickets", lists.updated, function (item) {
             return renderPullIssue(item) +
-              "<div class=\"change-list\">" + (item.changes || []).map(renderChange).join("") + "</div>";
+              "<div class=\\"change-list\\">" + (item.changes || []).map(renderChange).join("") + "</div>";
           }) +
           renderPullGroup("Status changes", lists.statusChanges, function (item) {
             return renderPullIssue(item) +
-              "<div class=\"change-list\"><div><b>Status:</b> " + escape(item.before) + " -> " + escape(item.after) + "</div></div>";
+              "<div class=\\"change-list\\"><div><b>Status:</b> " + escape(item.before) + " -> " + escape(item.after) + "</div></div>";
           }) +
           renderPullGroup("Removed tickets", lists.removed, function (issue) {
             return renderPullIssue(issue) +
-              "<div class=\"change-list\"><div><b>Last known status:</b> " + escape(issue.status) + "</div></div>";
+              "<div class=\\"change-list\\"><div><b>Last known status:</b> " + escape(issue.status) + "</div></div>";
           });
       }
 
       function renderPullComparison(diff) {
-        return "<section class=\"pull-snapshot\">" +
-          "<h3 class=\"pull-section-title\">Latest comparison</h3>" +
+        return "<section class=\\"pull-snapshot\\">" +
+          "<h3 class=\\"pull-section-title\\">Latest comparison</h3>" +
           renderPullTiming(diff) +
-          "<div class=\"pull-stats\">" + renderPullStats(diff) + "</div>" +
+          "<div class=\\"pull-stats\\">" + renderPullStats(diff) + "</div>" +
           renderDiffDetails(diff) +
         "</section>";
       }
@@ -1576,11 +1935,11 @@
 
       function renderHistoryEntry(diff, index) {
         var current = diff.currentPulledAtDisplay || data.pulledAtDisplay;
-        return "<details class=\"pull-history-entry\"" + (index === 0 ? " open" : "") + ">" +
-          "<summary><span>" + escape(current) + " ET</span><span class=\"pull-entry-meta\">" + escape(renderHistorySummary(diff)) + "</span></summary>" +
-          "<div class=\"pull-entry-body\">" +
+        return "<details class=\\"pull-history-entry\\"" + (index === 0 ? " open" : "") + ">" +
+          "<summary><span>" + escape(current) + " ET</span><span class=\\"pull-entry-meta\\">" + escape(renderHistorySummary(diff)) + "</span></summary>" +
+          "<div class=\\"pull-entry-body\\">" +
             renderPullTiming(diff) +
-            "<div class=\"pull-stats\">" + renderPullStats(diff) + "</div>" +
+            "<div class=\\"pull-stats\\">" + renderPullStats(diff) + "</div>" +
             renderDiffDetails(diff) +
           "</div>" +
         "</details>";
@@ -1596,8 +1955,8 @@
           return "";
         }
 
-        return "<section class=\"pull-history\">" +
-          "<h3 class=\"pull-section-title\">Retained change history</h3>" +
+        return "<section class=\\"pull-history\\">" +
+          "<h3 class=\\"pull-section-title\\">Retained change history</h3>" +
           changedHistory.map(renderHistoryEntry).join("") +
         "</section>";
       }
@@ -1658,7 +2017,7 @@
           return "- " + entry[0];
         });
 
-        copyText(components.join("\n")).then(function () {
+        copyText(components.join("\\n")).then(function () {
           markCopied(event.currentTarget);
         });
       });
@@ -1750,3 +2109,39 @@
   </script>
 </body>
 </html>
+`;
+}
+
+async function main() {
+  const safeVersion = version.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const jsonPath = path.join(workspace, `jira-${safeVersion}-tickets.json`);
+  const htmlPath = path.join(workspace, "jira-board-latest.html");
+  const indexPath = path.join(workspace, "index.html");
+  let previousData = null;
+
+  if (fs.existsSync(jsonPath)) {
+    previousData = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+  } else {
+    previousData = readDataFromHtml(indexPath);
+  }
+
+  const { jql, issues: rawIssues } = await fetchIssues();
+  const issues = rawIssues.map(normalizeIssue);
+  const json = buildJson(issues, jql, previousData);
+
+  fs.writeFileSync(jsonPath, `${JSON.stringify(json, null, 2)}\n`);
+  fs.writeFileSync(htmlPath, renderHtml(json));
+
+  console.log(JSON.stringify({
+    version,
+    total: issues.length,
+    jsonPath,
+    htmlPath,
+    jiraFilterUrl: `${siteUrl}/issues/?jql=${encodeURIComponent(jql)}`,
+  }, null, 2));
+}
+
+main().catch((error) => {
+  console.error(error && error.stack ? error.stack : error);
+  process.exit(1);
+});
