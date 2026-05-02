@@ -4,7 +4,7 @@ Interactive release dashboard for Jira fixVersion `v3001.122.0`.
 
 - Live dashboard: <https://dewankabir009.github.io/jira-board-v3001-122-0/>
 - Jira source: `fixVersion = "v3001.122.0" ORDER BY updated DESC`
-- Current dashboard version: `v1.0`
+- Current dashboard version: `v1.1`
 
 The board groups release tickets by workflow status, keeps component and QA filters at the top, tracks subtask relationships, and preserves a Data Pull history so status movement is visible over time.
 
@@ -37,6 +37,26 @@ gh secret set JIRA_MCP_TOKEN --repo DewanKabir009/jira-board-v3001-122-0
 
 For `JIRA_MCP_TOKEN`, paste the token only into the GitHub CLI prompt or GitHub repository secret UI. Do not commit it to the repository.
 
+## Secured Assignee Updates
+
+The repo also includes `.github/workflows/update-jira-assignee.yml`.
+
+Behavior:
+
+- The dashboard shows an assignee picker on every ticket and subtask.
+- Submit opens a GitHub request with the issue key and requested assignee.
+- The GitHub Action runs only for the trusted GitHub actor `DewanKabir009`.
+- Jira credentials stay in GitHub Secrets and are never sent to the browser.
+- The Action resolves the Jira account, updates the issue assignee, refreshes the board, commits `index.html` when the board changes, comments on the request issue, and closes it.
+- Repo admins can also run the workflow manually with `workflow_dispatch` inputs.
+
+Current allowed assignees:
+
+- Dewan Kabir
+- Nicole Greer
+- Alex Mcnay
+- Anton Yurkevich
+
 ## Local Refresh
 
 The local generator can still be run from the workspace:
@@ -62,9 +82,9 @@ The generator writes:
 - Ticket keys include copy-link buttons.
 - Data Pull history shows added tickets, updated tickets, status moves, removed tickets, and retained historical changes.
 - Subtask changes in Data Pull include the parent ticket key and parent summary.
-- Each ticket includes an Update assignee action that opens the Jira ticket.
+- Each ticket includes an assignee picker that submits a secured GitHub Actions request.
 
-Security note: the dashboard is static GitHub Pages, so it does not store Jira credentials and does not directly write to Jira. Direct assignee writes from the dashboard would require a backend or serverless endpoint that keeps the Jira token private.
+Security note: the dashboard is static GitHub Pages, so it does not store Jira credentials. Assignee writes go through GitHub Actions, where Jira credentials stay private in repository secrets.
 
 ## Version History
 
@@ -154,9 +174,17 @@ Screenshot: `screenshots/jira-board-versions/09-qa-filter-parent-assignee-action
 - Added this README with dashboard version history.
 - Added a dashboard footer link to these release notes.
 
+### v1.1 - Secured Assignee Picker
+
+Screenshot: `screenshots/jira-board-versions/10-secure-assignee-picker.png`
+
+- Replaced the Update assignee link with a compact assignee picker and submit action.
+- Added a secured GitHub Actions workflow for Jira assignee updates.
+- Kept Jira credentials inside GitHub Secrets instead of the public dashboard.
+- Added an Action script that updates Jira, refreshes the board, commits changed dashboard data, and closes the GitHub request issue.
+- Added manual workflow dispatch inputs as a repo-admin fallback.
+
 ## Planned Next Steps
 
-- Configure GitHub repository secrets for Jira auth.
-- Run the workflow manually once from the GitHub Actions tab.
-- Decide whether the dashboard should later use a private backend for direct Jira writes, including assignee updates.
 - Add email notification support that sends the dashboard link and pull summary without attaching the HTML file.
+- Add optional allow-list expansion if more GitHub users should be allowed to submit dashboard assignee updates.

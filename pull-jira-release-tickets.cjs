@@ -3,7 +3,15 @@ const path = require("path");
 
 const workspace = __dirname;
 const siteUrl = "https://golfnow.atlassian.net";
-const dashboardVersion = "v1.0";
+const dashboardVersion = "v1.1";
+const repositorySlug = "DewanKabir009/jira-board-v3001-122-0";
+const dashboardUrl = "https://dewankabir009.github.io/jira-board-v3001-122-0/";
+const assigneeOptions = [
+  "Dewan Kabir",
+  "Nicole Greer",
+  "Alex Mcnay",
+  "Anton Yurkevich",
+];
 const cloudId = process.env.JIRA_CLOUD_ID || "24a77690-829a-4704-94eb-fafef6370d21";
 const email = process.env.JIRA_EMAIL || "dewan.kabir@versantmedia.com";
 const token = process.env.JIRA_MCP_TOKEN;
@@ -355,6 +363,9 @@ function renderHtml(data) {
     ...data,
     jiraFilterUrl,
     dashboardVersion,
+    repositorySlug,
+    dashboardUrl,
+    assigneeOptions,
   });
 
   return `<!doctype html>
@@ -402,9 +413,22 @@ function renderHtml(data) {
     }
 
     button,
-    input {
+    input,
+    select {
       font: inherit;
       letter-spacing: 0;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .page {
@@ -835,15 +859,47 @@ function renderHtml(data) {
     }
 
     .ticket-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
+      display: grid;
+      gap: 6px;
       margin-top: 10px;
     }
 
-    .assign-link {
+    .assign-form {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .assign-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .assign-select {
+      min-width: 0;
+      min-height: 30px;
+      border: 1px solid #cdd7e7;
+      border-radius: 8px;
+      background: #fff;
+      color: #284263;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 720;
+    }
+
+    .assign-select:focus-visible {
+      border-color: var(--blue);
+      outline: 2px solid rgba(12, 102, 228, .16);
+    }
+
+    .assign-submit,
+    .assign-jira-link {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       min-height: 28px;
       border: 1px solid #cdd7e7;
       border-radius: 8px;
@@ -855,11 +911,24 @@ function renderHtml(data) {
       text-decoration: none;
     }
 
-    .assign-link:hover,
-    .assign-link:focus-visible {
+    .assign-submit {
+      cursor: pointer;
+    }
+
+    .assign-submit:hover,
+    .assign-submit:focus-visible,
+    .assign-jira-link:hover,
+    .assign-jira-link:focus-visible {
       border-color: var(--blue);
       color: var(--blue);
       outline: 0;
+    }
+
+    .assign-status {
+      min-height: 14px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
     }
 
     .subtask-shell {
@@ -1211,6 +1280,10 @@ function renderHtml(data) {
         grid-template-columns: 1fr;
       }
 
+      .assign-controls {
+        grid-template-columns: 1fr;
+      }
+
       .data-pull > summary {
         grid-template-columns: 1fr;
       }
@@ -1304,12 +1377,15 @@ function renderHtml(data) {
         collapsedStatuses: new Set(),
         expandedSubtasks: new Set()
       };
-      var qaNames = [
+      var githubRepo = data.repositorySlug || "DewanKabir009/jira-board-v3001-122-0";
+      var dashboardUrl = data.dashboardUrl || "https://dewankabir009.github.io/jira-board-v3001-122-0/";
+      var assigneeNames = data.assigneeOptions || [
         "Dewan Kabir",
         "Nicole Greer",
         "Alex Mcnay",
         "Anton Yurkevich"
       ];
+      var qaNames = assigneeNames;
       var statusOrder = [
         "Blocked",
         "Analysis",
@@ -1348,6 +1424,35 @@ function renderHtml(data) {
           "<a class=\\"key\\" href=\\"" + escape(issue.url) + "\\">" + escape(issue.key) + "</a>" +
           "<button class=\\"copy-button\\" type=\\"button\\" data-copy-link=\\"" + escape(issue.url) + "\\" aria-label=\\"Copy " + escape(issue.key) + " link\\" title=\\"Copy " + escape(issue.key) + " link\\">" + copyIcon() + "</button>" +
         "</span>";
+      }
+
+      function optionSelected(left, right) {
+        return text(left).toLowerCase() === text(right).toLowerCase() ? " selected" : "";
+      }
+
+      function getAssigneeRequestUrl(issueKey, issueSummary, currentAssignee, requestedAssignee) {
+        var title = "Assign " + issueKey + " to " + requestedAssignee;
+        var body = [
+          "Jira assignee update request from the CORE release dashboard.",
+          "",
+          "- Issue: " + issueKey,
+          "- Summary: " + issueSummary,
+          "- Current assignee: " + currentAssignee,
+          "- Requested assignee: " + requestedAssignee,
+          "- Dashboard: " + dashboardUrl,
+          "",
+          "<!-- jira-board-assignee-request",
+          "issue_key: " + issueKey,
+          "assignee_display_name: " + requestedAssignee,
+          "dashboard_url: " + dashboardUrl,
+          "requested_at: " + new Date().toISOString(),
+          "-->"
+        ].join("\\n");
+
+        return "https://github.com/" + encodeURIComponent(githubRepo).replace("%2F", "/") +
+          "/issues/new?title=" + encodeURIComponent(title) +
+          "&body=" + encodeURIComponent(body) +
+          "&labels=jira-assignee-update";
       }
 
       function fallbackCopyText(value) {
@@ -1620,8 +1725,23 @@ function renderHtml(data) {
       }
 
       function renderIssueActions(issue) {
+        var selectId = "assign-" + escape(issue.key);
+        var options = [
+          "<option value=\\"\\">Assignee</option>"
+        ].concat(assigneeNames.map(function (name) {
+          return "<option value=\\"" + escape(name) + "\\"" + optionSelected(name, issue.assignee) + ">" + escape(name) + "</option>";
+        })).join("");
+
         return "<div class=\\"ticket-actions\\">" +
-          "<a class=\\"assign-link\\" href=\\"" + escape(issue.url) + "\\" target=\\"_blank\\" rel=\\"noopener\\" title=\\"Open Jira to update assignee\\">Update assignee</a>" +
+          "<form class=\\"assign-form\\" data-assign-form data-issue-key=\\"" + escape(issue.key) + "\\" data-issue-summary=\\"" + escape(issue.summary) + "\\" data-current-assignee=\\"" + escape(issue.assignee) + "\\">" +
+            "<label class=\\"sr-only\\" for=\\"" + selectId + "\\">Assignee for " + escape(issue.key) + "</label>" +
+            "<div class=\\"assign-controls\\">" +
+              "<select class=\\"assign-select\\" id=\\"" + selectId + "\\" name=\\"assignee\\" aria-label=\\"Assignee for " + escape(issue.key) + "\\">" + options + "</select>" +
+              "<button class=\\"assign-submit\\" type=\\"submit\\">Submit</button>" +
+              "<a class=\\"assign-jira-link\\" href=\\"" + escape(issue.url) + "\\" target=\\"_blank\\" rel=\\"noopener\\">Jira</a>" +
+            "</div>" +
+            "<span class=\\"assign-status\\" role=\\"status\\"></span>" +
+          "</form>" +
         "</div>";
       }
 
@@ -2031,6 +2151,33 @@ function renderHtml(data) {
         copyText(copyButton.getAttribute("data-copy-link")).then(function () {
           markCopied(copyButton);
         });
+      });
+
+      document.getElementById("board").addEventListener("submit", function (event) {
+        var form = event.target.closest("[data-assign-form]");
+        if (!form) {
+          return;
+        }
+
+        event.preventDefault();
+        var select = form.querySelector("[name='assignee']");
+        var status = form.querySelector(".assign-status");
+        var requestedAssignee = select ? select.value : "";
+
+        if (!requestedAssignee) {
+          status.textContent = "Choose an assignee.";
+          return;
+        }
+
+        var url = getAssigneeRequestUrl(
+          form.getAttribute("data-issue-key"),
+          form.getAttribute("data-issue-summary"),
+          form.getAttribute("data-current-assignee"),
+          requestedAssignee
+        );
+
+        window.open(url, "_blank", "noopener,noreferrer");
+        status.textContent = "Secure request opened.";
       });
 
       document.getElementById("board").addEventListener("click", function (event) {
