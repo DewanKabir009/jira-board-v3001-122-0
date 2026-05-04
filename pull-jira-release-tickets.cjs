@@ -3,7 +3,7 @@ const path = require("path");
 
 const workspace = __dirname;
 const siteUrl = "https://golfnow.atlassian.net";
-const dashboardVersion = "v1.10.0";
+const dashboardVersion = "v1.10.1";
 const repositorySlug = "DewanKabir009/jira-board-v3001-122-0";
 const dashboardUrl = "https://dewankabir009.github.io/jira-board-v3001-122-0/";
 const assigneeDispatchEndpoint = "http://127.0.0.1:3991/assign";
@@ -2170,6 +2170,17 @@ function renderHtml(data) {
       opacity: .62;
     }
 
+    .checklist-empty {
+      border: 1px dashed #b8c7dc;
+      border-radius: 8px;
+      background: #fbfcff;
+      padding: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
     .checklist-status {
       color: var(--muted);
       font-size: 12px;
@@ -2239,6 +2250,81 @@ function renderHtml(data) {
     .checklist-notes {
       min-height: 56px;
       resize: vertical;
+    }
+
+    .checklist-image-add {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      min-height: 30px;
+      border: 1px solid #cdd7e7;
+      border-radius: 8px;
+      background: #fff;
+      padding: 5px 9px;
+      color: #284263;
+      font-size: 11px;
+      font-weight: 760;
+      cursor: pointer;
+    }
+
+    .checklist-image-add input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .checklist-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+    }
+
+    .checklist-image {
+      overflow: hidden;
+      margin: 0;
+      border: 1px solid #dce3ef;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .checklist-image img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      background: #f7f9fc;
+    }
+
+    .checklist-image figcaption {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 6px;
+      align-items: center;
+      padding: 6px;
+      color: #41506a;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .checklist-image-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .checklist-image-remove {
+      width: 24px;
+      height: 24px;
+      border: 1px solid #f0c2bf;
+      border-radius: 6px;
+      background: #fff;
+      color: var(--red);
+      cursor: pointer;
+      font-weight: 800;
+      line-height: 1;
     }
 
     .checklist-detail {
@@ -3495,24 +3581,37 @@ function renderHtml(data) {
         "</div>";
       }
 
-      function hasTestChecklist(issue) {
+      function hasSourceTestChecklist(issue) {
         return Boolean(issue && issue.testChecklist &&
           Array.isArray(issue.testChecklist.testCases) &&
           issue.testChecklist.testCases.length);
       }
 
+      function canUseChecklist(issue) {
+        return Boolean(issue && !issue.isSubtask);
+      }
+
+      function getChecklistFiles(issue) {
+        return issue && issue.testChecklist && Array.isArray(issue.testChecklist.files)
+          ? issue.testChecklist.files
+          : [];
+      }
+
       function renderTestChecklist(issue) {
-        if (!hasTestChecklist(issue)) {
+        if (!canUseChecklist(issue)) {
           return "";
         }
 
-        var checklist = issue.testChecklist;
-        var fileCount = Array.isArray(checklist.files) ? checklist.files.length : 0;
-        var stateLabel = checklist.total + " test case" + (checklist.total === 1 ? "" : "s");
+        var items = loadChecklistItems(issue);
+        var fileCount = getChecklistFiles(issue).length;
+        var label = items.length || hasSourceTestChecklist(issue) ? "Test Checklist" : "Add Testing Checklist";
+        var stateLabel = items.length
+          ? items.length + " test case" + (items.length === 1 ? "" : "s")
+          : "Empty";
 
         return "<div class=\\"checklist-shell\\">" +
           "<button class=\\"checklist-toggle\\" type=\\"button\\" aria-haspopup=\\"dialog\\" data-checklist-for=\\"" + escape(issue.key) + "\\">" +
-            "<span>Test Checklist</span>" +
+            "<span>" + escape(label) + "</span>" +
             "<span class=\\"checklist-state\\">" + escape(stateLabel) + "</span>" +
             "<span class=\\"chevron\\">></span>" +
           "</button>" +
@@ -3521,20 +3620,31 @@ function renderHtml(data) {
       }
 
       function findChecklistIssue(issueKey) {
+        var cards = getIssueModel();
+        for (var index = 0; index < cards.length; index += 1) {
+          if (cards[index].issue.key === issueKey && canUseChecklist(cards[index].issue)) {
+            return cards[index].issue;
+          }
+        }
+
         return data.issues.find(function (issue) {
-          return issue.key === issueKey && hasTestChecklist(issue);
+          return issue.key === issueKey && canUseChecklist(issue);
         });
       }
 
       function checklistStorageKey(issue) {
-        var files = (issue.testChecklist.files || []).map(function (file) {
+        var files = getChecklistFiles(issue).map(function (file) {
           return file.id || file.filename;
-        }).join("|");
+        }).join("|") || "manual";
         return "jira-test-checklist-v1:" + data.version + ":" + issue.key + ":" + files;
       }
 
       function baseChecklistItems(issue) {
-        return (issue.testChecklist.testCases || []).map(function (testCase, index) {
+        var testCases = issue && issue.testChecklist && Array.isArray(issue.testChecklist.testCases)
+          ? issue.testChecklist.testCases
+          : [];
+
+        return testCases.map(function (testCase, index) {
           var displayTitle = (testCase.id ? testCase.id + ": " : "") + (testCase.title || "Untitled test case");
 
           return {
@@ -3546,6 +3656,7 @@ function renderHtml(data) {
             title: displayTitle,
             done: false,
             notes: "",
+            images: [],
             description: testCase.description || "",
             checks: Array.isArray(testCase.checks) ? testCase.checks : []
           };
@@ -3566,10 +3677,13 @@ function renderHtml(data) {
           return baseItems;
         }
 
+        var deletedSourceIds = new Set(Array.isArray(saved.deletedSourceIds) ? saved.deletedSourceIds : []);
         var savedById = new Map(saved.items.map(function (item) {
           return [item.id, item];
         }));
-        var merged = baseItems.map(function (item) {
+        var merged = baseItems.filter(function (item) {
+          return !deletedSourceIds.has(item.id);
+        }).map(function (item) {
           var savedItem = savedById.get(item.id);
           if (!savedItem) {
             return item;
@@ -3578,7 +3692,8 @@ function renderHtml(data) {
             ...item,
             title: text(savedItem.title) || item.title,
             done: Boolean(savedItem.done),
-            notes: text(savedItem.notes)
+            notes: text(savedItem.notes),
+            images: Array.isArray(savedItem.images) ? savedItem.images : []
           };
         });
 
@@ -3594,6 +3709,7 @@ function renderHtml(data) {
               title: text(item.title) || "New test case",
               done: Boolean(item.done),
               notes: text(item.notes),
+              images: Array.isArray(item.images) ? item.images : [],
               description: "",
               checks: []
             });
@@ -3608,18 +3724,31 @@ function renderHtml(data) {
           return;
         }
 
-        localStorage.setItem(checklistStorageKey(issue), JSON.stringify({
-          savedAt: new Date().toISOString(),
-          items: state.activeChecklistItems.map(function (item) {
-            return {
-              id: item.id,
-              manual: Boolean(item.manual),
-              title: item.title,
-              done: Boolean(item.done),
-              notes: item.notes || ""
-            };
-          })
-        }));
+        try {
+          var activeIds = new Set(state.activeChecklistItems.map(function (item) {
+            return item.id;
+          }));
+          var deletedSourceIds = baseChecklistItems(issue)
+            .filter(function (item) { return !activeIds.has(item.id); })
+            .map(function (item) { return item.id; });
+
+          localStorage.setItem(checklistStorageKey(issue), JSON.stringify({
+            savedAt: new Date().toISOString(),
+            deletedSourceIds: deletedSourceIds,
+            items: state.activeChecklistItems.map(function (item) {
+              return {
+                id: item.id,
+                manual: Boolean(item.manual),
+                title: item.title,
+                done: Boolean(item.done),
+                notes: item.notes || "",
+                images: Array.isArray(item.images) ? item.images : []
+              };
+            })
+          }));
+        } catch (error) {
+          console.warn("Could not save checklist locally.", error);
+        }
       }
 
       function updateChecklistProgress() {
@@ -3630,6 +3759,10 @@ function renderHtml(data) {
         var progress = document.getElementById("checklist-progress");
         if (progress) {
           progress.textContent = done + " of " + total + " complete";
+        }
+        var postButton = document.getElementById("checklist-post");
+        if (postButton) {
+          postButton.disabled = total === 0;
         }
       }
 
@@ -3660,9 +3793,32 @@ function renderHtml(data) {
         "</details>";
       }
 
+      function renderChecklistImages(item) {
+        var images = Array.isArray(item.images) ? item.images : [];
+        if (!images.length) {
+          return "";
+        }
+
+        return "<div class=\\"checklist-images\\">" + images.map(function (image) {
+          return "<figure class=\\"checklist-image\\">" +
+            "<img src=\\"" + escape(image.dataUrl || "") + "\\" alt=\\"" + escape(image.name || "Checklist image") + "\\">" +
+            "<figcaption>" +
+              "<span class=\\"checklist-image-name\\">" + escape(image.name || "Checklist image") + "</span>" +
+              "<button class=\\"checklist-image-remove\\" type=\\"button\\" data-checklist-image-remove=\\"" + escape(item.id) + "\\" data-image-id=\\"" + escape(image.id) + "\\" aria-label=\\"Remove image\\">x</button>" +
+            "</figcaption>" +
+          "</figure>";
+        }).join("") + "</div>";
+      }
+
       function renderChecklistItems() {
         var content = document.getElementById("checklist-modal-content");
         if (!content) {
+          return;
+        }
+
+        if (!state.activeChecklistItems.length) {
+          content.innerHTML = "<div class=\\"checklist-empty\\">No test cases yet. Use Add test case to start a manual checklist.</div>";
+          updateChecklistProgress();
           return;
         }
 
@@ -3675,6 +3831,8 @@ function renderHtml(data) {
               "<input class=\\"checklist-title-input\\" data-checklist-title=\\"" + escape(item.id) + "\\" value=\\"" + escape(item.title) + "\\" spellcheck=\\"true\\" lang=\\"en\\" aria-label=\\"Test case title\\">" +
               "<textarea class=\\"checklist-notes\\" data-checklist-notes=\\"" + escape(item.id) + "\\" placeholder=\\"Notes\\" spellcheck=\\"true\\" aria-label=\\"Test case notes\\">" + escape(item.notes || "") + "</textarea>" +
               renderChecklistDetail(item) +
+              renderChecklistImages(item) +
+              "<label class=\\"checklist-image-add\\"><input type=\\"file\\" accept=\\"image/*\\" multiple data-checklist-images=\\"" + escape(item.id) + "\\"><span>Attach images</span></label>" +
             "</div>" +
             "<button class=\\"checklist-remove\\" type=\\"button\\" data-checklist-remove=\\"" + escape(item.id) + "\\" aria-label=\\"Remove test case\\">x</button>" +
           "</article>";
@@ -3698,7 +3856,7 @@ function renderHtml(data) {
           "<span>" + escape(issue.type || "Ticket") + "</span>" +
           "<span>Status: " + escape(issue.status || "No status") + "</span>" +
           "<span>Priority: " + escape(priorityLabel(issue.priority)) + "</span>" +
-          "<span>Source: " + escape((issue.testChecklist.files || []).map(function (file) { return file.filename; }).join(", ")) + "</span>" +
+          "<span>Source: " + escape(getChecklistFiles(issue).map(function (file) { return file.filename; }).join(", ") || "Manual checklist") + "</span>" +
           "<a href=\\"" + escape(issue.url) + "\\" target=\\"_blank\\" rel=\\"noopener\\">Open Jira</a>";
         renderChecklistItems();
         document.getElementById("checklist-modal").hidden = false;
@@ -3715,6 +3873,7 @@ function renderHtml(data) {
         document.getElementById("checklist-modal").hidden = true;
         document.getElementById("checklist-modal-content").innerHTML = "";
         document.body.classList.remove("modal-open");
+        renderAll();
       }
 
       function getActiveChecklistIssue() {
@@ -3727,6 +3886,142 @@ function renderHtml(data) {
         });
       }
 
+      function refreshChecklistToggle(issue) {
+        if (!issue) {
+          return;
+        }
+
+        Array.prototype.slice.call(document.querySelectorAll(".checklist-toggle")).forEach(function (button) {
+          if (button.getAttribute("data-checklist-for") !== issue.key) {
+            return;
+          }
+          var shell = button.closest(".checklist-shell");
+          if (shell) {
+            shell.outerHTML = renderTestChecklist(issue);
+          }
+        });
+      }
+
+      function countChecklistImages(items) {
+        return (items || []).reduce(function (total, item) {
+          return total + (Array.isArray(item.images) ? item.images.length : 0);
+        }, 0);
+      }
+
+      function makeManualChecklistItem() {
+        return {
+          id: "manual::" + Date.now() + "::" + Math.random().toString(36).slice(2, 8),
+          manual: true,
+          sourceId: "",
+          sourceFile: "Manual",
+          category: "Manual",
+          blocking: false,
+          title: "New test case",
+          done: false,
+          notes: "",
+          images: [],
+          description: "",
+          checks: []
+        };
+      }
+
+      function readFileAsDataUrl(file) {
+        return new Promise(function (resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function () { resolve(reader.result); };
+          reader.onerror = function () { reject(reader.error || new Error("Could not read image.")); };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function loadImageForChecklist(dataUrl) {
+        return new Promise(function (resolve, reject) {
+          var image = new Image();
+          image.onload = function () { resolve(image); };
+          image.onerror = function () { reject(new Error("Could not load image.")); };
+          image.src = dataUrl;
+        });
+      }
+
+      function imageOutputSize(width, height) {
+        var maxEdge = 1400;
+        var ratio = Math.min(1, maxEdge / Math.max(width, height));
+        return {
+          width: Math.max(1, Math.round(width * ratio)),
+          height: Math.max(1, Math.round(height * ratio))
+        };
+      }
+
+      function compressChecklistImage(file) {
+        return readFileAsDataUrl(file).then(function (dataUrl) {
+          return loadImageForChecklist(dataUrl).then(function (image) {
+            var size = imageOutputSize(image.naturalWidth || image.width, image.naturalHeight || image.height);
+            var canvas = document.createElement("canvas");
+            canvas.width = size.width;
+            canvas.height = size.height;
+            var context = canvas.getContext("2d");
+            context.fillStyle = "#fff";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            var output = canvas.toDataURL("image/jpeg", 0.82);
+            return {
+              id: "image::" + Date.now() + "::" + Math.random().toString(36).slice(2, 8),
+              name: file.name || "checklist-image.jpg",
+              mimeType: "image/jpeg",
+              dataUrl: output,
+              width: size.width,
+              height: size.height,
+              size: output.length
+            };
+          });
+        });
+      }
+
+      function attachImagesToChecklistItem(itemId, files) {
+        var issue = getActiveChecklistIssue();
+        var item = findChecklistItem(itemId);
+        var status = document.getElementById("checklist-post-status");
+        var selectedFiles = Array.prototype.slice.call(files || []).filter(function (file) {
+          return file && /^image\\//i.test(file.type || "");
+        });
+
+        if (!item || !selectedFiles.length) {
+          return Promise.resolve();
+        }
+
+        var existingForItem = Array.isArray(item.images) ? item.images.length : 0;
+        var existingTotal = countChecklistImages(state.activeChecklistItems);
+        var roomForItem = Math.max(0, 4 - existingForItem);
+        var roomForChecklist = Math.max(0, 16 - existingTotal);
+        var accepted = selectedFiles.slice(0, Math.min(roomForItem, roomForChecklist));
+
+        if (!accepted.length) {
+          if (status) {
+            status.textContent = "Image limit reached. Use up to 4 images per item and 16 per checklist.";
+          }
+          return Promise.resolve();
+        }
+
+        if (status) {
+          status.textContent = "Preparing " + accepted.length + " image" + (accepted.length === 1 ? "" : "s") + "...";
+        }
+
+        return Promise.all(accepted.map(compressChecklistImage)).then(function (images) {
+          item.images = (Array.isArray(item.images) ? item.images : []).concat(images);
+          saveChecklistItems(issue);
+          renderChecklistItems();
+          refreshChecklistToggle(issue);
+          if (status) {
+            status.textContent = "Attached " + images.length + " image" + (images.length === 1 ? "" : "s") + ".";
+          }
+        }).catch(function (error) {
+          if (status) {
+            status.textContent = "Could not attach one of the selected images.";
+          }
+          console.error(error);
+        });
+      }
+
       function buildChecklistPostPayload(issue) {
         return {
           issueKey: issue.key,
@@ -3734,14 +4029,15 @@ function renderHtml(data) {
           summary: issue.summary,
           releaseVersion: data.version,
           dashboardUrl: window.location.href,
-          sourceFiles: (issue.testChecklist.files || []).map(function (file) {
+          sourceFiles: getChecklistFiles(issue).map(function (file) {
             return file.filename;
           }),
           items: state.activeChecklistItems.map(function (item) {
             return {
               title: item.title,
               done: Boolean(item.done),
-              notes: item.notes || ""
+              notes: item.notes || "",
+              images: Array.isArray(item.images) ? item.images : []
             };
           })
         };
@@ -3755,12 +4051,23 @@ function renderHtml(data) {
           return;
         }
 
-        if (!window.confirm("Post this checklist as a Jira comment on " + issue.key + "?")) {
+        if (!state.activeChecklistItems.length) {
+          status.textContent = "Add at least one test case before posting.";
+          return;
+        }
+
+        var imageCount = countChecklistImages(state.activeChecklistItems);
+        var confirmMessage = "Post this checklist as a Jira comment on " + issue.key + "?";
+        if (imageCount) {
+          confirmMessage = "Post this checklist with " + imageCount + " image" + (imageCount === 1 ? "" : "s") + " as a Jira comment on " + issue.key + "?";
+        }
+
+        if (!window.confirm(confirmMessage)) {
           return;
         }
 
         saveChecklistItems(issue);
-        status.textContent = "Starting comment workflow...";
+        status.textContent = imageCount ? "Posting checklist and images..." : "Posting checklist...";
         button.disabled = true;
 
         fetch(testChecklistCommentEndpoint, {
@@ -3779,10 +4086,10 @@ function renderHtml(data) {
             });
           })
           .then(function () {
-            status.textContent = "Workflow started. Jira comment will post shortly.";
+            status.textContent = "Jira comment request accepted.";
           })
           .catch(function (error) {
-            status.textContent = "Bridge offline. Open Actions to run it.";
+            status.textContent = "Bridge could not post the Jira comment.";
             console.error(error);
           })
           .finally(function () {
@@ -4427,6 +4734,23 @@ function renderHtml(data) {
           });
           saveChecklistItems(issue);
           renderChecklistItems();
+          refreshChecklistToggle(issue);
+          return;
+        }
+
+        var removeImageButton = event.target.closest("[data-checklist-image-remove]");
+        if (removeImageButton) {
+          var imageIssue = getActiveChecklistIssue();
+          var imageItem = findChecklistItem(removeImageButton.getAttribute("data-checklist-image-remove"));
+          var imageId = removeImageButton.getAttribute("data-image-id");
+          if (imageItem && Array.isArray(imageItem.images)) {
+            imageItem.images = imageItem.images.filter(function (image) {
+              return image.id !== imageId;
+            });
+            saveChecklistItems(imageIssue);
+            renderChecklistItems();
+            refreshChecklistToggle(imageIssue);
+          }
           return;
         }
 
@@ -4464,8 +4788,16 @@ function renderHtml(data) {
 
       document.getElementById("checklist-modal").addEventListener("change", function (event) {
         var doneInput = event.target.closest("[data-checklist-done]");
+        var imageInput = event.target.closest("[data-checklist-images]");
         var issue = getActiveChecklistIssue();
         var item = doneInput ? findChecklistItem(doneInput.getAttribute("data-checklist-done")) : null;
+
+        if (imageInput) {
+          attachImagesToChecklistItem(imageInput.getAttribute("data-checklist-images"), imageInput.files).then(function () {
+            imageInput.value = "";
+          });
+          return;
+        }
 
         if (!item) {
           return;
@@ -4482,21 +4814,10 @@ function renderHtml(data) {
 
       document.getElementById("checklist-add").addEventListener("click", function () {
         var issue = getActiveChecklistIssue();
-        state.activeChecklistItems.push({
-          id: "manual::" + Date.now(),
-          manual: true,
-          sourceId: "",
-          sourceFile: "Manual",
-          category: "Manual",
-          blocking: false,
-          title: "New test case",
-          done: false,
-          notes: "",
-          description: "",
-          checks: []
-        });
+        state.activeChecklistItems.push(makeManualChecklistItem());
         saveChecklistItems(issue);
         renderChecklistItems();
+        refreshChecklistToggle(issue);
       });
 
       document.getElementById("checklist-post").addEventListener("click", postActiveChecklist);

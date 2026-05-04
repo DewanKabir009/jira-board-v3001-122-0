@@ -1,6 +1,11 @@
 const http = require("http");
 const cp = require("child_process");
 const fs = require("fs");
+const {
+  sanitizeChecklistPayload,
+  hasChecklistImages,
+  postChecklistComment,
+} = require("./jira-checklist-comment.cjs");
 
 const host = process.env.ASSIGNEE_DISPATCH_HOST || "127.0.0.1";
 const port = Number(process.env.ASSIGNEE_DISPATCH_PORT || 3991);
@@ -52,6 +57,7 @@ function getBridgeStatus() {
       ok: false,
       bridge: "running",
       githubCli: "missing",
+      jiraCommentPosting: process.env.JIRA_MCP_TOKEN ? "direct" : "workflow unavailable",
       message: "Bridge running, GitHub CLI missing.",
     };
   }
@@ -65,6 +71,7 @@ function getBridgeStatus() {
       ok: true,
       bridge: "running",
       githubCli: "authenticated",
+      jiraCommentPosting: process.env.JIRA_MCP_TOKEN ? "direct" : "workflow",
       message: "Bridge ready.",
     };
   } catch (error) {
@@ -72,6 +79,7 @@ function getBridgeStatus() {
       ok: false,
       bridge: "running",
       githubCli: "not authenticated",
+      jiraCommentPosting: process.env.JIRA_MCP_TOKEN ? "direct" : "workflow unavailable",
       message: "Bridge running, GitHub CLI auth needs attention.",
     };
   }
@@ -83,7 +91,7 @@ function readBody(request) {
     request.setEncoding("utf8");
     request.on("data", (chunk) => {
       body += chunk;
-      if (body.length > 250000) {
+      if (body.length > 14000000) {
         request.destroy(new Error("Request body is too large."));
       }
     });
@@ -108,38 +116,10 @@ function validateAssignee(payload) {
 }
 
 function validateChecklist(payload) {
-  const issueKey = String(payload.issueKey || "").trim().toUpperCase();
-  const items = Array.isArray(payload.items) ? payload.items : [];
-
-  if (!/^[A-Z][A-Z0-9]+-\d+$/.test(issueKey)) {
-    throw new Error("Invalid Jira issue key.");
-  }
-
-  if (!items.length) {
-    throw new Error("Checklist must include at least one item.");
-  }
-
-  if (items.length > 100) {
-    throw new Error("Checklist has too many items.");
-  }
-
+  const sanitized = sanitizeChecklistPayload(payload);
   return {
-    issueKey,
-    payload: {
-      issueKey,
-      issueUrl: String(payload.issueUrl || ""),
-      summary: String(payload.summary || "").slice(0, 300),
-      releaseVersion: String(payload.releaseVersion || ""),
-      dashboardUrl: String(payload.dashboardUrl || ""),
-      sourceFiles: (Array.isArray(payload.sourceFiles) ? payload.sourceFiles : [])
-        .map((file) => String(file || "").slice(0, 220))
-        .filter(Boolean),
-      items: items.map((item) => ({
-        title: String(item.title || "Untitled test case").slice(0, 500),
-        done: Boolean(item.done),
-        notes: String(item.notes || "").slice(0, 1200),
-      })),
-    },
+    issueKey: sanitized.issueKey,
+    payload: sanitized,
   };
 }
 
@@ -219,6 +199,23 @@ const server = http.createServer(async (request, response) => {
     const payload = JSON.parse(await readBody(request) || "{}");
     if (request.url === "/comment-checklist") {
       const requestPayload = validateChecklist(payload);
+      if (process.env.JIRA_MCP_TOKEN) {
+        const result = await postChecklistComment(requestPayload.payload);
+        writeJson(response, 201, {
+          ok: true,
+          posted: true,
+          issueKey: requestPayload.issueKey,
+          commentId: result.comment?.id || "",
+          imageCount: result.imageCount,
+          jiraUrl: `https://golfnow.atlassian.net/browse/${requestPayload.issueKey}`,
+        }, origin);
+        return;
+      }
+
+      if (hasChecklistImages(requestPayload.payload)) {
+        throw new Error("Image checklist comments require JIRA_MCP_TOKEN in the local bridge environment.");
+      }
+
       dispatchChecklistWorkflow(requestPayload);
       writeJson(response, 202, {
         ok: true,

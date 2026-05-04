@@ -107,15 +107,18 @@ The bridge does not hold the Jira token. It only dispatches the GitHub Actions w
 
 ## Test Checklist Comments
 
-The dashboard scans main-ticket Jira comments for referenced `.md` attachments. When a main ticket has a Markdown test guide, the ticket card shows a `Test Checklist` action.
+The dashboard scans main-ticket Jira comments for referenced `.md` attachments. Every main ticket can open a testing checklist: Markdown-backed tickets start with imported test cases, and tickets without a Markdown guide start with an empty `Add Testing Checklist` action.
 
 Behavior:
 
 - The checklist is generated from Markdown `Test Case` headings.
+- Tickets without Markdown can add manual test cases from the checklist modal.
 - Checklist edits are saved in browser local storage.
-- `Post checklist as Comment` sends the edited checklist to `.github/workflows/post-test-checklist-comment.yml`.
-- The workflow posts a Jira comment table to the main ticket.
-- Jira credentials stay in GitHub Secrets and are never sent to the browser.
+- The ticket card switches back to `Add Testing Checklist` when the checklist has zero items.
+- `Post checklist as Comment` posts the edited checklist as a Jira comment table on the associated main ticket.
+- Checklist item images can be attached from the modal and are uploaded to Jira as attachments, then embedded below the table in the comment.
+- Text-only comments can fall back to `.github/workflows/post-test-checklist-comment.yml`; image comments require the local bridge to have `JIRA_MCP_TOKEN` in its environment.
+- Jira credentials stay in the local bridge or GitHub Secrets and are never sent to the browser.
 
 ## Local Refresh
 
@@ -143,7 +146,7 @@ The generator writes:
 - Data Pull history shows added tickets, updated tickets, status moves, removed tickets, and retained historical changes.
 - Subtask changes in Data Pull include the parent ticket key and parent summary.
 - Each ticket includes an assignee picker that submits a secured GitHub Actions request.
-- Main tickets with Markdown test guides include an editable test checklist modal and Jira-comment posting workflow.
+- Main tickets include an editable test checklist modal; Markdown-backed tickets prefill test cases, and manual checklists can add items and images before posting to Jira.
 
 Security note: the dashboard is static GitHub Pages, so it does not store Jira credentials. Assignee writes and checklist comment posts go through GitHub Actions, where Jira credentials stay private in repository secrets.
 
@@ -353,6 +356,12 @@ Screenshot: `screenshots/jira-board-versions/17-full-description-images.png`
 - Added Jira comment scanning for referenced `.md` test-guide attachments on main tickets.
 - Added editable test checklist modals for tickets with Markdown test cases.
 - Added a secured GitHub Actions workflow and local bridge endpoint to post checklist results as Jira comment tables.
+
+### v1.10.1 - Manual Checklist Images
+
+- Added testing checklist actions to all main tickets, including empty manual checklists for tickets without Markdown test guides.
+- Added image attachments on checklist items and inline Jira comment rendering for posted checklist images.
+- Updated checklist comment posting so the local bridge can post directly to Jira when `JIRA_MCP_TOKEN` is available.
 
 ## Planned Next Steps
 
