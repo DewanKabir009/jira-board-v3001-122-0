@@ -103,7 +103,19 @@ Start the local bridge when using the live dashboard to update assignees:
 node scripts/dispatch-assignee-workflow-server.cjs
 ```
 
-The bridge does not hold the Jira token. It only dispatches the GitHub Actions workflow through `gh`, and the workflow reads the Jira token from GitHub Secrets.
+The bridge does not hold the Jira token. It only dispatches the GitHub Actions workflows through `gh`, and the workflows read the Jira token from GitHub Secrets.
+
+## Test Checklist Comments
+
+The dashboard scans main-ticket Jira comments for referenced `.md` attachments. When a main ticket has a Markdown test guide, the ticket card shows a `Test Checklist` action.
+
+Behavior:
+
+- The checklist is generated from Markdown `Test Case` headings.
+- Checklist edits are saved in browser local storage.
+- `Post checklist as Comment` sends the edited checklist to `.github/workflows/post-test-checklist-comment.yml`.
+- The workflow posts a Jira comment table to the main ticket.
+- Jira credentials stay in GitHub Secrets and are never sent to the browser.
 
 ## Local Refresh
 
@@ -131,8 +143,9 @@ The generator writes:
 - Data Pull history shows added tickets, updated tickets, status moves, removed tickets, and retained historical changes.
 - Subtask changes in Data Pull include the parent ticket key and parent summary.
 - Each ticket includes an assignee picker that submits a secured GitHub Actions request.
+- Main tickets with Markdown test guides include an editable test checklist modal and Jira-comment posting workflow.
 
-Security note: the dashboard is static GitHub Pages, so it does not store Jira credentials. Assignee writes go through GitHub Actions, where Jira credentials stay private in repository secrets.
+Security note: the dashboard is static GitHub Pages, so it does not store Jira credentials. Assignee writes and checklist comment posts go through GitHub Actions, where Jira credentials stay private in repository secrets.
 
 ## Version History
 
@@ -334,6 +347,12 @@ Screenshot: `screenshots/jira-board-versions/17-full-description-images.png`
 - Added Slack bot-token notification support with `SLACK_BOT_TOKEN` and `SLACK_CHANNEL_ID`.
 - Kept incoming webhooks as a fallback path when a webhook secret exists.
 - Documented the Slack app setup and GitHub secret names needed for channel notifications.
+
+### v1.10.0 - Markdown Test Checklists
+
+- Added Jira comment scanning for referenced `.md` test-guide attachments on main tickets.
+- Added editable test checklist modals for tickets with Markdown test cases.
+- Added a secured GitHub Actions workflow and local bridge endpoint to post checklist results as Jira comment tables.
 
 ## Planned Next Steps
 

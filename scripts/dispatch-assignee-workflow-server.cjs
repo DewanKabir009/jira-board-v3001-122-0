@@ -6,6 +6,7 @@ const host = process.env.ASSIGNEE_DISPATCH_HOST || "127.0.0.1";
 const port = Number(process.env.ASSIGNEE_DISPATCH_PORT || 3991);
 const repo = process.env.GITHUB_REPOSITORY || "DewanKabir009/jira-board-v3001-122-0";
 const workflow = process.env.ASSIGNEE_WORKFLOW || "update-jira-assignee.yml";
+const testChecklistWorkflow = process.env.TEST_CHECKLIST_WORKFLOW || "post-test-checklist-comment.yml";
 const allowedOrigins = new Set([
   "https://dewankabir009.github.io",
   "http://127.0.0.1:3991",
@@ -82,7 +83,7 @@ function readBody(request) {
     request.setEncoding("utf8");
     request.on("data", (chunk) => {
       body += chunk;
-      if (body.length > 4096) {
+      if (body.length > 250000) {
         request.destroy(new Error("Request body is too large."));
       }
     });
@@ -91,7 +92,7 @@ function readBody(request) {
   });
 }
 
-function validate(payload) {
+function validateAssignee(payload) {
   const issueKey = String(payload.issueKey || "").trim().toUpperCase();
   const assigneeDisplayName = String(payload.assigneeDisplayName || "").trim();
 
@@ -104,6 +105,42 @@ function validate(payload) {
   }
 
   return { issueKey, assigneeDisplayName };
+}
+
+function validateChecklist(payload) {
+  const issueKey = String(payload.issueKey || "").trim().toUpperCase();
+  const items = Array.isArray(payload.items) ? payload.items : [];
+
+  if (!/^[A-Z][A-Z0-9]+-\d+$/.test(issueKey)) {
+    throw new Error("Invalid Jira issue key.");
+  }
+
+  if (!items.length) {
+    throw new Error("Checklist must include at least one item.");
+  }
+
+  if (items.length > 100) {
+    throw new Error("Checklist has too many items.");
+  }
+
+  return {
+    issueKey,
+    payload: {
+      issueKey,
+      issueUrl: String(payload.issueUrl || ""),
+      summary: String(payload.summary || "").slice(0, 300),
+      releaseVersion: String(payload.releaseVersion || ""),
+      dashboardUrl: String(payload.dashboardUrl || ""),
+      sourceFiles: (Array.isArray(payload.sourceFiles) ? payload.sourceFiles : [])
+        .map((file) => String(file || "").slice(0, 220))
+        .filter(Boolean),
+      items: items.map((item) => ({
+        title: String(item.title || "Untitled test case").slice(0, 500),
+        done: Boolean(item.done),
+        notes: String(item.notes || "").slice(0, 1200),
+      })),
+    },
+  };
 }
 
 function dispatchWorkflow({ issueKey, assigneeDisplayName }) {
@@ -130,6 +167,31 @@ function dispatchWorkflow({ issueKey, assigneeDisplayName }) {
   });
 }
 
+function dispatchChecklistWorkflow({ issueKey, payload }) {
+  const gh = findGh();
+  if (!gh) {
+    throw new Error("GitHub CLI was not found. Install gh or set GH_PATH.");
+  }
+
+  cp.execFileSync(gh, [
+    "workflow",
+    "run",
+    testChecklistWorkflow,
+    "--repo",
+    repo,
+    "--ref",
+    "master",
+    "--json",
+  ], {
+    input: JSON.stringify({
+      issue_key: issueKey,
+      checklist_payload: JSON.stringify(payload),
+    }),
+    stdio: ["pipe", "pipe", "pipe"],
+    windowsHide: true,
+  });
+}
+
 const server = http.createServer(async (request, response) => {
   const origin = request.headers.origin || "";
 
@@ -143,7 +205,7 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
-  if (request.method !== "POST" || request.url !== "/assign") {
+  if (request.method !== "POST" || !["/assign", "/comment-checklist"].includes(request.url)) {
     writeJson(response, 404, { ok: false, error: "Not found." }, origin);
     return;
   }
@@ -155,7 +217,18 @@ const server = http.createServer(async (request, response) => {
 
   try {
     const payload = JSON.parse(await readBody(request) || "{}");
-    const requestPayload = validate(payload);
+    if (request.url === "/comment-checklist") {
+      const requestPayload = validateChecklist(payload);
+      dispatchChecklistWorkflow(requestPayload);
+      writeJson(response, 202, {
+        ok: true,
+        issueKey: requestPayload.issueKey,
+        actionsUrl: `https://github.com/${repo}/actions/workflows/${testChecklistWorkflow}`,
+      }, origin);
+      return;
+    }
+
+    const requestPayload = validateAssignee(payload);
     dispatchWorkflow(requestPayload);
     writeJson(response, 202, {
       ok: true,
@@ -172,5 +245,5 @@ const server = http.createServer(async (request, response) => {
 });
 
 server.listen(port, host, () => {
-  console.log(`Assignee workflow dispatch bridge listening on http://${host}:${port}/assign`);
+  console.log(`Workflow dispatch bridge listening on http://${host}:${port}/assign and /comment-checklist`);
 });

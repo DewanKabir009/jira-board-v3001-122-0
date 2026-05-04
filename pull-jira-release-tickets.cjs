@@ -3,10 +3,11 @@ const path = require("path");
 
 const workspace = __dirname;
 const siteUrl = "https://golfnow.atlassian.net";
-const dashboardVersion = "v1.9.6";
+const dashboardVersion = "v1.10.0";
 const repositorySlug = "DewanKabir009/jira-board-v3001-122-0";
 const dashboardUrl = "https://dewankabir009.github.io/jira-board-v3001-122-0/";
 const assigneeDispatchEndpoint = "http://127.0.0.1:3991/assign";
+const testChecklistCommentEndpoint = "http://127.0.0.1:3991/comment-checklist";
 const mediaAssetBasePath = "assets/jira-media";
 const assigneeOptions = [
   "Dewan Kabir",
@@ -439,6 +440,304 @@ async function buildRichDescription(issueKey, description, attachments) {
   };
 }
 
+function adfToSearchText(node, output = []) {
+  if (!node) {
+    return output;
+  }
+
+  if (typeof node === "string") {
+    output.push(node);
+    return output;
+  }
+
+  if (Array.isArray(node)) {
+    node.forEach((child) => adfToSearchText(child, output));
+    return output;
+  }
+
+  if (node.text) {
+    output.push(node.text);
+  }
+
+  if (node.attrs) {
+    ["text", "url", "alt", "displayName"].forEach((key) => {
+      if (node.attrs[key]) {
+        output.push(node.attrs[key]);
+      }
+    });
+  }
+
+  adfToSearchText(node.content, output);
+  return output;
+}
+
+function stripRenderedHtml(value) {
+  return String(value || "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeMarkdownLine(value) {
+  return String(value || "")
+    .replace(/\r/g, "")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/__([^_]+)__/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isMarkdownAttachment(attachment) {
+  return /\.md$/i.test(attachment?.filename || "");
+}
+
+function commentReferencesMarkdown(comments, filename) {
+  const needle = String(filename || "").toLowerCase();
+  return comments.some((comment) => {
+    const text = [
+      comment.renderedBody || "",
+      ...adfToSearchText(comment.body),
+    ].join(" ").toLowerCase();
+    return text.includes(needle);
+  });
+}
+
+async function jiraJson(apiPath, options = {}) {
+  const response = await fetch(`https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3${apiPath}`, {
+    ...options,
+    headers: {
+      Authorization: authHeader,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+  });
+  const text = await response.text();
+
+  if (!response.ok) {
+    throw new Error(`Jira API failed: HTTP ${response.status} ${response.statusText}\n${text}`);
+  }
+
+  return text ? JSON.parse(text) : null;
+}
+
+async function fetchIssueComments(issueKey) {
+  const comments = [];
+  let startAt = 0;
+  let total = 0;
+
+  do {
+    const payload = await jiraJson(
+      `/issue/${encodeURIComponent(issueKey)}/comment?maxResults=100&startAt=${startAt}&expand=renderedBody`,
+    );
+    comments.push(...(payload.comments || []));
+    total = Number(payload.total || comments.length);
+    startAt += Number(payload.maxResults || 100);
+  } while (comments.length < total);
+
+  return comments;
+}
+
+async function fetchAttachmentText(attachment) {
+  const response = await fetch(attachment.content, {
+    headers: {
+      Authorization: authHeader,
+      Accept: "text/markdown,text/plain,*/*",
+    },
+  });
+  const text = await response.text();
+
+  if (!response.ok) {
+    throw new Error(`Could not download ${attachment.filename}: HTTP ${response.status} ${response.statusText}\n${text}`);
+  }
+
+  return text;
+}
+
+function extractMarkdownSection(lines, startIndex) {
+  const section = [];
+
+  for (let index = startIndex + 1; index < lines.length; index += 1) {
+    if (/^#{2,6}\s+Test Case\b/i.test(lines[index])) {
+      break;
+    }
+    section.push(lines[index]);
+  }
+
+  return section;
+}
+
+function extractChecklistChecks(lines) {
+  const checkboxChecks = lines
+    .map((line) => line.match(/^\s*[-*]\s+\[[ xX]\]\s+(.+)$/))
+    .filter(Boolean)
+    .map((match) => normalizeMarkdownLine(match[1]))
+    .filter(Boolean);
+
+  if (checkboxChecks.length) {
+    return checkboxChecks.slice(0, 16);
+  }
+
+  const expected = [];
+  let inExpected = false;
+
+  for (const line of lines) {
+    if (/^\s*\*\*Expected\b/i.test(line)) {
+      inExpected = true;
+      continue;
+    }
+
+    if (inExpected && /^\s*\*\*[^*]+:\*\*/.test(line)) {
+      break;
+    }
+
+    if (!inExpected) {
+      continue;
+    }
+
+    const bullet = line.match(/^\s*(?:[-*]|\d+\.)\s+(.+)$/);
+    if (bullet) {
+      const value = normalizeMarkdownLine(bullet[1]);
+      if (value) {
+        expected.push(value);
+      }
+    }
+  }
+
+  return expected.slice(0, 12);
+}
+
+function extractCaseDescription(lines) {
+  const explicit = lines
+    .map((line) => line.match(/^\s*\*\*Description:\*\*\s*(.+)$/i))
+    .filter(Boolean)
+    .map((match) => normalizeMarkdownLine(match[1]))
+    .find(Boolean);
+
+  if (explicit) {
+    return explicit;
+  }
+
+  return lines
+    .map(normalizeMarkdownLine)
+    .filter((line) => line && !/^#{1,6}\s/.test(line) && !/^\*\*[^*]+:\*\*$/.test(line))
+    .slice(0, 3)
+    .join(" ")
+    .slice(0, 520);
+}
+
+function parseTestCasesFromMarkdown(markdown) {
+  const lines = String(markdown || "").replace(/\r\n/g, "\n").split("\n");
+  const testCases = [];
+  let category = "";
+
+  lines.forEach((line, index) => {
+    const categoryMatch = line.match(/^##\s+(.+)$/);
+    if (categoryMatch && !/^##\s+Test Case\b/i.test(line)) {
+      category = normalizeMarkdownLine(categoryMatch[1]);
+    }
+
+    const headingMatch = line.match(/^#{2,6}\s+Test Case\s+(.+)$/i);
+    if (!headingMatch) {
+      return;
+    }
+
+    const rawHeading = normalizeMarkdownLine(headingMatch[1]);
+    const idMatch = rawHeading.match(/^([A-Z]\d+)\s*:\s*(.+)$/i);
+    const section = extractMarkdownSection(lines, index);
+    const id = idMatch ? idMatch[1].toUpperCase() : `TC${testCases.length + 1}`;
+    const title = idMatch ? idMatch[2] : rawHeading;
+    const checks = extractChecklistChecks(section);
+    const description = extractCaseDescription(section);
+
+    testCases.push({
+      id,
+      title,
+      category,
+      blocking: /blocking/i.test(`${rawHeading}\n${section.join("\n")}`),
+      description,
+      checks,
+    });
+  });
+
+  return testCases;
+}
+
+async function buildTestChecklist(issueKey, isSubtask, attachments) {
+  if (isSubtask) {
+    return null;
+  }
+
+  const markdownAttachments = (attachments || []).filter(isMarkdownAttachment);
+  if (!markdownAttachments.length) {
+    return null;
+  }
+
+  const comments = await fetchIssueComments(issueKey);
+  const referencedAttachments = markdownAttachments.filter((attachment) => (
+    commentReferencesMarkdown(comments, attachment.filename)
+  ));
+
+  if (!referencedAttachments.length) {
+    return null;
+  }
+
+  const files = [];
+  const testCases = [];
+
+  for (const attachment of referencedAttachments) {
+    let markdown = "";
+    try {
+      markdown = await fetchAttachmentText(attachment);
+    } catch (error) {
+      console.warn(error && error.message ? error.message : String(error));
+      continue;
+    }
+    const parsed = parseTestCasesFromMarkdown(markdown);
+
+    if (!parsed.length) {
+      continue;
+    }
+
+    files.push({
+      id: attachment.id,
+      filename: attachment.filename,
+      created: attachment.created || "",
+      author: attachment.author?.displayName || "",
+    });
+
+    parsed.forEach((testCase) => {
+      testCases.push({
+        ...testCase,
+        sourceFile: attachment.filename,
+      });
+    });
+  }
+
+  if (!testCases.length) {
+    return null;
+  }
+
+  return {
+    files,
+    commentIds: comments
+      .filter((comment) => referencedAttachments.some((attachment) => commentReferencesMarkdown([comment], attachment.filename)))
+      .map((comment) => comment.id),
+    total: testCases.length,
+    testCases,
+  };
+}
+
 function parseJsonText(text) {
   const normalized = text.charCodeAt(0) === 0xfeff ? text.slice(1) : text;
   return JSON.parse(normalized);
@@ -528,7 +827,10 @@ async function normalizeIssue(issue) {
   const issueFields = issue.fields || {};
   const issueType = issueFields.issuetype || {};
   const parentFields = issueFields.parent?.fields || {};
-  const richDescription = await buildRichDescription(issue.key, issueFields.description, issueFields.attachment || []);
+  const attachments = issueFields.attachment || [];
+  const isSubtask = Boolean(issueType.subtask);
+  const richDescription = await buildRichDescription(issue.key, issueFields.description, attachments);
+  const testChecklist = await buildTestChecklist(issue.key, isSubtask, attachments);
   const parentDescription = descriptionToText(parentFields.description);
 
   return {
@@ -538,8 +840,9 @@ async function normalizeIssue(issue) {
     description: richDescription.text,
     descriptionHtml: richDescription.html,
     descriptionImageCount: richDescription.imageCount,
+    testChecklist,
     type: issueType.name || "",
-    isSubtask: Boolean(issueType.subtask),
+    isSubtask,
     status: issueFields.status?.name || "",
     priority: issueFields.priority?.name || "None",
     assignee: issueFields.assignee?.displayName || "Unassigned",
@@ -801,6 +1104,7 @@ function renderHtml(data) {
     repositorySlug,
     dashboardUrl,
     assigneeDispatchEndpoint,
+    testChecklistCommentEndpoint,
     assigneeOptions,
   });
 
@@ -1690,6 +1994,292 @@ function renderHtml(data) {
       font-style: italic;
     }
 
+    .checklist-shell {
+      margin-top: 8px;
+    }
+
+    .checklist-toggle {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      border: 0;
+      border-radius: 6px;
+      background: var(--teal-soft);
+      padding: 7px 8px;
+      color: #07584f;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: left;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .checklist-toggle:hover {
+      color: #053d37;
+    }
+
+    .checklist-state {
+      border-radius: 999px;
+      background: #fff;
+      padding: 2px 8px;
+      color: #41506a;
+      font-size: 11px;
+      font-weight: 750;
+      text-transform: none;
+    }
+
+    .checklist-modal[hidden] {
+      display: none;
+    }
+
+    .checklist-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .checklist-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.48);
+    }
+
+    .checklist-dialog {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      width: min(1180px, 100%);
+      max-height: min(920px, calc(100vh - 36px));
+      overflow: hidden;
+      border: 1px solid #b9d5d0;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(23, 32, 51, 0.28);
+    }
+
+    .checklist-modal-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: #f4fbf9;
+    }
+
+    .checklist-modal-title {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 7px;
+    }
+
+    .checklist-modal-title h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .checklist-modal-summary {
+      margin: 0;
+      color: #334968;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .checklist-modal-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .checklist-modal-meta span,
+    .checklist-modal-meta a {
+      border: 1px solid #dce3ef;
+      border-radius: 999px;
+      background: #fff;
+      padding: 3px 8px;
+      color: #41506a;
+      font-size: 11px;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .checklist-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid #cbd7e6;
+      background: #fff;
+      color: #334968;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .checklist-modal-body {
+      min-height: 0;
+      overflow: auto;
+      padding: 18px;
+      background: #fff;
+    }
+
+    .checklist-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .checklist-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .checklist-button {
+      min-height: 34px;
+      border: 1px solid #cdd7e7;
+      border-radius: 8px;
+      background: #fff;
+      padding: 7px 11px;
+      color: #284263;
+      font-weight: 760;
+      cursor: pointer;
+    }
+
+    .checklist-button.primary {
+      border-color: var(--teal);
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .checklist-button:disabled {
+      cursor: not-allowed;
+      opacity: .62;
+    }
+
+    .checklist-status {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .checklist-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .checklist-item {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: start;
+      border: 1px solid #dce3ef;
+      border-left: 4px solid var(--teal);
+      border-radius: 8px;
+      background: #fbfdfc;
+      padding: 10px;
+    }
+
+    .checklist-item.is-done {
+      border-left-color: #7a869a;
+      opacity: .82;
+    }
+
+    .checklist-check {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 1px solid #dce3ef;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .checklist-check input {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--teal);
+    }
+
+    .checklist-edit-fields {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .checklist-title-input,
+    .checklist-notes {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #cdd7e7;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 7px 8px;
+      font: inherit;
+    }
+
+    .checklist-title-input {
+      font-weight: 760;
+    }
+
+    .checklist-notes {
+      min-height: 56px;
+      resize: vertical;
+    }
+
+    .checklist-detail {
+      color: #41506a;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .checklist-detail summary {
+      cursor: pointer;
+      color: #07584f;
+      font-weight: 800;
+    }
+
+    .checklist-detail ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .checklist-remove {
+      width: 34px;
+      height: 34px;
+      border: 1px solid #f0c2bf;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--red);
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    @media (max-width: 720px) {
+      .checklist-item {
+        grid-template-columns: 1fr;
+      }
+
+      .checklist-check,
+      .checklist-remove {
+        width: 100%;
+      }
+    }
+
     .assign-form {
       display: grid;
       gap: 5px;
@@ -2305,6 +2895,31 @@ function renderHtml(data) {
     </section>
   </div>
 
+  <div class="checklist-modal" id="checklist-modal" hidden>
+    <div class="checklist-backdrop" data-checklist-close></div>
+    <section class="checklist-dialog" role="dialog" aria-modal="true" aria-labelledby="checklist-modal-title">
+      <header class="checklist-modal-header">
+        <div>
+          <div class="checklist-modal-title" id="checklist-modal-title"></div>
+          <p class="checklist-modal-summary" id="checklist-modal-summary"></p>
+          <div class="checklist-modal-meta" id="checklist-modal-meta"></div>
+        </div>
+        <button class="checklist-close" type="button" data-checklist-close aria-label="Close checklist">x</button>
+      </header>
+      <div class="checklist-modal-body">
+        <div class="checklist-toolbar">
+          <span class="checklist-status" id="checklist-progress"></span>
+          <div class="checklist-actions">
+            <button class="checklist-button" id="checklist-add" type="button">Add test case</button>
+            <button class="checklist-button primary" id="checklist-post" type="button">Post checklist as Comment</button>
+          </div>
+        </div>
+        <div class="checklist-list" id="checklist-modal-content"></div>
+        <p class="checklist-status" id="checklist-post-status" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+  </div>
+
   <script id="jira-data" type="application/json">${dataJson}</script>
   <script>
     (function () {
@@ -2316,11 +2931,14 @@ function renderHtml(data) {
         activeQa: "all",
         collapsedStatuses: new Set(),
         expandedSubtasks: new Set(),
-        activeDescriptionKey: null
+        activeDescriptionKey: null,
+        activeChecklistKey: null,
+        activeChecklistItems: []
       };
       var githubRepo = data.repositorySlug || "DewanKabir009/jira-board-v3001-122-0";
       var dashboardUrl = data.dashboardUrl || "https://dewankabir009.github.io/jira-board-v3001-122-0/";
       var assigneeDispatchEndpoint = data.assigneeDispatchEndpoint || "http://127.0.0.1:3991/assign";
+      var testChecklistCommentEndpoint = data.testChecklistCommentEndpoint || "http://127.0.0.1:3991/comment-checklist";
       var assigneeNames = data.assigneeOptions || [
         "Dewan Kabir",
         "Nicole Greer",
@@ -2877,6 +3495,301 @@ function renderHtml(data) {
         "</div>";
       }
 
+      function hasTestChecklist(issue) {
+        return Boolean(issue && issue.testChecklist &&
+          Array.isArray(issue.testChecklist.testCases) &&
+          issue.testChecklist.testCases.length);
+      }
+
+      function renderTestChecklist(issue) {
+        if (!hasTestChecklist(issue)) {
+          return "";
+        }
+
+        var checklist = issue.testChecklist;
+        var fileCount = Array.isArray(checklist.files) ? checklist.files.length : 0;
+        var stateLabel = checklist.total + " test case" + (checklist.total === 1 ? "" : "s");
+
+        return "<div class=\\"checklist-shell\\">" +
+          "<button class=\\"checklist-toggle\\" type=\\"button\\" aria-haspopup=\\"dialog\\" data-checklist-for=\\"" + escape(issue.key) + "\\">" +
+            "<span>Test Checklist</span>" +
+            "<span class=\\"checklist-state\\">" + escape(stateLabel) + "</span>" +
+            "<span class=\\"chevron\\">></span>" +
+          "</button>" +
+          "<span class=\\"sr-only\\">" + escape(fileCount + " Markdown file" + (fileCount === 1 ? "" : "s")) + "</span>" +
+        "</div>";
+      }
+
+      function findChecklistIssue(issueKey) {
+        return data.issues.find(function (issue) {
+          return issue.key === issueKey && hasTestChecklist(issue);
+        });
+      }
+
+      function checklistStorageKey(issue) {
+        var files = (issue.testChecklist.files || []).map(function (file) {
+          return file.id || file.filename;
+        }).join("|");
+        return "jira-test-checklist-v1:" + data.version + ":" + issue.key + ":" + files;
+      }
+
+      function baseChecklistItems(issue) {
+        return (issue.testChecklist.testCases || []).map(function (testCase, index) {
+          var displayTitle = (testCase.id ? testCase.id + ": " : "") + (testCase.title || "Untitled test case");
+
+          return {
+            id: (testCase.sourceFile || "source") + "::" + (testCase.id || "TC") + "::" + index,
+            sourceId: testCase.id || "",
+            sourceFile: testCase.sourceFile || "",
+            category: testCase.category || "",
+            blocking: Boolean(testCase.blocking),
+            title: displayTitle,
+            done: false,
+            notes: "",
+            description: testCase.description || "",
+            checks: Array.isArray(testCase.checks) ? testCase.checks : []
+          };
+        });
+      }
+
+      function loadChecklistItems(issue) {
+        var baseItems = baseChecklistItems(issue);
+        var saved = null;
+
+        try {
+          saved = JSON.parse(localStorage.getItem(checklistStorageKey(issue)) || "null");
+        } catch (error) {
+          saved = null;
+        }
+
+        if (!saved || !Array.isArray(saved.items)) {
+          return baseItems;
+        }
+
+        var savedById = new Map(saved.items.map(function (item) {
+          return [item.id, item];
+        }));
+        var merged = baseItems.map(function (item) {
+          var savedItem = savedById.get(item.id);
+          if (!savedItem) {
+            return item;
+          }
+          return {
+            ...item,
+            title: text(savedItem.title) || item.title,
+            done: Boolean(savedItem.done),
+            notes: text(savedItem.notes)
+          };
+        });
+
+        saved.items.forEach(function (item) {
+          if (item.manual && !merged.some(function (candidate) { return candidate.id === item.id; })) {
+            merged.push({
+              id: item.id,
+              manual: true,
+              sourceId: "",
+              sourceFile: "Manual",
+              category: "Manual",
+              blocking: false,
+              title: text(item.title) || "New test case",
+              done: Boolean(item.done),
+              notes: text(item.notes),
+              description: "",
+              checks: []
+            });
+          }
+        });
+
+        return merged;
+      }
+
+      function saveChecklistItems(issue) {
+        if (!issue) {
+          return;
+        }
+
+        localStorage.setItem(checklistStorageKey(issue), JSON.stringify({
+          savedAt: new Date().toISOString(),
+          items: state.activeChecklistItems.map(function (item) {
+            return {
+              id: item.id,
+              manual: Boolean(item.manual),
+              title: item.title,
+              done: Boolean(item.done),
+              notes: item.notes || ""
+            };
+          })
+        }));
+      }
+
+      function updateChecklistProgress() {
+        var total = state.activeChecklistItems.length;
+        var done = state.activeChecklistItems.filter(function (item) {
+          return item.done;
+        }).length;
+        var progress = document.getElementById("checklist-progress");
+        if (progress) {
+          progress.textContent = done + " of " + total + " complete";
+        }
+      }
+
+      function renderChecklistDetail(item) {
+        var parts = [];
+        if (item.category) {
+          parts.push("<p><b>Category:</b> " + escape(item.category) + "</p>");
+        }
+        if (item.blocking) {
+          parts.push("<p><b>Blocking:</b> Yes</p>");
+        }
+        if (item.description) {
+          parts.push("<p>" + escape(item.description) + "</p>");
+        }
+        if (item.checks && item.checks.length) {
+          parts.push("<ul>" + item.checks.map(function (check) {
+            return "<li>" + escape(check) + "</li>";
+          }).join("") + "</ul>");
+        }
+
+        if (!parts.length) {
+          return "";
+        }
+
+        return "<details class=\\"checklist-detail\\">" +
+          "<summary>Details" + (item.checks && item.checks.length ? " / " + item.checks.length + " checks" : "") + "</summary>" +
+          parts.join("") +
+        "</details>";
+      }
+
+      function renderChecklistItems() {
+        var content = document.getElementById("checklist-modal-content");
+        if (!content) {
+          return;
+        }
+
+        content.innerHTML = state.activeChecklistItems.map(function (item) {
+          return "<article class=\\"checklist-item" + (item.done ? " is-done" : "") + "\\" data-checklist-item=\\"" + escape(item.id) + "\\">" +
+            "<label class=\\"checklist-check\\">" +
+              "<input type=\\"checkbox\\" data-checklist-done=\\"" + escape(item.id) + "\\"" + (item.done ? " checked" : "") + " aria-label=\\"Mark test case complete\\">" +
+            "</label>" +
+            "<div class=\\"checklist-edit-fields\\">" +
+              "<input class=\\"checklist-title-input\\" data-checklist-title=\\"" + escape(item.id) + "\\" value=\\"" + escape(item.title) + "\\" spellcheck=\\"true\\" lang=\\"en\\" aria-label=\\"Test case title\\">" +
+              "<textarea class=\\"checklist-notes\\" data-checklist-notes=\\"" + escape(item.id) + "\\" placeholder=\\"Notes\\" spellcheck=\\"true\\" aria-label=\\"Test case notes\\">" + escape(item.notes || "") + "</textarea>" +
+              renderChecklistDetail(item) +
+            "</div>" +
+            "<button class=\\"checklist-remove\\" type=\\"button\\" data-checklist-remove=\\"" + escape(item.id) + "\\" aria-label=\\"Remove test case\\">x</button>" +
+          "</article>";
+        }).join("");
+        updateChecklistProgress();
+      }
+
+      function openChecklistModal(issueKey) {
+        var issue = findChecklistIssue(issueKey);
+        if (!issue) {
+          return;
+        }
+
+        state.activeChecklistKey = issue.key;
+        state.activeChecklistItems = loadChecklistItems(issue);
+        document.getElementById("checklist-post-status").textContent = "";
+        document.getElementById("checklist-modal-title").innerHTML =
+          renderKeyLink(issue) + "<h2>Test Checklist</h2>";
+        document.getElementById("checklist-modal-summary").textContent = issue.summary || "";
+        document.getElementById("checklist-modal-meta").innerHTML =
+          "<span>" + escape(issue.type || "Ticket") + "</span>" +
+          "<span>Status: " + escape(issue.status || "No status") + "</span>" +
+          "<span>Priority: " + escape(priorityLabel(issue.priority)) + "</span>" +
+          "<span>Source: " + escape((issue.testChecklist.files || []).map(function (file) { return file.filename; }).join(", ")) + "</span>" +
+          "<a href=\\"" + escape(issue.url) + "\\" target=\\"_blank\\" rel=\\"noopener\\">Open Jira</a>";
+        renderChecklistItems();
+        document.getElementById("checklist-modal").hidden = false;
+        document.body.classList.add("modal-open");
+        var closeButton = document.querySelector("[data-checklist-close].checklist-close");
+        if (closeButton) {
+          closeButton.focus();
+        }
+      }
+
+      function closeChecklistModal() {
+        state.activeChecklistKey = null;
+        state.activeChecklistItems = [];
+        document.getElementById("checklist-modal").hidden = true;
+        document.getElementById("checklist-modal-content").innerHTML = "";
+        document.body.classList.remove("modal-open");
+      }
+
+      function getActiveChecklistIssue() {
+        return state.activeChecklistKey ? findChecklistIssue(state.activeChecklistKey) : null;
+      }
+
+      function findChecklistItem(itemId) {
+        return state.activeChecklistItems.find(function (item) {
+          return item.id === itemId;
+        });
+      }
+
+      function buildChecklistPostPayload(issue) {
+        return {
+          issueKey: issue.key,
+          issueUrl: issue.url,
+          summary: issue.summary,
+          releaseVersion: data.version,
+          dashboardUrl: window.location.href,
+          sourceFiles: (issue.testChecklist.files || []).map(function (file) {
+            return file.filename;
+          }),
+          items: state.activeChecklistItems.map(function (item) {
+            return {
+              title: item.title,
+              done: Boolean(item.done),
+              notes: item.notes || ""
+            };
+          })
+        };
+      }
+
+      function postActiveChecklist() {
+        var issue = getActiveChecklistIssue();
+        var status = document.getElementById("checklist-post-status");
+        var button = document.getElementById("checklist-post");
+        if (!issue) {
+          return;
+        }
+
+        if (!window.confirm("Post this checklist as a Jira comment on " + issue.key + "?")) {
+          return;
+        }
+
+        saveChecklistItems(issue);
+        status.textContent = "Starting comment workflow...";
+        button.disabled = true;
+
+        fetch(testChecklistCommentEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(buildChecklistPostPayload(issue))
+        })
+          .then(function (response) {
+            return response.json().catch(function () {
+              return { ok: false, error: "The checklist bridge returned an unreadable response." };
+            }).then(function (payload) {
+              if (!response.ok || !payload.ok) {
+                throw new Error(payload.error || "The checklist bridge rejected the request.");
+              }
+              return payload;
+            });
+          })
+          .then(function () {
+            status.textContent = "Workflow started. Jira comment will post shortly.";
+          })
+          .catch(function (error) {
+            status.textContent = "Bridge offline. Open Actions to run it.";
+            console.error(error);
+          })
+          .finally(function () {
+            button.disabled = false;
+          });
+      }
+
       function findDescriptionIssue(issueKey) {
         var cards = getIssueModel();
         for (var index = 0; index < cards.length; index += 1) {
@@ -3005,6 +3918,7 @@ function renderHtml(data) {
           "</div>" +
           "<p class=\\"summary\\">" + escape(issue.summary) + "</p>" +
           renderDescription(issue) +
+          renderTestChecklist(issue) +
           renderMeta(issue, false) +
           renderIssueActions(issue) +
           subtaskBlock +
@@ -3328,7 +4242,7 @@ function renderHtml(data) {
         renderDataPull();
         document.getElementById("pulled-at").textContent = data.pulledAtDisplay;
         renderNextRefresh();
-        document.getElementById("source-line").textContent = "Source: live Jira JQL " + data.jql + ". Components, descriptions, embedded images, and subtasks are generated from the current ticket snapshot.";
+        document.getElementById("source-line").textContent = "Source: live Jira JQL " + data.jql + ". Components, descriptions, embedded images, Markdown test checklists, and subtasks are generated from the current ticket snapshot.";
         document.getElementById("copy-components").innerHTML = copyIcon();
         var toggle = document.getElementById("toggle-subtasks");
         var cardsWithSubtasks = getVisibleSubtaskCards();
@@ -3462,6 +4376,12 @@ function renderHtml(data) {
           return;
         }
 
+        var checklistToggle = event.target.closest(".checklist-toggle");
+        if (checklistToggle) {
+          openChecklistModal(checklistToggle.getAttribute("data-checklist-for"));
+          return;
+        }
+
         var toggle = event.target.closest(".section-toggle");
         if (!toggle) {
           return;
@@ -3491,9 +4411,102 @@ function renderHtml(data) {
         }
       });
 
+      document.getElementById("checklist-modal").addEventListener("click", function (event) {
+        var closeTarget = event.target.closest("[data-checklist-close]");
+        if (closeTarget) {
+          closeChecklistModal();
+          return;
+        }
+
+        var removeButton = event.target.closest("[data-checklist-remove]");
+        if (removeButton) {
+          var issue = getActiveChecklistIssue();
+          var itemId = removeButton.getAttribute("data-checklist-remove");
+          state.activeChecklistItems = state.activeChecklistItems.filter(function (item) {
+            return item.id !== itemId;
+          });
+          saveChecklistItems(issue);
+          renderChecklistItems();
+          return;
+        }
+
+        var copyButton = event.target.closest("[data-copy-link]");
+        if (copyButton) {
+          copyText(copyButton.getAttribute("data-copy-link")).then(function () {
+            markCopied(copyButton);
+          });
+        }
+      });
+
+      document.getElementById("checklist-modal").addEventListener("input", function (event) {
+        var titleInput = event.target.closest("[data-checklist-title]");
+        var notesInput = event.target.closest("[data-checklist-notes]");
+        var issue = getActiveChecklistIssue();
+        var item = null;
+
+        if (titleInput) {
+          item = findChecklistItem(titleInput.getAttribute("data-checklist-title"));
+          if (item) {
+            item.title = titleInput.value;
+            saveChecklistItems(issue);
+          }
+          return;
+        }
+
+        if (notesInput) {
+          item = findChecklistItem(notesInput.getAttribute("data-checklist-notes"));
+          if (item) {
+            item.notes = notesInput.value;
+            saveChecklistItems(issue);
+          }
+        }
+      });
+
+      document.getElementById("checklist-modal").addEventListener("change", function (event) {
+        var doneInput = event.target.closest("[data-checklist-done]");
+        var issue = getActiveChecklistIssue();
+        var item = doneInput ? findChecklistItem(doneInput.getAttribute("data-checklist-done")) : null;
+
+        if (!item) {
+          return;
+        }
+
+        item.done = doneInput.checked;
+        saveChecklistItems(issue);
+        var row = doneInput.closest(".checklist-item");
+        if (row) {
+          row.classList.toggle("is-done", item.done);
+        }
+        updateChecklistProgress();
+      });
+
+      document.getElementById("checklist-add").addEventListener("click", function () {
+        var issue = getActiveChecklistIssue();
+        state.activeChecklistItems.push({
+          id: "manual::" + Date.now(),
+          manual: true,
+          sourceId: "",
+          sourceFile: "Manual",
+          category: "Manual",
+          blocking: false,
+          title: "New test case",
+          done: false,
+          notes: "",
+          description: "",
+          checks: []
+        });
+        saveChecklistItems(issue);
+        renderChecklistItems();
+      });
+
+      document.getElementById("checklist-post").addEventListener("click", postActiveChecklist);
+
       document.addEventListener("keydown", function (event) {
         if (event.key === "Escape" && !document.getElementById("description-modal").hidden) {
           closeDescriptionModal();
+        }
+        if (event.key === "Escape" && !document.getElementById("checklist-modal").hidden) {
+          closeChecklistModal();
         }
       });
 
