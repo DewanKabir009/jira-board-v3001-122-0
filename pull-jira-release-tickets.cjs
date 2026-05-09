@@ -4075,7 +4075,7 @@ function renderHtml(data) {
 
         fetch(testChecklistCommentEndpoint, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "text/plain;charset=UTF-8" },
           credentials: "include",
           body: JSON.stringify(buildChecklistPostPayload(issue))
         })
@@ -4630,7 +4630,7 @@ function renderHtml(data) {
 
         fetch(assigneeDispatchEndpoint, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "text/plain;charset=UTF-8" },
           body: JSON.stringify({
             issueKey: issueKey,
             assigneeDisplayName: requestedAssignee,
