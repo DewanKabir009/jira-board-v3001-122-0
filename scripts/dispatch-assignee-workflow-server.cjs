@@ -51,6 +51,17 @@ function writeJson(response, status, payload, origin) {
 }
 
 function getBridgeStatus() {
+  if (process.env.JIRA_MCP_TOKEN) {
+    return {
+      ok: true,
+      bridge: "running",
+      githubCli: "not required",
+      jiraCommentPosting: "direct",
+      jiraAssigneeUpdate: "direct",
+      message: "Bridge ready.",
+    };
+  }
+
   const gh = findGh();
   if (!gh) {
     return {
@@ -147,6 +158,23 @@ function dispatchWorkflow({ issueKey, assigneeDisplayName }) {
   });
 }
 
+function updateAssigneeDirect({ issueKey, assigneeDisplayName }) {
+  cp.execFileSync(process.execPath, [
+    "scripts\\update-jira-assignee.cjs",
+  ], {
+    cwd: process.cwd(),
+    stdio: "pipe",
+    windowsHide: true,
+    env: {
+      ...process.env,
+      GITHUB_EVENT_NAME: "workflow_dispatch",
+      GITHUB_ACTOR: "DewanKabir009",
+      INPUT_ISSUE_KEY: issueKey,
+      INPUT_ASSIGNEE_DISPLAY_NAME: assigneeDisplayName,
+    },
+  });
+}
+
 function dispatchChecklistWorkflow({ issueKey, payload }) {
   const gh = findGh();
   if (!gh) {
@@ -226,6 +254,18 @@ const server = http.createServer(async (request, response) => {
     }
 
     const requestPayload = validateAssignee(payload);
+    if (process.env.JIRA_MCP_TOKEN) {
+      updateAssigneeDirect(requestPayload);
+      writeJson(response, 200, {
+        ok: true,
+        issueKey: requestPayload.issueKey,
+        assigneeDisplayName: requestPayload.assigneeDisplayName,
+        mode: "direct",
+        jiraUrl: `https://golfnow.atlassian.net/browse/${requestPayload.issueKey}`,
+      }, origin);
+      return;
+    }
+
     dispatchWorkflow(requestPayload);
     writeJson(response, 202, {
       ok: true,
