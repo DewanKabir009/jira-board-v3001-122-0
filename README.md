@@ -4,7 +4,7 @@ Interactive release dashboard for Jira fixVersion `v3001.122.0`.
 
 - Live dashboard: <https://dewankabir009.github.io/jira-board-v3001-122-0/>
 - Jira source: `fixVersion = "v3001.122.0" ORDER BY updated DESC`
-- Current dashboard version: `v1.9.6`
+- Current dashboard version: `v1.10.2`
 
 The board groups release tickets by workflow status, keeps component and QA filters at the top, tracks subtask relationships, and preserves a Data Pull history so status movement is visible over time.
 
@@ -37,6 +37,13 @@ gh secret set JIRA_MCP_TOKEN --repo DewanKabir009/jira-board-v3001-122-0
 ```
 
 For `JIRA_MCP_TOKEN`, paste the token only into the GitHub CLI prompt or GitHub repository secret UI. Do not commit it to the repository.
+
+Optional repository variables:
+
+- `ASSIGNEE_DISPATCH_ENDPOINT`: Hosted bridge URL ending in `/assign`.
+- `TEST_CHECKLIST_COMMENT_ENDPOINT`: Hosted bridge URL ending in `/comment-checklist`.
+
+When these variables are unset, the generated dashboard keeps the local bridge fallback for development.
 
 ### Change Notifications
 
@@ -82,13 +89,14 @@ The repo also includes `.github/workflows/update-jira-assignee.yml`.
 Behavior:
 
 - The dashboard shows an assignee picker on every ticket and subtask.
-- Submit calls a local workflow dispatch bridge on `http://127.0.0.1:3991/assign`.
-- The bridge uses the already-authenticated GitHub CLI session to start the secured GitHub Actions workflow.
+- Submit calls the configured bridge endpoint. Production should use `ASSIGNEE_DISPATCH_ENDPOINT`; local development can still use `http://127.0.0.1:3991/assign`.
+- The hosted bridge keeps the GitHub dispatch token on the server side and starts the secured GitHub Actions workflow.
+- The local bridge remains available as a development fallback and can update Jira directly when `JIRA_MCP_TOKEN` is present.
 - The GitHub Action runs only for the trusted GitHub actor `DewanKabir009`.
 - Jira credentials stay in GitHub Secrets and are never sent to the browser.
 - The Action resolves the Jira account, updates the issue assignee, refreshes the board, and commits `index.html` when the board changes.
 - Repo admins can also run the workflow manually with `workflow_dispatch` inputs.
-- The footer shows `Assignee Bridge Status` and turns green when the local bridge is reachable and GitHub CLI auth is ready.
+- The footer shows `Assignee Bridge Status` and turns green when the configured bridge endpoint is reachable.
 
 Current allowed assignees:
 
@@ -97,13 +105,35 @@ Current allowed assignees:
 - Alex Mcnay
 - Anton Yurkevich
 
-Start the local bridge when using the live dashboard to update assignees:
+### Laptop-Free Hosted Bridge
+
+The repo includes `workers/assignee-bridge-worker.js` and `wrangler.toml.example` for a Cloudflare Worker bridge.
+
+Required hosted bridge setup:
+
+- Deploy the Worker and protect it with Cloudflare Access, or an equivalent auth layer.
+- Set `BOARD_DISPATCH_TOKEN` as a Worker secret. This GitHub token needs permission to dispatch Actions workflows in the board repos.
+- Set `ALLOWED_USER_EMAILS` to the people allowed to submit dashboard updates.
+- Set `ALLOWED_ORIGINS` to `https://dewankabir009.github.io`.
+- Set the GitHub repository variable `ASSIGNEE_DISPATCH_ENDPOINT` to the Worker `/assign` URL.
+- Set `TEST_CHECKLIST_COMMENT_ENDPOINT` to the Worker `/comment-checklist` URL if hosted checklist comments should also use the Worker.
+
+Example repository variable setup after the Worker is deployed:
+
+```powershell
+gh variable set ASSIGNEE_DISPATCH_ENDPOINT --body "https://your-worker.example.workers.dev/assign" --repo DewanKabir009/jira-board-v3001-122-0
+gh variable set TEST_CHECKLIST_COMMENT_ENDPOINT --body "https://your-worker.example.workers.dev/comment-checklist" --repo DewanKabir009/jira-board-v3001-122-0
+```
+
+Do not put the GitHub dispatch token, Jira token, or any shared secret in the dashboard HTML.
+
+Start the local bridge only when using the development fallback:
 
 ```powershell
 node scripts/dispatch-assignee-workflow-server.cjs
 ```
 
-The bridge does not hold the Jira token. It only dispatches the GitHub Actions workflows through `gh`, and the workflows read the Jira token from GitHub Secrets.
+The local bridge can dispatch GitHub Actions through `gh` or update Jira directly when `JIRA_MCP_TOKEN` is present. The hosted bridge dispatches GitHub Actions and keeps all secrets outside the static dashboard.
 
 ## Test Checklist Comments
 
@@ -117,7 +147,8 @@ Behavior:
 - The ticket card switches back to `Add Testing Checklist` when the checklist has zero items.
 - `Post checklist as Comment` posts the edited checklist as a Jira comment table on the associated main ticket.
 - Checklist item images can be attached from the modal and are uploaded to Jira as attachments, then embedded below the table in the comment.
-- Text-only comments can fall back to `.github/workflows/post-test-checklist-comment.yml`; image comments require the local bridge to have `JIRA_MCP_TOKEN` in its environment.
+- Text-only comments can run through `.github/workflows/post-test-checklist-comment.yml`; hosted comment dispatch uses the Worker `/comment-checklist` route.
+- Image comments still require a direct Jira-writing bridge path because GitHub workflow dispatch inputs are text-only.
 - Jira credentials stay in the local bridge or GitHub Secrets and are never sent to the browser.
 
 ## Local Refresh
@@ -363,6 +394,13 @@ Screenshot: `screenshots/jira-board-versions/17-full-description-images.png`
 - Added image attachments on checklist items and inline Jira comment rendering for posted checklist images.
 - Updated checklist comment posting so the local bridge can post directly to Jira when `JIRA_MCP_TOKEN` is available.
 
+### v1.10.2 - Hosted Assignee Bridge Prep
+
+- Added a deployable Cloudflare Worker bridge so assignee updates no longer need to depend on a laptop process.
+- Added `ASSIGNEE_DISPATCH_ENDPOINT` and `TEST_CHECKLIST_COMMENT_ENDPOINT` repository variable support in the dashboard generator.
+- Added release/repo context to assignee and checklist bridge payloads so one hosted bridge can serve both release boards safely.
+- Kept the localhost bridge as a development fallback until the hosted Worker URL is configured.
+
 ## Planned Next Steps
 
-- Add optional allow-list expansion if more GitHub users should be allowed to submit dashboard assignee updates.
+- Deploy the hosted bridge, protect it with Cloudflare Access, and set the dashboard endpoint repository variables.

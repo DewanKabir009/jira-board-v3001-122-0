@@ -3,11 +3,13 @@ const path = require("path");
 
 const workspace = __dirname;
 const siteUrl = "https://golfnow.atlassian.net";
-const dashboardVersion = "v1.10.1";
+const dashboardVersion = "v1.10.2";
 const repositorySlug = "DewanKabir009/jira-board-v3001-122-0";
 const dashboardUrl = "https://dewankabir009.github.io/jira-board-v3001-122-0/";
-const assigneeDispatchEndpoint = "http://127.0.0.1:3991/assign";
-const testChecklistCommentEndpoint = "http://127.0.0.1:3991/comment-checklist";
+const assigneeDispatchEndpoint = process.env.ASSIGNEE_DISPATCH_ENDPOINT || "http://127.0.0.1:3991/assign";
+const testChecklistCommentEndpoint =
+  process.env.TEST_CHECKLIST_COMMENT_ENDPOINT ||
+  assigneeDispatchEndpoint.replace(/\/assign$/, "/comment-checklist");
 const mediaAssetBasePath = "assets/jira-media";
 const assigneeOptions = [
   "Dewan Kabir",
@@ -3205,7 +3207,7 @@ function renderHtml(data) {
 
       function checkBridgeStatus() {
         setBridgeStatus("", "Checking");
-        fetch(getAssigneeStatusEndpoint(), { method: "GET", cache: "no-store" })
+        fetch(getAssigneeStatusEndpoint(), { method: "GET", cache: "no-store", credentials: "include" })
           .then(function (response) {
             return response.json().catch(function () {
               return { ok: false, message: "Unreadable bridge response." };
@@ -4028,6 +4030,7 @@ function renderHtml(data) {
           issueUrl: issue.url,
           summary: issue.summary,
           releaseVersion: data.version,
+          repositorySlug: githubRepo,
           dashboardUrl: window.location.href,
           sourceFiles: getChecklistFiles(issue).map(function (file) {
             return file.filename;
@@ -4073,6 +4076,7 @@ function renderHtml(data) {
         fetch(testChecklistCommentEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: "include",
           body: JSON.stringify(buildChecklistPostPayload(issue))
         })
           .then(function (response) {
@@ -4629,7 +4633,11 @@ function renderHtml(data) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             issueKey: issueKey,
-            assigneeDisplayName: requestedAssignee
+            assigneeDisplayName: requestedAssignee,
+            releaseVersion: data.version,
+            repositorySlug: githubRepo,
+            dashboardUrl: dashboardUrl,
+            requestedAt: new Date().toISOString()
           })
         })
           .then(function (response) {
