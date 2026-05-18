@@ -39,19 +39,25 @@ Acceptance:
 
 ### SPEC-01 Design Token System
 
+Status: Complete.
+
 Problem: Visual rules are currently embedded directly in generated pages, making future boards harder to keep consistent.
+
+Contract: [`design-tokens.md`](design-tokens.md)
 
 Deliverables:
 
 - Token map for status, priority, bridge state, checklist state, and board health.
 - Compact spacing scale for repeated QA use.
 - Accessible focus and button states.
+- Publish the design token map.
 
 Acceptance:
 
 - 122 and 123 boards share token names.
 - Text and controls do not shift or overflow on mobile.
 - Status and priority colors meet contrast expectations.
+- Hosted checklist marks SPEC-01 complete by default.
 
 ### SPEC-02 Information Architecture Refresh
 

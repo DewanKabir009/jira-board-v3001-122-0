@@ -590,6 +590,7 @@
         <a class="button" href="https://dewankabir009.github.io/jira-board-v3001-123-0/" target="_blank" rel="noopener">123 board</a>
         <a class="button" href="specs/dashboard-modernization.md">Full spec</a>
         <a class="button" href="specs/current-dashboard-contract.md">SPEC-00 contract</a>
+        <a class="button" href="specs/design-tokens.md">SPEC-01 tokens</a>
         <button class="button primary" id="resetProgress" type="button">Reset progress</button>
       </nav>
     </section>
@@ -739,18 +740,20 @@
         phase: "foundation",
         track: "design",
         priority: "high",
-        status: "ready",
+        status: "complete",
         framework: "CSS custom properties now, Tailwind v4 later",
-        summary: "Move colors, spacing, typography, radii, status chips, focus states, and density rules into a reusable dashboard token layer.",
+        summary: "Completed the reusable CSS custom property layer for colors, spacing, radii, status chips, priority chips, bridge state, checklist state, board health, and focus states.",
         deliverables: [
           "Token map for status, priority, bridge state, checklist state, and board health.",
           "Compact operational spacing scale for repeated QA use.",
-          "Accessible focus and button states."
+          "Accessible focus and button states.",
+          "Publish the design token map in specs/design-tokens.md."
         ],
         acceptance: [
           "The 122 and 123 boards share the same token names.",
           "Text and controls do not shift or overflow on mobile.",
-          "Status and priority colors meet contrast expectations."
+          "Status and priority colors meet contrast expectations.",
+          "Hosted checklist marks SPEC-01 complete by default."
         ],
         risks: [
           "Pure visual cleanup can drift from the data workflows unless tokens map to real dashboard states."
