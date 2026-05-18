@@ -17,19 +17,25 @@ Migrate the current generated Jira dashboards into a modern, static-first dashbo
 
 ### SPEC-00 Baseline Current Dashboard Contract
 
+Status: Complete.
+
 Problem: Current behavior is spread across `pull-jira-release-tickets.cjs`, generated `index.html`, GitHub Actions, the Cloudflare bridge, Slack notifications, and the shared template.
+
+Contract: [`current-dashboard-contract.md`](current-dashboard-contract.md)
 
 Deliverables:
 
 - Inventory 122, 123, and template repo responsibilities.
 - Define fields required by every generated board.
 - Capture current bridge and notification dependencies.
+- Publish the baseline current dashboard contract.
 
 Acceptance:
 
 - Specs name the files that own each behavior.
 - Future boards can be created without rediscovering infrastructure assumptions.
 - Bridge login, assignee updates, comments, Slack, and Pages deploys are represented.
+- Hosted checklist marks SPEC-00 complete by default.
 
 ### SPEC-01 Design Token System
 

@@ -589,6 +589,7 @@
         <a class="button" href="https://dewankabir009.github.io/jira-board-v3001-122-0/" target="_blank" rel="noopener">122 board</a>
         <a class="button" href="https://dewankabir009.github.io/jira-board-v3001-123-0/" target="_blank" rel="noopener">123 board</a>
         <a class="button" href="specs/dashboard-modernization.md">Full spec</a>
+        <a class="button" href="specs/current-dashboard-contract.md">SPEC-00 contract</a>
         <button class="button primary" id="resetProgress" type="button">Reset progress</button>
       </nav>
     </section>
@@ -713,18 +714,20 @@
         phase: "foundation",
         track: "strategy",
         priority: "high",
-        status: "ready",
+        status: "complete",
         framework: "Current generator",
-        summary: "Document the generated HTML, embedded Jira data, Cloudflare bridge, GitHub Actions, Slack, and board directory contracts before changing the runtime.",
+        summary: "Completed the current generated HTML, embedded Jira data, Cloudflare bridge, GitHub Actions, Slack, and board directory contract before changing the runtime.",
         deliverables: [
           "Inventory 122, 123, and template repo responsibilities.",
           "Define fields required by every generated board.",
-          "Capture current bridge and notification dependencies."
+          "Capture current bridge and notification dependencies.",
+          "Publish the baseline contract in specs/current-dashboard-contract.md."
         ],
         acceptance: [
           "Specs name the files that own each behavior.",
           "Future boards can be created without rediscovering infrastructure assumptions.",
-          "Bridge login, assignee updates, comments, Slack, and Pages deploys are represented."
+          "Bridge login, assignee updates, comments, Slack, and Pages deploys are represented.",
+          "Hosted checklist marks SPEC-00 complete by default."
         ],
         risks: [
           "Hidden generator behavior can be missed if the contract is inferred only from index.html."
@@ -987,6 +990,7 @@
 
     const storageKey = "modern-dashboard-spec-progress-v1";
     const openKey = "modern-dashboard-spec-open-v1";
+    const defaultCompletedSpecs = new Set(specs.filter((spec) => spec.status === "complete").map((spec) => spec.id));
     const list = document.querySelector("#specList");
     const search = document.querySelector("#search");
     const trackFilter = document.querySelector("#trackFilter");
@@ -1003,14 +1007,14 @@
     const migrationCount = document.querySelector("#migrationCount");
     const releaseCount = document.querySelector("#releaseCount");
 
-    let completed = readSet(storageKey);
+    let completed = readSet(storageKey, defaultCompletedSpecs);
     let openSpecs = readSet(openKey);
 
-    function readSet(key) {
+    function readSet(key, defaults = []) {
       try {
-        return new Set(JSON.parse(localStorage.getItem(key) || "[]"));
+        return new Set([...defaults, ...JSON.parse(localStorage.getItem(key) || "[]")]);
       } catch {
-        return new Set();
+        return new Set(defaults);
       }
     }
 
@@ -1075,6 +1079,7 @@
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = completed.has(spec.id);
+        checkbox.disabled = defaultCompletedSpecs.has(spec.id);
         checkbox.setAttribute("aria-label", `Mark ${spec.id} complete`);
         checkWrap.append(checkbox);
 
@@ -1091,7 +1096,7 @@
           [spec.phase, tagClass(spec.phase)],
           [spec.track, tagClass(spec.track)],
           [spec.priority, spec.priority === "high" ? "risk" : "build"],
-          [spec.status, spec.status === "ready" ? "qa" : "build"],
+          [spec.status, spec.status === "complete" || spec.status === "ready" ? "qa" : "build"],
           [spec.framework, "design"]
         ].forEach(([label, cls]) => {
           const tag = document.createElement("span");
@@ -1121,6 +1126,8 @@
 
         checkbox.addEventListener("change", () => {
           if (checkbox.checked) {
+            completed.add(spec.id);
+          } else if (defaultCompletedSpecs.has(spec.id)) {
             completed.add(spec.id);
           } else {
             completed.delete(spec.id);
@@ -1181,7 +1188,7 @@
     });
 
     resetProgress.addEventListener("click", () => {
-      completed = new Set();
+      completed = new Set(defaultCompletedSpecs);
       openSpecs = new Set();
       saveSet(storageKey, completed);
       saveSet(openKey, openSpecs);
