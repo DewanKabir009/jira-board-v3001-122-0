@@ -593,6 +593,10 @@
         <a class="button" href="specs/design-tokens.md">SPEC-01 tokens</a>
         <a class="button" href="specs/information-architecture.md">SPEC-02 IA</a>
         <a class="button" href="specs/dashboard-data-schema.md">SPEC-03 data</a>
+        <a class="button" href="specs/astro-migration-shell.md">SPEC-04 Astro</a>
+        <a class="button" href="specs/ticket-explorer-island.md">SPEC-05 explorer</a>
+        <a class="button" href="specs/checklist-workspace-upgrade.md">SPEC-06 checklist</a>
+        <a class="button" href="specs/release-analytics-band.md">SPEC-07 analytics</a>
         <button class="button primary" id="resetProgress" type="button">Reset progress</button>
       </nav>
     </section>
@@ -892,18 +896,20 @@
         phase: "enhancement",
         track: "experience",
         priority: "medium",
-        status: "planned",
-        framework: "Apache ECharts",
-        summary: "Add compact analytics for ticket flow, assignee load, priority mix, status changes, and component concentration.",
+        status: "complete",
+        framework: "Tokenized CSS charts, ECharts-ready",
+        summary: "Completed compact release analytics for ticket flow, assignee load, priority mix, status movement history, and component concentration.",
         deliverables: [
           "Assignee workload chart.",
           "Status movement chart from pullDiff history.",
-          "Component and priority distribution summaries."
+          "Component and priority distribution summaries.",
+          "Publish the release analytics band notes in specs/release-analytics-band.md."
         ],
         acceptance: [
           "Charts answer release questions without crowding ticket controls.",
           "Chart colors reuse design tokens.",
-          "Charts degrade into readable tables if JavaScript fails."
+          "Charts degrade into readable tables if JavaScript fails.",
+          "Hosted checklist marks SPEC-07 complete by default."
         ],
         risks: [
           "Charts can become decorative if they do not directly support QA triage decisions."

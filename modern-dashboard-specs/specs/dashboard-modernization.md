@@ -166,12 +166,14 @@ Deliverables:
 - Assignee workload chart.
 - Status movement chart from pullDiff history.
 - Component and priority distribution summaries.
+- Semantic table fallback under every chart.
 
 Acceptance:
 
 - Charts answer release questions without crowding ticket controls.
 - Chart colors reuse design tokens.
 - Charts degrade into readable tables if JavaScript fails.
+- Hosted checklist marks SPEC-07 complete by default.
 
 ### SPEC-08 Operations Health Center
 
