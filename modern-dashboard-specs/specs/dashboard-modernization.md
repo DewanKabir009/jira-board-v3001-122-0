@@ -110,14 +110,16 @@ Problem: A modern component architecture is useful, but only after the static da
 Deliverables:
 
 - Astro project structure in the shared template.
-- Static build workflow for GitHub Pages.
-- Initial components for layout, tickets, filters, and metadata.
+- Manual and pull-request static build workflow for a GitHub Pages-compatible artifact.
+- Initial components for layout, tickets, filters, metadata, and status lanes.
+- Publish the Astro migration shell notes.
 
 Acceptance:
 
 - Built output is static and GitHub Pages compatible.
-- Current board links and bridge actions still work.
+- Current board links and bridge actions still work because the generated dashboard remains the live root.
 - The old generator remains available as fallback until parity is proven.
+- Hosted checklist marks SPEC-04 complete by default.
 
 ### SPEC-05 Ticket Explorer Island
 

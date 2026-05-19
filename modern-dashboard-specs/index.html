@@ -817,18 +817,20 @@
         phase: "migration",
         track: "architecture",
         priority: "medium",
-        status: "planned",
+        status: "complete",
         framework: "Astro",
-        summary: "Create a static Astro shell that renders the dashboard from JSON while preserving GitHub Pages hosting and fast no-server delivery.",
+        summary: "Completed the parallel Astro app scaffold, static build workflow, and first layout, metadata, filter, status-lane, and ticket-card components backed by dashboard-data.json.",
         deliverables: [
           "Astro project structure in the shared template.",
-          "Static build workflow for GitHub Pages.",
-          "Initial components for layout, tickets, filters, and metadata."
+          "Manual and pull-request static build workflow for a GitHub Pages-compatible artifact.",
+          "Initial components for layout, tickets, filters, metadata, and status lanes.",
+          "Publish the Astro migration shell notes in specs/astro-migration-shell.md."
         ],
         acceptance: [
           "Built output is static and can be hosted on GitHub Pages.",
-          "Current board links and bridge actions still work.",
-          "The old generator can remain as fallback until parity is proven."
+          "Current board links and bridge actions still work because the generated dashboard remains the live root.",
+          "The old generator remains available as fallback until parity is proven.",
+          "Hosted checklist marks SPEC-04 complete by default."
         ],
         risks: [
           "Moving too early can complicate simple board spin-ups before the data contract is stable."
