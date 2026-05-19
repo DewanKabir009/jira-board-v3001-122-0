@@ -4,6 +4,8 @@ const path = require("path");
 const workspace = __dirname;
 const siteUrl = "https://golfnow.atlassian.net";
 const dashboardVersion = "v1.10.6";
+const dashboardDataSchemaVersion = "dashboard-data/v1";
+const dashboardDataFileName = "dashboard-data.json";
 const repositorySlug = "DewanKabir009/jira-board-v3001-122-0";
 const dashboardUrl = "https://dewankabir009.github.io/jira-board-v3001-122-0/";
 const defaultAssigneeDispatchEndpoint = "https://jira-board-assignee-bridge.dfkabir253.workers.dev/assign";
@@ -1084,6 +1086,7 @@ function buildJson(issues, jql, previousData) {
   );
 
   return {
+    schemaVersion: dashboardDataSchemaVersion,
     version,
     dashboardVersion,
     siteUrl,
@@ -1097,11 +1100,17 @@ function buildJson(issues, jql, previousData) {
   };
 }
 
-function renderHtml(data) {
+function buildDashboardData(data) {
   const jiraFilterUrl = `${siteUrl}/issues/?jql=${encodeURIComponent(data.jql)}`;
-  const readmeUrl = "https://github.com/DewanKabir009/jira-board-v3001-122-0#version-history";
-  const dataJson = serializeJsonForScript({
+  return {
     ...data,
+    schemaVersion: dashboardDataSchemaVersion,
+    schemaVersionNumber: 1,
+    dataArtifact: {
+      fileName: dashboardDataFileName,
+      generatedBy: "pull-jira-release-tickets.cjs",
+      schemaVersion: dashboardDataSchemaVersion,
+    },
     jiraFilterUrl,
     dashboardVersion,
     repositorySlug,
@@ -1109,7 +1118,12 @@ function renderHtml(data) {
     assigneeDispatchEndpoint,
     testChecklistCommentEndpoint,
     assigneeOptions,
-  });
+  };
+}
+
+function renderHtml(data) {
+  const readmeUrl = "https://github.com/DewanKabir009/jira-board-v3001-122-0#version-history";
+  const dataJson = serializeJsonForScript(data);
 
   return `<!doctype html>
 <html lang="en">
@@ -1119,6 +1133,7 @@ function renderHtml(data) {
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
+  <link rel="alternate" href="${escapeHtml(data.dataArtifact?.fileName || dashboardDataFileName)}" type="application/json" title="Dashboard data">
   <title>GolfNow CORE Jira Board - ${escapeHtml(version)}</title>
   <style>
     :root {
@@ -3436,10 +3451,11 @@ function renderHtml(data) {
               <span class="bridge-dot" aria-hidden="true"></span>
               <span><b>Assignee Bridge Status</b><small id="bridge-status-text">Checking</small></span>
             </span>
-            <a class="bridge-login-link" id="bridge-login-link" href="${escapeHtml(assigneeDispatchEndpoint.replace(/\/assign$/, "/status"))}" target="_blank" rel="noopener" title="Open Cloudflare Access login to re-enable assign and checklist comments">Login / re-enable bridge</a>
+          <a class="bridge-login-link" id="bridge-login-link" href="${escapeHtml(assigneeDispatchEndpoint.replace(/\/assign$/, "/status"))}" target="_blank" rel="noopener" title="Open Cloudflare Access login to re-enable assign and checklist comments">Login / re-enable bridge</a>
           </span>
+          <a href="${escapeHtml(data.dataArtifact?.fileName || dashboardDataFileName)}">Data artifact</a>
           <a href="${escapeHtml(readmeUrl)}">Dashboard ${escapeHtml(dashboardVersion)} notes</a>
-          <a href="${escapeHtml(jiraFilterUrl)}">Open Jira filter</a>
+          <a href="${escapeHtml(data.jiraFilterUrl)}">Open Jira filter</a>
         </span>
       </div>
     </section>
@@ -3493,6 +3509,7 @@ function renderHtml(data) {
       "use strict";
 
       var data = JSON.parse(document.getElementById("jira-data").textContent);
+      var dataArtifactUrl = data.dataArtifact && data.dataArtifact.fileName ? data.dataArtifact.fileName : "dashboard-data.json";
       var state = {
         activeComponent: "all",
         activeQa: "all",
@@ -5527,6 +5544,7 @@ function renderHtml(data) {
 async function main() {
   const safeVersion = version.replace(/[^a-zA-Z0-9._-]/g, "_");
   const jsonPath = path.join(workspace, `jira-${safeVersion}-tickets.json`);
+  const dashboardDataPath = path.join(workspace, dashboardDataFileName);
   const htmlPath = path.join(workspace, "jira-board-latest.html");
   const indexPath = path.join(workspace, "index.html");
   let previousData = null;
@@ -5534,20 +5552,26 @@ async function main() {
   const previousJsonData = fs.existsSync(jsonPath)
     ? parseJsonText(fs.readFileSync(jsonPath, "utf8"))
     : null;
+  const previousDashboardData = fs.existsSync(dashboardDataPath)
+    ? parseJsonText(fs.readFileSync(dashboardDataPath, "utf8"))
+    : null;
   const previousHtmlData = readDataFromHtml(indexPath);
-  previousData = newerPullData(previousJsonData, previousHtmlData);
+  previousData = newerPullData(newerPullData(previousJsonData, previousDashboardData), previousHtmlData);
 
   const { jql, issues: rawIssues } = await fetchIssues();
   const issues = await Promise.all(rawIssues.map(normalizeIssue));
   const json = buildJson(issues, jql, previousData);
+  const dashboardData = buildDashboardData(json);
 
   fs.writeFileSync(jsonPath, `${JSON.stringify(json, null, 2)}\n`);
-  fs.writeFileSync(htmlPath, renderHtml(json));
+  fs.writeFileSync(dashboardDataPath, `${JSON.stringify(dashboardData, null, 2)}\n`);
+  fs.writeFileSync(htmlPath, renderHtml(dashboardData));
 
   console.log(JSON.stringify({
     version,
     total: issues.length,
     jsonPath,
+    dashboardDataPath,
     htmlPath,
     jiraFilterUrl: `${siteUrl}/issues/?jql=${encodeURIComponent(jql)}`,
   }, null, 2));

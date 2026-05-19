@@ -83,19 +83,25 @@ Acceptance:
 
 ### SPEC-03 Data Artifact Separation
 
+Status: Complete.
+
 Problem: Embedded JSON inside HTML makes future framework migration harder.
+
+Contract: [`dashboard-data-schema.md`](dashboard-data-schema.md)
 
 Deliverables:
 
 - Versioned dashboard-data JSON schema.
 - Compatibility layer for embedded data while old boards remain live.
 - Schema notes for pullDiff, issue cards, images, checklist entries, and board registry.
+- Publish the dashboard data schema.
 
 Acceptance:
 
 - The generator can emit both `index.html` and a standalone JSON artifact.
 - The modern dashboard can load the same snapshot without re-pulling Jira.
 - Schema changes are backward-compatible or versioned.
+- Hosted checklist marks SPEC-03 complete by default.
 
 ### SPEC-04 Astro Migration Shell
 

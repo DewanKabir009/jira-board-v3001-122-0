@@ -592,6 +592,7 @@
         <a class="button" href="specs/current-dashboard-contract.md">SPEC-00 contract</a>
         <a class="button" href="specs/design-tokens.md">SPEC-01 tokens</a>
         <a class="button" href="specs/information-architecture.md">SPEC-02 IA</a>
+        <a class="button" href="specs/dashboard-data-schema.md">SPEC-03 data</a>
         <button class="button primary" id="resetProgress" type="button">Reset progress</button>
       </nav>
     </section>
@@ -791,18 +792,20 @@
         phase: "migration",
         track: "architecture",
         priority: "high",
-        status: "ready",
+        status: "complete",
         framework: "JSON artifact contract",
-        summary: "Split generated dashboard data from markup so the same Jira snapshot can power static HTML now and Astro components later.",
+        summary: "Completed the published dashboard-data.json artifact with schema metadata, embedded-data compatibility, and refresh workflow publishing support.",
         deliverables: [
           "Versioned dashboard-data.json schema.",
           "Compatibility layer for embedded data while old boards remain live.",
-          "Schema notes for pullDiff, issue cards, images, checklist entries, and board registry."
+          "Schema notes for pullDiff, issue cards, images, checklist entries, and board registry.",
+          "Publish the dashboard data schema in specs/dashboard-data-schema.md."
         ],
         acceptance: [
           "The generator can emit both index.html and a standalone JSON artifact.",
           "The modern dashboard can load the same snapshot without re-pulling Jira.",
-          "Schema changes are backward-compatible or versioned."
+          "Schema changes are backward-compatible or versioned.",
+          "Hosted checklist marks SPEC-03 complete by default."
         ],
         risks: [
           "GitHub Pages cache behavior may hide stale JSON if filenames are not versioned or cache-safe."
