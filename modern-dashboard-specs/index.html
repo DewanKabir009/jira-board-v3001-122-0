@@ -597,6 +597,7 @@
         <a class="button" href="specs/ticket-explorer-island.md">SPEC-05 explorer</a>
         <a class="button" href="specs/checklist-workspace-upgrade.md">SPEC-06 checklist</a>
         <a class="button" href="specs/release-analytics-band.md">SPEC-07 analytics</a>
+        <a class="button" href="specs/operations-health-center.md">SPEC-08 ops</a>
         <button class="button primary" id="resetProgress" type="button">Reset progress</button>
       </nav>
     </section>
@@ -921,18 +922,20 @@
         phase: "enhancement",
         track: "ops",
         priority: "high",
-        status: "ready",
-        framework: "GitHub Actions plus Cloudflare status",
-        summary: "Surface GitHub Actions health, bridge login state, Slack notification status, Pages deploy freshness, and last successful Jira pull.",
+        status: "complete",
+        framework: "GitHub Actions plus Cloudflare status links",
+        summary: "Completed the operations health center for Jira data freshness, Pages publishing, hosted bridge auth, workflow history, and Slack notification links.",
         deliverables: [
           "Dashboard health panel with latest pull and deploy status.",
           "Bridge state copy that distinguishes login required from offline.",
-          "Links to relevant workflows and Cloudflare login."
+          "Links to relevant workflows and Cloudflare login.",
+          "Publish the operations health center notes in specs/operations-health-center.md."
         ],
         acceptance: [
           "Users can tell whether data refresh and Jira write paths are separate.",
           "Historical failed workflow emails are not mistaken for current outages.",
-          "The bridge status never falls back to localhost."
+          "The bridge status never falls back to localhost.",
+          "Hosted checklist marks SPEC-08 complete by default."
         ],
         risks: [
           "Live health checks can be blocked by auth or CORS and need graceful status language."

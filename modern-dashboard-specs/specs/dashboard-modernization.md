@@ -184,12 +184,15 @@ Deliverables:
 - Dashboard health panel with latest pull and deploy status.
 - Bridge state copy that distinguishes login required from offline.
 - Links to relevant workflows and Cloudflare login.
+- Slack notification workflow status link.
+- Localhost bridge detection for bad live-board configuration.
 
 Acceptance:
 
 - Users can tell whether data refresh and Jira write paths are separate.
 - Historical failed workflow emails are not mistaken for current outages.
 - The bridge status never falls back to localhost.
+- Hosted checklist marks SPEC-08 complete by default.
 
 ### SPEC-09 Multi-board Registry
 
