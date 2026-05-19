@@ -130,12 +130,14 @@ Deliverables:
 - Dense ticket grid with status, assignee, priority, component, parent, and changed-since-last-pull filters.
 - Saved view presets for QA testing, code review, status moves, and unassigned work.
 - Side panel details for selected ticket.
+- Publish the ticket explorer island notes.
 
 Acceptance:
 
 - Users can scan 50 plus tickets without the page feeling heavy.
 - Filters update without losing ticket context.
-- Rows link to Jira and preserve checklist actions.
+- Rows link to Jira and preserve checklist actions through current-board action links.
+- Hosted checklist marks SPEC-05 complete by default.
 
 ### SPEC-06 Checklist Workspace Upgrade
 

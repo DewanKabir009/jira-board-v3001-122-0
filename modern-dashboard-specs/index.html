@@ -842,18 +842,20 @@
         phase: "migration",
         track: "experience",
         priority: "high",
-        status: "planned",
+        status: "complete",
         framework: "React island with TanStack Table",
-        summary: "Replace long card scanning with a dense ticket explorer that supports status, assignee, priority, component, parent, and changed-since-last-pull filters.",
+        summary: "Completed the React and TanStack Table explorer in the Astro preview with dense scanning, presets, filters, pagination, and selected-ticket details.",
         deliverables: [
-          "Virtualized or paginated ticket grid.",
+          "Paginated ticket grid with sortable columns.",
           "Saved view presets for QA testing, code review, status moves, and unassigned work.",
-          "Side panel details for selected ticket."
+          "Side panel details for selected ticket.",
+          "Publish the ticket explorer island notes in specs/ticket-explorer-island.md."
         ],
         acceptance: [
           "Users can scan 50 plus tickets without the page feeling heavy.",
           "Filters update without losing ticket context.",
-          "Rows link to Jira and preserve checklist actions."
+          "Rows link to Jira and preserve checklist actions through current-board action links.",
+          "Hosted checklist marks SPEC-05 complete by default."
         ],
         risks: [
           "A table-only interface can bury rich description and image context if detail panels are weak."
