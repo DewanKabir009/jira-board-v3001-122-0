@@ -148,12 +148,14 @@ Deliverables:
 - Checklist state model for imported and manual test cases.
 - Evidence and concern fields per ticket.
 - Comment preview that mirrors Jira output before submission.
+- Publish the checklist workspace upgrade notes.
 
 Acceptance:
 
 - Checklist comments remain posted through the Cloudflare bridge.
 - Manual checklist entries can be edited before submission.
 - Users can distinguish draft, ready, submitted, and failed states.
+- Hosted checklist marks SPEC-06 complete by default.
 
 ### SPEC-07 Release Analytics Band
 

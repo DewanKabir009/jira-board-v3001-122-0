@@ -867,18 +867,20 @@
         phase: "enhancement",
         track: "experience",
         priority: "high",
-        status: "planned",
+        status: "complete",
         framework: "React island",
-        summary: "Turn the checklist modal into a QA workspace with draft state, evidence notes, completion summary, and comment submission readiness.",
+        summary: "Completed the editable checklist workspace in the Astro preview with imported/manual cases, evidence, concerns, Jira comment preview, and bridge submission states.",
         deliverables: [
           "Checklist state model for imported and manual test cases.",
           "Evidence and concern fields per ticket.",
-          "Comment preview that mirrors Jira output before submission."
+          "Comment preview that mirrors Jira output before submission.",
+          "Publish the checklist workspace notes in specs/checklist-workspace-upgrade.md."
         ],
         acceptance: [
           "Checklist comments remain posted through the Cloudflare bridge.",
           "Manual checklist entries can be edited before submission.",
-          "Users can distinguish draft, ready, submitted, and failed states."
+          "Users can distinguish draft, ready, submitted, and failed states.",
+          "Hosted checklist marks SPEC-06 complete by default."
         ],
         risks: [
           "Local draft state can confuse users if it is not clear what has reached Jira."
