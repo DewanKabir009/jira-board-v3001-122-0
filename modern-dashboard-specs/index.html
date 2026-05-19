@@ -591,6 +591,7 @@
         <a class="button" href="specs/dashboard-modernization.md">Full spec</a>
         <a class="button" href="specs/current-dashboard-contract.md">SPEC-00 contract</a>
         <a class="button" href="specs/design-tokens.md">SPEC-01 tokens</a>
+        <a class="button" href="specs/information-architecture.md">SPEC-02 IA</a>
         <button class="button primary" id="resetProgress" type="button">Reset progress</button>
       </nav>
     </section>
@@ -765,18 +766,20 @@
         phase: "foundation",
         track: "experience",
         priority: "high",
-        status: "ready",
+        status: "complete",
         framework: "Static HTML sections",
-        summary: "Restructure the dashboard around release scanning: overview, changed tickets, ticket explorer, QA checklist actions, boards, and operations health.",
+        summary: "Completed the release-scan first viewport, release board navigator, and ticket-local detail hierarchy for descriptions, checklist actions, fields, and Jira actions.",
         deliverables: [
           "First viewport layout for active release work.",
           "Collapsible board directory expanded into a release navigator.",
-          "Ticket detail hierarchy for description, images, checklist, and Jira actions."
+          "Ticket detail hierarchy for description, images, checklist, and Jira actions.",
+          "Publish the IA contract in specs/information-architecture.md."
         ],
         acceptance: [
           "A QA user can find changed tickets without reading every card.",
           "Board links and data pull metadata are visible but not dominant.",
-          "Action controls stay near the ticket they affect."
+          "Action controls stay near the ticket they affect.",
+          "Hosted checklist marks SPEC-02 complete by default."
         ],
         risks: [
           "Adding too many sections can make the page feel like documentation instead of a working dashboard."

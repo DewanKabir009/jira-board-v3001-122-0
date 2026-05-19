@@ -61,19 +61,25 @@ Acceptance:
 
 ### SPEC-02 Information Architecture Refresh
 
+Status: Complete.
+
 Problem: The dashboard needs to prioritize release scanning over long-form page reading.
+
+Contract: [`information-architecture.md`](information-architecture.md)
 
 Deliverables:
 
 - First viewport layout for active release work.
 - Board directory expanded into a release navigator.
 - Ticket detail hierarchy for description, images, checklist, and Jira actions.
+- Publish the information architecture contract.
 
 Acceptance:
 
 - A QA user can find changed tickets without reading every card.
 - Board links and data pull metadata are visible but not dominant.
 - Action controls stay near the ticket they affect.
+- Hosted checklist marks SPEC-02 complete by default.
 
 ### SPEC-03 Data Artifact Separation
 
