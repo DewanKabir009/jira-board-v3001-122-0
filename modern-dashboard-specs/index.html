@@ -600,6 +600,7 @@
         <a class="button" href="specs/operations-health-center.md">SPEC-08 ops</a>
         <a class="button" href="specs/multi-board-registry.md">SPEC-09 boards</a>
         <a class="button" href="specs/accessibility-responsive-qa.md">SPEC-10 QA</a>
+        <a class="button" href="specs/rollout-fallback-plan.md">SPEC-11 rollout</a>
         <button class="button primary" id="resetProgress" type="button">Reset progress</button>
       </nav>
     </section>
@@ -999,18 +1000,20 @@
         phase: "release",
         track: "ops",
         priority: "high",
-        status: "planned",
+        status: "complete",
         framework: "Parallel static deploy",
-        summary: "Ship the modern dashboard beside the current dashboard until generated-data parity, Jira actions, checklist comments, Slack notifications, and Pages deploys are proven.",
+        summary: "Completed the rollout guardrails for shipping the modern dashboard beside the current dashboard until parity is proven.",
         deliverables: [
           "Parallel preview URL for modern dashboard.",
           "Parity checklist against 122 and 123 boards.",
-          "Fallback instructions for returning to current static generator output."
+          "Fallback instructions for returning to current static generator output.",
+          "Publish the rollout and fallback notes in specs/rollout-fallback-plan.md."
         ],
         acceptance: [
           "Current dashboards remain available throughout migration.",
           "Modern preview uses the same Jira snapshot as the current board.",
-          "Cutover only happens after action paths and read paths are verified."
+          "Cutover only happens after action paths and read paths are verified.",
+          "Hosted checklist marks SPEC-11 complete by default."
         ],
         risks: [
           "Replacing the board too early would increase operational risk for active QA work."

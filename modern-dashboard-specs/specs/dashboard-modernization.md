@@ -239,12 +239,14 @@ Deliverables:
 - Parallel preview URL for the modern dashboard.
 - Parity checklist against 122 and 123 boards.
 - Fallback instructions for returning to current static generator output.
+- Publish the rollout and fallback notes in specs/rollout-fallback-plan.md.
 
 Acceptance:
 
 - Current dashboards remain available throughout migration.
 - Modern preview uses the same Jira snapshot as the current board.
 - Cutover only happens after action paths and read paths are verified.
+- Hosted checklist marks SPEC-11 complete by default.
 
 ## Definition Of Ready
 
