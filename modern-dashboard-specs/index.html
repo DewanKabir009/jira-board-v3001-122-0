@@ -40,6 +40,7 @@
     body {
       margin: 0;
       min-height: 100vh;
+      overflow-x: hidden;
       background:
         linear-gradient(180deg, #eef4fb 0, rgba(244, 246, 248, 0) 360px),
         var(--page);
@@ -69,9 +70,9 @@
 
     .masthead {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr);
       gap: 20px;
-      align-items: end;
+      align-items: start;
       padding: 10px 0 18px;
     }
 
@@ -104,7 +105,8 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      justify-content: flex-end;
+      max-width: 100%;
+      justify-content: flex-start;
       align-items: center;
     }
 
