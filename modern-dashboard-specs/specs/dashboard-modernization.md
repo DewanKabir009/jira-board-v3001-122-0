@@ -203,12 +203,14 @@ Deliverables:
 - `boards.json` registry with release, URL, status, owner, and notes.
 - Shared board directory component.
 - Automation hook for new board creation.
+- Current board highlighting in the modern preview.
 
 Acceptance:
 
 - 122 and 123 appear as first registry entries.
 - Future boards can be added without editing each generated page manually.
 - The shared template owns the default directory structure.
+- Hosted checklist marks SPEC-09 complete by default.
 
 ### SPEC-10 Accessibility and Responsive QA
 

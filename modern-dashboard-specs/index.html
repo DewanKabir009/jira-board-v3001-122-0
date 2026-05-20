@@ -598,6 +598,7 @@
         <a class="button" href="specs/checklist-workspace-upgrade.md">SPEC-06 checklist</a>
         <a class="button" href="specs/release-analytics-band.md">SPEC-07 analytics</a>
         <a class="button" href="specs/operations-health-center.md">SPEC-08 ops</a>
+        <a class="button" href="specs/multi-board-registry.md">SPEC-09 boards</a>
         <button class="button primary" id="resetProgress" type="button">Reset progress</button>
       </nav>
     </section>
@@ -947,18 +948,20 @@
         phase: "migration",
         track: "architecture",
         priority: "medium",
-        status: "ready",
+        status: "complete",
         framework: "Board registry JSON",
-        summary: "Promote the current board links into a maintainable registry that can list past, active, and future boards as they are spun up.",
+        summary: "Completed the maintainable board registry that lists active release boards and can be extended as future boards are spun up.",
         deliverables: [
           "boards.json registry with release, URL, status, owner, and notes.",
           "Shared board directory component.",
-          "Automation hook for new board creation."
+          "Automation hook for new board creation.",
+          "Publish the multi-board registry notes in specs/multi-board-registry.md."
         ],
         acceptance: [
           "122 and 123 appear as first registry entries.",
           "Future boards can be added without editing each generated page manually.",
-          "The shared template owns the default directory structure."
+          "The shared template owns the default directory structure.",
+          "Hosted checklist marks SPEC-09 complete by default."
         ],
         risks: [
           "A manually edited registry will drift unless board spin-up updates it automatically."
