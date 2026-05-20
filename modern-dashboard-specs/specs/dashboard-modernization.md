@@ -260,7 +260,7 @@ Deliverables:
 - Evidence-required gates for assignee writes, checklist comments, Slack delivery, and final signoff.
 - Links to the current board, modern preview, Cloudflare bridge status, GitHub Actions workflows, and validation runbook.
 - Modern custom dropdown controls with Jira assignee avatars and compact initials fallback.
-- Refreshed dashboard color tokens across fairway green, deep teal, cool sky, amber, rose, and violet accents.
+- Refreshed dashboard color tokens across electric blue, fairway green, cool sky, bright lime, amber, rose, and violet accents.
 - Publish the cutover validation notes in specs/cutover-readiness-validation.md.
 
 Acceptance:
