@@ -11,6 +11,7 @@ The modern dashboard should not be promoted from preview until live evidence pro
 - Cutover validation panel in the Astro preview.
 - Evidence-required gates for assignee writes, checklist comments, Slack delivery, and final signoff.
 - Links from the preview to the current board, Cloudflare bridge status, GitHub Actions workflows, and this runbook.
+- Custom compact dropdowns, Jira assignee avatars, and refreshed dashboard color tokens for the modern preview.
 
 ## Validation Gates
 
@@ -35,6 +36,7 @@ The modern dashboard should not be promoted from preview until live evidence pro
 ## Acceptance
 
 - Modern previews display the cutover validation gates.
+- Modern preview dropdowns are custom controls, not native browser select menus, and assignee options show Jira avatars when the data artifact includes them.
 - Write gates stay evidence-required until a named test ticket proves the mutation.
 - Current boards remain available as the fallback path.
 - SPEC-12 appears on the hosted checklist as the next release gate.

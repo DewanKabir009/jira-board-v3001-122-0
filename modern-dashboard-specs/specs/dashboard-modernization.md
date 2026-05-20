@@ -259,11 +259,14 @@ Deliverables:
 - Cutover validation panel in the Astro preview.
 - Evidence-required gates for assignee writes, checklist comments, Slack delivery, and final signoff.
 - Links to the current board, modern preview, Cloudflare bridge status, GitHub Actions workflows, and validation runbook.
+- Modern custom dropdown controls with Jira assignee avatars and compact initials fallback.
+- Refreshed dashboard color tokens across blue, teal, amber, rose, and violet accents.
 - Publish the cutover validation notes in specs/cutover-readiness-validation.md.
 
 Acceptance:
 
 - Read parity can be checked without mutating Jira.
+- Modern preview dropdowns are custom controls, not native browser select menus, and assignee options show Jira avatars when the data artifact includes them.
 - Assignee writes, checklist comments, and Slack notifications stay evidence-required until a named test ticket proves them.
 - Current dashboards remain available as the fallback path.
 - Hosted checklist shows SPEC-12 as the next release gate.
