@@ -248,6 +248,26 @@ Acceptance:
 - Cutover only happens after action paths and read paths are verified.
 - Hosted checklist marks SPEC-11 complete by default.
 
+### SPEC-12 Cutover Readiness Validation
+
+Status: Ready.
+
+Problem: The modern preview needs a visible evidence gate so configured services are not mistaken for proven live mutations.
+
+Deliverables:
+
+- Cutover validation panel in the Astro preview.
+- Evidence-required gates for assignee writes, checklist comments, Slack delivery, and final signoff.
+- Links to the current board, modern preview, Cloudflare bridge status, GitHub Actions workflows, and validation runbook.
+- Publish the cutover validation notes in specs/cutover-readiness-validation.md.
+
+Acceptance:
+
+- Read parity can be checked without mutating Jira.
+- Assignee writes, checklist comments, and Slack notifications stay evidence-required until a named test ticket proves them.
+- Current dashboards remain available as the fallback path.
+- Hosted checklist shows SPEC-12 as the next release gate.
+
 ## Definition Of Ready
 
 - The spec names affected repos and files.

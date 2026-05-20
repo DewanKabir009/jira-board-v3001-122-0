@@ -601,6 +601,7 @@
         <a class="button" href="specs/multi-board-registry.md">SPEC-09 boards</a>
         <a class="button" href="specs/accessibility-responsive-qa.md">SPEC-10 QA</a>
         <a class="button" href="specs/rollout-fallback-plan.md">SPEC-11 rollout</a>
+        <a class="button" href="specs/cutover-readiness-validation.md">SPEC-12 cutover</a>
         <button class="button primary" id="resetProgress" type="button">Reset progress</button>
       </nav>
     </section>
@@ -1017,6 +1018,31 @@
         ],
         risks: [
           "Replacing the board too early would increase operational risk for active QA work."
+        ]
+      },
+      {
+        id: "spec-12",
+        title: "Cutover readiness validation",
+        phase: "release",
+        track: "ops",
+        priority: "high",
+        status: "ready",
+        framework: "Evidence-gated release signoff",
+        summary: "Added the next release gate for proving assignee writes, checklist comments, Slack delivery, read parity, and final cutover signoff before the modern dashboard is promoted.",
+        deliverables: [
+          "Cutover validation panel in the Astro preview.",
+          "Evidence-required gates for assignee writes, checklist comments, Slack delivery, and final signoff.",
+          "Links to the current board, modern preview, Cloudflare bridge status, GitHub Actions workflows, and validation runbook.",
+          "Publish the cutover validation notes in specs/cutover-readiness-validation.md."
+        ],
+        acceptance: [
+          "Read parity can be checked without mutating Jira.",
+          "Assignee writes, checklist comments, and Slack notifications stay evidence-required until a named test ticket proves them.",
+          "Current dashboards remain available as the fallback path.",
+          "Hosted checklist shows SPEC-12 as the next release gate."
+        ],
+        risks: [
+          "A green bridge status can be mistaken for write-path proof unless evidence remains explicit."
         ]
       }
     ];
