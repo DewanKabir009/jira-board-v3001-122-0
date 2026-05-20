@@ -855,15 +855,17 @@
         priority: "high",
         status: "complete",
         framework: "React island with TanStack Table",
-        summary: "Completed the React and TanStack Table explorer in the Astro preview with dense scanning, presets, filters, pagination, and selected-ticket details.",
+        summary: "Completed the React explorer in the Astro preview with a parent-first card board, collapsible subtasks, dense table fallback, presets, filters, pagination, and selected-ticket details.",
         deliverables: [
-          "Paginated ticket grid with sortable columns.",
+          "View toggle between parent-first cards and a dense sortable table.",
+          "Collapsible subtask sections inside each main ticket card.",
           "Saved view presets for QA testing, code review, status moves, and unassigned work.",
           "Side panel details for selected ticket.",
           "Publish the ticket explorer island notes in specs/ticket-explorer-island.md."
         ],
         acceptance: [
           "Users can scan 50 plus tickets without the page feeling heavy.",
+          "Card view keeps subtasks under their parent ticket until expanded.",
           "Filters update without losing ticket context.",
           "Rows link to Jira and preserve checklist actions through current-board action links.",
           "Hosted checklist marks SPEC-05 complete by default."
@@ -1028,23 +1030,26 @@
         phase: "release",
         track: "ops",
         priority: "high",
-        status: "ready",
+        status: "complete",
         framework: "Evidence-gated release signoff",
-        summary: "Added the next release gate for proving assignee writes, checklist comments, Slack delivery, read parity, and final cutover signoff before the modern dashboard is promoted.",
+        summary: "Completed the release gate for proving assignee writes, checklist comments, Slack delivery, read parity, final cutover signoff, and parent-first ticket board parity before any promotion.",
         deliverables: [
           "Cutover validation panel in the Astro preview.",
           "Evidence-required gates for assignee writes, checklist comments, Slack delivery, and final signoff.",
           "Links to the current board, modern preview, Cloudflare bridge status, GitHub Actions workflows, and validation runbook.",
           "Modern custom dropdown controls with Jira assignee avatars and compact initials fallback.",
           "Refreshed dashboard color tokens across electric blue, fairway green, cool sky, bright lime, amber, rose, and violet accents.",
+          "Parent-first ticket card view with a View toggle for dense table fallback.",
           "Publish the cutover validation notes in specs/cutover-readiness-validation.md."
         ],
         acceptance: [
           "Read parity can be checked without mutating Jira.",
+          "Ticket board can switch between Cards and Table without losing selected-ticket context.",
+          "Card view keeps subtasks collapsed under their parent ticket by default.",
           "Modern preview dropdowns are custom controls, not native browser select menus, and assignee options show Jira avatars when the data artifact includes them.",
           "Assignee writes, checklist comments, and Slack notifications stay evidence-required until a named test ticket proves them.",
           "Current dashboards remain available as the fallback path.",
-          "Hosted checklist shows SPEC-12 as the next release gate."
+          "Hosted checklist marks SPEC-12 complete by default."
         ],
         risks: [
           "A green bridge status can be mistaken for write-path proof unless evidence remains explicit."

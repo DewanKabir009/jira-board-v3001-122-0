@@ -123,10 +123,12 @@ Acceptance:
 
 ### SPEC-05 Ticket Explorer Island
 
-Problem: Card scanning does not scale well as ticket counts grow.
+Problem: QA needs both fast card scanning and dense list scanning without flattening main tickets and subtasks into one long board.
 
 Deliverables:
 
+- View toggle between parent-first cards and a dense ticket grid.
+- Collapsible subtask sections inside each main ticket card.
 - Dense ticket grid with status, assignee, priority, component, parent, and changed-since-last-pull filters.
 - Saved view presets for QA testing, code review, status moves, and unassigned work.
 - Side panel details for selected ticket.
@@ -135,6 +137,7 @@ Deliverables:
 Acceptance:
 
 - Users can scan 50 plus tickets without the page feeling heavy.
+- Card view keeps subtasks under their parent ticket until expanded.
 - Filters update without losing ticket context.
 - Rows link to Jira and preserve checklist actions through current-board action links.
 - Hosted checklist marks SPEC-05 complete by default.
@@ -250,7 +253,7 @@ Acceptance:
 
 ### SPEC-12 Cutover Readiness Validation
 
-Status: Ready.
+Status: Complete.
 
 Problem: The modern preview needs a visible evidence gate so configured services are not mistaken for proven live mutations.
 
@@ -261,6 +264,7 @@ Deliverables:
 - Links to the current board, modern preview, Cloudflare bridge status, GitHub Actions workflows, and validation runbook.
 - Modern custom dropdown controls with Jira assignee avatars and compact initials fallback.
 - Refreshed dashboard color tokens across electric blue, fairway green, cool sky, bright lime, amber, rose, and violet accents.
+- Parent-first ticket card view with a View toggle for dense table fallback.
 - Publish the cutover validation notes in specs/cutover-readiness-validation.md.
 
 Acceptance:
@@ -269,7 +273,7 @@ Acceptance:
 - Modern preview dropdowns are custom controls, not native browser select menus, and assignee options show Jira avatars when the data artifact includes them.
 - Assignee writes, checklist comments, and Slack notifications stay evidence-required until a named test ticket proves them.
 - Current dashboards remain available as the fallback path.
-- Hosted checklist shows SPEC-12 as the next release gate.
+- Hosted checklist marks SPEC-12 complete by default.
 
 ## Definition Of Ready
 
