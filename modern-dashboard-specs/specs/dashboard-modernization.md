@@ -221,12 +221,14 @@ Deliverables:
 - Playwright screenshot coverage for dashboard, filters, modal, and footer.
 - Keyboard focus smoke tests for action controls.
 - Responsive checks for text overflow and sticky controls.
+- Publish the accessibility and responsive QA notes in specs/accessibility-responsive-qa.md.
 
 Acceptance:
 
 - No overlapping text or clipped controls at mobile widths.
 - Interactive controls have visible focus states.
 - Screenshots are saved as review artifacts for risky UI changes.
+- Hosted checklist marks SPEC-10 complete by default.
 
 ### SPEC-11 Rollout and Fallback Plan
 

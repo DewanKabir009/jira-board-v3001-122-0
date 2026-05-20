@@ -599,6 +599,7 @@
         <a class="button" href="specs/release-analytics-band.md">SPEC-07 analytics</a>
         <a class="button" href="specs/operations-health-center.md">SPEC-08 ops</a>
         <a class="button" href="specs/multi-board-registry.md">SPEC-09 boards</a>
+        <a class="button" href="specs/accessibility-responsive-qa.md">SPEC-10 QA</a>
         <button class="button primary" id="resetProgress" type="button">Reset progress</button>
       </nav>
     </section>
@@ -973,18 +974,20 @@
         phase: "release",
         track: "qa",
         priority: "high",
-        status: "planned",
+        status: "complete",
         framework: "Playwright checks",
-        summary: "Create repeatable visual and accessibility checks for desktop and mobile layouts before publishing dashboard UI changes.",
+        summary: "Completed repeatable visual and accessibility checks for desktop, tablet, and mobile layouts before publishing dashboard UI changes.",
         deliverables: [
           "Playwright screenshot coverage for dashboard, filters, modal, and footer.",
           "Keyboard focus smoke tests for action controls.",
-          "Responsive checks for text overflow and sticky controls."
+          "Responsive checks for text overflow and sticky controls.",
+          "Publish the accessibility and responsive QA notes in specs/accessibility-responsive-qa.md."
         ],
         acceptance: [
           "No overlapping text or clipped controls at mobile widths.",
           "Interactive controls have visible focus states.",
-          "Screenshots are saved as review artifacts for risky UI changes."
+          "Screenshots are saved as review artifacts for risky UI changes.",
+          "Hosted checklist marks SPEC-10 complete by default."
         ],
         risks: [
           "Pure screenshot checks can miss data-specific edge cases unless fixtures include long ticket titles."
