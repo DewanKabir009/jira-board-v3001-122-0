@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-05-22T16:36:43.964Z",
-  "pulledAtDisplay": "May 22, 2026, 12:36 PM",
+  "pulledAt": "2026-05-22T16:41:46.495Z",
+  "pulledAtDisplay": "May 22, 2026, 12:41 PM",
   "total": 35,
   "issues": [
     {
@@ -900,201 +900,7 @@
       "description": "Impact\n\n- 15,000+ active customers cannot be tracked for CAKE affiliate conversions\n\n- No CAKE conversion tracking between March 11, 2026 and April 21, 2026 (~6 weeks of data loss)\n\n- Lost visibility into affiliate marketing effectiveness for all CAKE network partners\n\n- Potential commission/payment reconciliation issues\n\n- Inaccurate ROI reporting for affiliate campaigns\n\n- All CAKE affiliates affected, including Supreme Golf and other network partners\n\nExpected behaviour\n\n- CAKE affiliate conversion tracking should successfully record conversions in CRM.dbo.CRMAffNetworkReservations\n\n- Successful CAKE API responses should be recognized and processed correctly\n\n- Downstream pipeline (Glue → SSIS → Raptor) should receive new conversion data daily\n\n- Tableau reports should reflect current affiliate conversion activity\n\nActual behaviour\n\n- CAKE API calls succeed (HTTP 200 OK) but response validation fails\n\n- No records are written to CRM.dbo.CRMAffNetworkReservations database\n\n- Downstream pipeline has no new data to process\n\n- Tableau CAKE report shows stale data (last entry: March 11, 2026)\n\nSteps to reproduce\n\n- Navigate to GolfNow and make a reservation via a CAKE affiliate link (e.g., Supreme Golf)\n\n- Complete the booking process with valid payment\n\n- Check CRM.dbo.CRMAffNetworkReservations table for the reservation ID\n\n- Observe that no record is created (expected behavior: record should exist)\n\n- Test with CAKE tracking URL directly:\n\nhttps://trk.golfpartnernetwork.com/p.ashx?r=REQ_TEST_001&a=789&t=416784211&f=pb&e=3&ecsk=1806&ecqu=2&ecpr=50.00&ecv=18-COURSE&eccu=USD&ectx=7.50&ecco=US&ecrg=FL&ect=108.50&p=108.50\n\n- Observe response returns Code=1 and Msg=RECEIVED (not the expected Code=0 and Msg=SUCCESS)\n\nRoot Cause\n\nFile: GolfNow.API.Business/AffiliateNetworks/CakeApi.cs\nMethod: GetPixelResponse(string url) (lines 19-38)\nMethod: TrackSaleEcommerce() (lines 128-146)\n\nThe CAKE API changed their success response format around March 10, 2026:\n\nOld Format (Expected by our code):\n\n&lt;result&gt;\n&lt;code&gt;0&lt;/code&gt;\n&lt;msg&gt;SUCCESS&lt;/msg&gt;\n&lt;/result&gt;\n\nNew Format (Current CAKE API):\n\n&lt;result&gt;\n&lt;code&gt;1&lt;/code&gt;\n&lt;msg&gt;RECEIVED&lt;/msg&gt;\n&lt;/result&gt;\n\nThe validation logic at line 296 only accepts Code=0 and Msg=SUCCESS:\n\nif (response.StatusCode == HttpStatusCode.OK &amp;&amp; responseMSG != null\n&amp;&amp; responseMSG.Code == 0 &amp;&amp; responseMSG.Msg == API_MESSAGE)\nreturn true;\n\nWhen validation fails:\n\n- GetPixelResponse() returns false\n\n- Database write operation at lines 130-145 is skipped\n\n- No record created in CRM.dbo.CRMAffNetworkReservations\n\nOther information\n\n- Last Successful Tracking: March 10, 2026\n\n- Data Gap Period: March 11 - April 21, 2026 (~6 weeks)\n\n- Database Table: CRM.dbo.CRMAffNetworkReservations\n\n- CAKE Tracking Endpoint: https://trk.golfpartnernetwork.com/\n\n- Affected Code Location: DotNet2/TeeTimesAPI/GolfNow.API.2.1/GolfNow.API.Business/AffiliateNetworks/CakeApi.cs\n\n- Related Investigation: DS-22038 - CAKE Report - FactBookingExternalAttribute stale since 2026-03-10\n\n- Root Cause Analysis Document: Full analysis available in attached file\n\nConfirmed Working Components:\n\n- ✅ Front-end: Captures affiliate tracking parameters\n\n- ✅ Reservation API: Receives AffiliateTracking object\n\n- ✅ Workflow Engine: TrackReservationConversionActivity executes\n\n- ✅ CAKE API Call: HTTP request succeeds (200 OK)\n\n- ❌ Response Validation: Fails due to changed CAKE response format\n\n- ⬜ Database Write: Skipped (never reached)\n\n- ✅ Glue Job: Functional (no data to process)\n\n- ✅ SSIS Package: Functional (no data to process)\n\n- ✅ Tableau Report: Reflects stale data accurately\n\nProposed Solution\n\nOption 1: Update Validation Logic (Recommended)\n\n- Accept Code=1 with Msg=RECEIVED as valid success response\n\n- Accept Code=1 with Msg=DUPLICATED for duplicate tracking (already tracked)\n\n- Keep backward compatibility with Code=0, Msg=SUCCESS if CAKE still supports it\n\n- Add logging to track different response types\n\nOption 2: Defensive Programming\n\n- Treat any HTTP 200 response as success unless explicitly an error\n\n- Log all responses for monitoring\n\n- Alert on unexpected response formats\n\nData Backfill Required\n\nOnce fix is deployed, backfill missing data:\n\n- Use CAKE Conversions reporting API to retrieve March 11 - April 21, 2026 data\n\n- Populate CRM.dbo.CRMAffNetworkReservations via script\n\n- Run Glue job and SSIS package to populate Raptor.dbo.FactBookingExternalAttribute\n\n- Verify Tableau report reflects complete data",
       "descriptionHtml": "<h3>Impact</h3><ul><li><p><strong>15,000+ active customers</strong> cannot be tracked for CAKE affiliate conversions</p></li><li><p>No CAKE conversion tracking between <strong>March 11, 2026 and April 21, 2026</strong> (~6 weeks of data loss)</p></li><li><p>Lost visibility into affiliate marketing effectiveness for all CAKE network partners</p></li><li><p>Potential commission/payment reconciliation issues</p></li><li><p>Inaccurate ROI reporting for affiliate campaigns</p></li><li><p>All CAKE affiliates affected, including Supreme Golf and other network partners</p></li></ul><h3>Expected behaviour</h3><ul><li><p>CAKE affiliate conversion tracking should successfully record conversions in <code>CRM.dbo.CRMAffNetworkReservations</code></p></li><li><p>Successful CAKE API responses should be recognized and processed correctly</p></li><li><p>Downstream pipeline (Glue → SSIS → Raptor) should receive new conversion data daily</p></li><li><p>Tableau reports should reflect current affiliate conversion activity</p></li></ul><h3>Actual behaviour</h3><ul><li><p>CAKE API calls succeed (HTTP 200 OK) but response validation fails</p></li><li><p>No records are written to <code>CRM.dbo.CRMAffNetworkReservations</code> database</p></li><li><p>Downstream pipeline has no new data to process</p></li><li><p>Tableau CAKE report shows stale data (last entry: March 11, 2026)</p></li></ul><h3>Steps to reproduce</h3><ol><li><p>Navigate to GolfNow and make a reservation via a CAKE affiliate link (e.g., Supreme Golf)</p></li><li><p>Complete the booking process with valid payment</p></li><li><p>Check <code>CRM.dbo.CRMAffNetworkReservations</code> table for the reservation ID</p></li><li><p>Observe that no record is created (expected behavior: record should exist)</p></li><li><p>Test with CAKE tracking URL directly:</p><pre><code>https://trk.golfpartnernetwork.com/p.ashx?r=REQ_TEST_001&amp;a=789&amp;t=416784211&amp;f=pb&amp;e=3&amp;ecsk=1806&amp;ecqu=2&amp;ecpr=50.00&amp;ecv=18-COURSE&amp;eccu=USD&amp;ectx=7.50&amp;ecco=US&amp;ecrg=FL&amp;ect=108.50&amp;p=108.50</code></pre></li><li><p>Observe response returns <code>Code=1</code> and <code>Msg=RECEIVED</code> (not the expected <code>Code=0</code> and <code>Msg=SUCCESS</code>)</p></li></ol><h3>Root Cause</h3><p><strong>File:</strong> <code>GolfNow.API.Business/AffiliateNetworks/CakeApi.cs</code>  \n<strong>Method:</strong> <code>GetPixelResponse(string url)</code> (lines 19-38)  \n<strong>Method:</strong> <code>TrackSaleEcommerce()</code> (lines 128-146)</p><p>The CAKE API changed their success response format around <strong>March 10, 2026</strong>:</p><p><strong>Old Format (Expected by our code):</strong></p><pre><code>&amp;lt;result&amp;gt;\n    &amp;lt;code&amp;gt;0&amp;lt;/code&amp;gt;\n    &amp;lt;msg&amp;gt;SUCCESS&amp;lt;/msg&amp;gt;\n&amp;lt;/result&amp;gt;</code></pre><p><strong>New Format (Current CAKE API):</strong></p><pre><code>&amp;lt;result&amp;gt;\n    &amp;lt;code&amp;gt;1&amp;lt;/code&amp;gt;\n    &amp;lt;msg&amp;gt;RECEIVED&amp;lt;/msg&amp;gt;\n&amp;lt;/result&amp;gt;</code></pre><p>The validation logic at line 296 only accepts <code>Code=0</code> and <code>Msg=SUCCESS</code>:</p><pre><code>if (response.StatusCode == HttpStatusCode.OK &amp;amp;&amp;amp; responseMSG != null\n    &amp;amp;&amp;amp; responseMSG.Code == 0 &amp;amp;&amp;amp; responseMSG.Msg == API_MESSAGE)\n    return true;</code></pre><p>When validation fails:</p><ul><li><p><code>GetPixelResponse()</code> returns <code>false</code></p></li><li><p>Database write operation at lines 130-145 is skipped</p></li><li><p>No record created in <code>CRM.dbo.CRMAffNetworkReservations</code></p></li></ul><h3>Other information</h3><ul><li><p><strong>Last Successful Tracking:</strong> March 10, 2026</p></li><li><p><strong>Data Gap Period:</strong> March 11 - April 21, 2026 (~6 weeks)</p></li><li><p><strong>Database Table:</strong> <code>CRM.dbo.CRMAffNetworkReservations</code></p></li><li><p><strong>CAKE Tracking Endpoint:</strong> <code>https://trk.golfpartnernetwork.com/</code></p></li><li><p><strong>Affected Code Location:</strong> <code>DotNet2/TeeTimesAPI/GolfNow.API.2.1/GolfNow.API.Business/AffiliateNetworks/CakeApi.cs</code></p></li><li><p><strong>Related Investigation:</strong> DS-22038 - CAKE Report - FactBookingExternalAttribute stale since 2026-03-10</p></li><li><p><strong>Root Cause Analysis Document:</strong> Full analysis available in attached file</p></li></ul><p><strong>Confirmed Working Components:</strong></p><ul><li><p>✅ Front-end: Captures affiliate tracking parameters</p></li><li><p>✅ Reservation API: Receives AffiliateTracking object</p></li><li><p>✅ Workflow Engine: TrackReservationConversionActivity executes</p></li><li><p>✅ CAKE API Call: HTTP request succeeds (200 OK)</p></li><li><p>❌ Response Validation: Fails due to changed CAKE response format</p></li><li><p>⬜ Database Write: Skipped (never reached)</p></li><li><p>✅ Glue Job: Functional (no data to process)</p></li><li><p>✅ SSIS Package: Functional (no data to process)</p></li><li><p>✅ Tableau Report: Reflects stale data accurately</p></li></ul><h3>Proposed Solution</h3><p><strong>Option 1: Update Validation Logic</strong> (Recommended)</p><ul><li><p>Accept <code>Code=1</code> with <code>Msg=RECEIVED</code> as valid success response</p></li><li><p>Accept <code>Code=1</code> with <code>Msg=DUPLICATED</code> for duplicate tracking (already tracked)</p></li><li><p>Keep backward compatibility with <code>Code=0, Msg=SUCCESS</code> if CAKE still supports it</p></li><li><p>Add logging to track different response types</p></li></ul><p><strong>Option 2: Defensive Programming</strong></p><ul><li><p>Treat any HTTP 200 response as success unless explicitly an error</p></li><li><p>Log all responses for monitoring</p></li><li><p>Alert on unexpected response formats</p></li></ul><h3>Data Backfill Required</h3><p>Once fix is deployed, backfill missing data:</p><ol><li><p>Use CAKE Conversions reporting API to retrieve March 11 - April 21, 2026 data</p></li><li><p>Populate <code>CRM.dbo.CRMAffNetworkReservations</code> via script</p></li><li><p>Run Glue job and SSIS package to populate <code>Raptor.dbo.FactBookingExternalAttribute</code></p></li><li><p>Verify Tableau report reflects complete data</p></li></ol>",
       "descriptionImageCount": 0,
-      "testChecklist": {
-        "files": [
-          {
-            "id": "718758",
-            "filename": "QA_Test_Guide_CORE-14412.md",
-            "created": "2026-04-29T11:15:26.399-0400",
-            "author": "Luis Vallejo Mursuli"
-          }
-        ],
-        "commentIds": [
-          "1157698"
-        ],
-        "total": 9,
-        "testCases": [
-          {
-            "id": "A1",
-            "title": "Successful Tracking with New CAKE Response Format",
-            "category": "4. Category A: Response Format Validation Tests",
-            "blocking": false,
-            "description": "Verify that CAKE conversions track successfully with the new API response format (Code=1, Msg=RECEIVED)",
-            "checks": [
-              "Reservation API call succeeds (HTTP 200/201)",
-              "ReservationID returned in response",
-              "Database record created with correct ReservationID",
-              "Vendor field = \"cake\"",
-              "AffNetworkID = \"6\"",
-              "CID (Campaign ID) matches request (12)",
-              "PID (Partner/Affiliate ID) matches request (456)",
-              "AID (Action/Event ID) matches request (3)",
-              "Trk (Tracking URL) populated with full CAKE URL",
-              "Application log shows \"CAKE response: httpStatus=OK, status=Success, code=1, msg=RECEIVED\"",
-              "No exceptions or errors in logs"
-            ],
-            "sourceFile": "QA_Test_Guide_CORE-14412.md"
-          },
-          {
-            "id": "A2",
-            "title": "Backward Compatibility with Legacy CAKE Response Format",
-            "category": "4. Category A: Response Format Validation Tests",
-            "blocking": false,
-            "description": "Verify backward compatibility - system still accepts legacy CAKE response format (Code=0, Msg=SUCCESS) if CAKE ever reverts or uses it",
-            "checks": [
-              "Reservation created successfully",
-              "Database record exists",
-              "Application log shows Success status",
-              "No validation errors even with legacy format",
-              "Code handles both formats gracefully"
-            ],
-            "sourceFile": "QA_Test_Guide_CORE-14412.md"
-          },
-          {
-            "id": "A3",
-            "title": "Duplicate Tracking Detection and Handling",
-            "category": "4. Category A: Response Format Validation Tests",
-            "blocking": false,
-            "description": "Verify that duplicate CAKE tracking attempts are detected and handled correctly (Code=1, Msg=DUPLICATED)",
-            "checks": [
-              "First reservation (A1) has database record",
-              "First reservation log: \"status=Success, msg=RECEIVED\"",
-              "Second reservation (A3) created successfully",
-              "Second reservation has database record",
-              "Second reservation log: \"status=Duplicate, msg=DUPLICATED\"",
-              "No errors or exceptions for duplicate tracking",
-              "Code treats Duplicate as acceptable (returns true)",
-              "Both reservations tracked in database"
-            ],
-            "sourceFile": "QA_Test_Guide_CORE-14412.md"
-          },
-          {
-            "id": "B1",
-            "title": "Complete Reservation with CAKE Affiliate Tracking",
-            "category": "5. Category B: Reservation Integration Tests",
-            "blocking": false,
-            "description": "Verify complete end-to-end reservation flow with CAKE affiliate tracking integration",
-            "checks": [
-              "Reservation created successfully (HTTP 200/201)",
-              "ReservationID returned",
-              "Payment processed",
-              "Tee time inventory decremented",
-              "Workflow activity executed (check logs for \"TrackReservationConversionActivity\")",
-              "CAKE pixel fired (check logs for \"CAKE response:\")",
-              "Database record exists with correct ReservationID",
-              "All required fields populated (see Test B2 for field details)",
-              "Trk contains full pixel URL with all parameters",
-              "No errors in reservation flow"
-            ],
-            "sourceFile": "QA_Test_Guide_CORE-14412.md"
-          },
-          {
-            "id": "B2",
-            "title": "Database Record Structure and Field Population Accuracy",
-            "category": "5. Category B: Reservation Integration Tests",
-            "blocking": false,
-            "description": "Verify that CAKE tracking database record structure is correct and all fields are populated with accurate data",
-            "checks": [
-              "Database record exists",
-              "All required fields populated (not NULL where required)",
-              "ReservationID matches API response",
-              "AffNetworkID = \"6\"",
-              "Vendor = \"cake\"",
-              "CID (Campaign ID) matches request",
-              "PID (Partner/Affiliate ID) matches request",
-              "AID (Action/Event ID) matches request",
-              "Amt1 (Amount) is numeric and formatted correctly",
-              "Qty1 (Quantity) matches number of players",
-              "Currency matches invoice currency",
-              "Method = \"Ecommerce\"",
-              "Trk (Tracking URL) is complete and valid",
-              "Trk contains all expected parameters",
-              "Trk parameters match reservation details",
-              "TimeStamp is recent"
-            ],
-            "sourceFile": "QA_Test_Guide_CORE-14412.md"
-          },
-          {
-            "id": "B3",
-            "title": "Repeated Reservation Call - Duplicate Tracking Behavior",
-            "category": "5. Category B: Reservation Integration Tests",
-            "blocking": false,
-            "description": "Verify that when the same CAKE RequestID is used multiple times, subsequent calls are logged as duplicates but don't fail the reservation",
-            "checks": [
-              "Second reservation created successfully",
-              "Second reservation has separate database record",
-              "Application log for first call: \"status=Success\"",
-              "Application log for second call: \"status=Duplicate\"",
-              "No errors or exceptions thrown for duplicate",
-              "Reservation flow completed normally",
-              "Both tracking records in database",
-              "Both records have same RequestID in Trk field",
-              "CAKE API recognized duplicate RequestID"
-            ],
-            "sourceFile": "QA_Test_Guide_CORE-14412.md"
-          },
-          {
-            "id": "C1",
-            "title": "Invalid or Malformed CAKE Parameters",
-            "category": "6. Category C: Error Handling Tests",
-            "blocking": false,
-            "description": "Verify that invalid CAKE affiliate parameters are handled gracefully without breaking reservation flow",
-            "checks": [
-              "API call completes (does not hang or crash)",
-              "Response received (even if tracking failed)",
-              "If CAKE rejects: No database record or status=Failure in logs",
-              "If CAKE accepts: Database record created",
-              "Application logs show CAKE response or exception",
-              "No unhandled exceptions",
-              "Reservation flow not blocked by invalid tracking parameters",
-              "Error handling code executed (try-catch wrapper)"
-            ],
-            "sourceFile": "QA_Test_Guide_CORE-14412.md"
-          },
-          {
-            "id": "C2",
-            "title": "Missing Required CAKE Parameters",
-            "category": "6. Category C: Error Handling Tests",
-            "blocking": false,
-            "description": "Verify behavior when required CAKE affiliate parameters are missing from request",
-            "checks": [
-              "Reservation created successfully",
-              "No CAKE tracking record in database",
-              "No \"CAKE response:\" log entries for this reservation",
-              "No errors or exceptions",
-              "Workflow validation skips tracking when parameters missing",
-              "Application remains stable"
-            ],
-            "sourceFile": "QA_Test_Guide_CORE-14412.md"
-          },
-          {
-            "id": "C3",
-            "title": "Verify Non-CAKE Affiliate Tracking Unaffected",
-            "category": "6. Category C: Error Handling Tests",
-            "blocking": false,
-            "description": "Verify that the CAKE response validation fix does not affect other affiliate tracking providers (regression test)",
-            "checks": [
-              "Code changes only in CAKE-specific files",
-              "No shared tracking infrastructure modified",
-              "TrackingProviderService routing unchanged",
-              "Other providers (if testable) work correctly",
-              "No regression in non-CAKE affiliate tracking",
-              "A1: Successful tracking with new CAKE response format (Code=1, Msg=RECEIVED)",
-              "A2: Backward compatibility with legacy format (Code=0, Msg=SUCCESS)",
-              "A3: Duplicate tracking detection (Code=1, Msg=DUPLICATED)",
-              "B1: Complete reservation with CAKE affiliate tracking",
-              "B2: Database record structure and field population accuracy",
-              "B3: Repeated reservation call - duplicate tracking behavior",
-              "C1: Invalid or malformed CAKE parameters",
-              "C2: Missing required CAKE parameters",
-              "C3: Verify non-CAKE affiliate tracking unaffected",
-              "All Category A tests (3 tests) completed",
-              "All Category B tests (3 tests) completed"
-            ],
-            "sourceFile": "QA_Test_Guide_CORE-14412.md"
-          }
-        ]
-      },
+      "testChecklist": null,
       "type": "Bug",
       "isSubtask": false,
       "status": "PO Review",
@@ -1987,10 +1793,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-05-22T16:31:41.616Z",
-    "previousPulledAtDisplay": "May 22, 2026, 12:31 PM",
-    "currentPulledAt": "2026-05-22T16:36:43.964Z",
-    "currentPulledAtDisplay": "May 22, 2026, 12:36 PM",
+    "previousPulledAt": "2026-05-22T16:36:43.964Z",
+    "previousPulledAtDisplay": "May 22, 2026, 12:36 PM",
+    "currentPulledAt": "2026-05-22T16:41:46.495Z",
+    "currentPulledAtDisplay": "May 22, 2026, 12:41 PM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -1998,6 +1804,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-05-22T16:36:43.964Z",
+      "previousPulledAtDisplay": "May 22, 2026, 12:36 PM",
+      "currentPulledAt": "2026-05-22T16:41:46.495Z",
+      "currentPulledAtDisplay": "May 22, 2026, 12:41 PM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-05-22T16:31:41.616Z",
       "previousPulledAtDisplay": "May 22, 2026, 12:31 PM",
@@ -3829,17 +3646,6 @@
       "previousPulledAtDisplay": "May 21, 2026, 8:39 PM",
       "currentPulledAt": "2026-05-22T00:44:35.618Z",
       "currentPulledAtDisplay": "May 21, 2026, 8:44 PM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-05-22T00:34:31.028Z",
-      "previousPulledAtDisplay": "May 21, 2026, 8:34 PM",
-      "currentPulledAt": "2026-05-22T00:39:33.364Z",
-      "currentPulledAtDisplay": "May 21, 2026, 8:39 PM",
       "isBaseline": false,
       "added": [],
       "removed": [],
