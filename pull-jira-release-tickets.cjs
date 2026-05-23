@@ -38,6 +38,7 @@ const fields = [
   "issuetype",
   "priority",
   "assignee",
+  "customfield_11800",
   "updated",
   "created",
   "fixVersions",
@@ -832,6 +833,22 @@ function avatarUrlForJiraUser(user) {
   return user?.avatarUrls?.["32x32"] || user?.avatarUrls?.["48x48"] || user?.avatarUrls?.["24x24"] || user?.avatarUrls?.["16x16"] || "";
 }
 
+function normalizeJiraUserField(value) {
+  const user = Array.isArray(value) ? value.find(Boolean) : value;
+  if (!user) {
+    return { displayName: "Unassigned", accountId: "", avatarUrl: "" };
+  }
+  if (typeof user === "string") {
+    return { displayName: user || "Unassigned", accountId: "", avatarUrl: "" };
+  }
+  const displayName = user.displayName || user.name || user.value || user.emailAddress || "Unassigned";
+  return {
+    displayName,
+    accountId: user.accountId || "",
+    avatarUrl: avatarUrlForJiraUser(user),
+  };
+}
+
 async function normalizeIssue(issue) {
   const issueFields = issue.fields || {};
   const issueType = issueFields.issuetype || {};
@@ -841,6 +858,7 @@ async function normalizeIssue(issue) {
   const richDescription = await buildRichDescription(issue.key, issueFields.description, attachments);
   const testChecklist = await buildTestChecklist(issue.key, isSubtask, attachments);
   const parentDescription = descriptionToText(parentFields.description);
+  const assignedDeveloper = normalizeJiraUserField(issueFields.customfield_11800);
 
   return {
     key: issue.key,
@@ -857,6 +875,9 @@ async function normalizeIssue(issue) {
     assignee: issueFields.assignee?.displayName || "Unassigned",
     assigneeAccountId: issueFields.assignee?.accountId || "",
     assigneeAvatarUrl: avatarUrlForJiraUser(issueFields.assignee),
+    assignedDeveloper: assignedDeveloper.displayName,
+    assignedDeveloperAccountId: assignedDeveloper.accountId,
+    assignedDeveloperAvatarUrl: assignedDeveloper.avatarUrl,
     updated: issueFields.updated || "",
     updatedDisplay: formatDate(issueFields.updated),
     created: issueFields.created || "",
@@ -900,6 +921,7 @@ function compareIssues(previous, current) {
     ["status", "Status"],
     ["priority", "Priority"],
     ["assignee", "Assignee"],
+    ["assignedDeveloper", "Assigned Developer"],
     ["resolution", "Resolution"],
     ["updatedDisplay", "Jira updated"],
   ];
@@ -952,6 +974,7 @@ function issueContext(issue) {
     type: issue.type || "",
     isSubtask: Boolean(issue.isSubtask),
     assignee: issue.assignee || "Unassigned",
+    assignedDeveloper: issue.assignedDeveloper || "Unassigned",
     status: issue.status || "",
     parent: issue.parent || null,
   };
@@ -3913,6 +3936,7 @@ function renderHtml(data) {
                 status: issue.status,
                 priority: issue.parent && issue.parent.priority ? issue.parent.priority : "None",
                 assignee: "Parent outside this release",
+                assignedDeveloper: "Parent outside this release",
                 updated: issue.updated,
                 updatedDisplay: issue.updatedDisplay,
                 components: [],
@@ -4718,6 +4742,7 @@ function renderHtml(data) {
         var status = includeStatus ? "<div><b>Status</b>" + escape(issue.status) + "</div>" : "";
         return "<div class=\\"meta\\">" +
           "<div><b>Assignee</b>" + escape(issue.assignee) + "</div>" +
+          "<div><b>Assigned Developer</b>" + escape(issue.assignedDeveloper || "Unassigned") + "</div>" +
           "<div><b>Priority</b><span class=\\"priority " + escape(priorityClass(issue.priority)) + "\\">" + escape(issue.priority) + "</span></div>" +
           status +
           "<div><b>Updated</b>" + escape(issue.updatedDisplay) + "</div>" +
