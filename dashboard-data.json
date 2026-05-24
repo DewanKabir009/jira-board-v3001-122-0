@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-05-24T20:48:44.492Z",
-  "pulledAtDisplay": "May 24, 2026, 4:48 PM",
+  "pulledAt": "2026-05-24T20:49:46.291Z",
+  "pulledAtDisplay": "May 24, 2026, 4:49 PM",
   "total": 35,
   "issues": [
     {
@@ -21,6 +21,7 @@
       "comments": [
         {
           "id": "1154310",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14364?focusedCommentId=1154310",
           "author": "Luis Vallejo Mursuli",
           "authorAccountId": "712020:2e637bb4-c610-467b-839d-9a5b84f75f01",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:2e637bb4-c610-467b-839d-9a5b84f75f01/4dca1d1b-3faa-4d03-90b8-2b3e0cc02887/32",
@@ -28,11 +29,14 @@
           "createdDisplay": "Apr 21, 2026, 10:06 AM",
           "updated": "2026-04-21T10:06:21.117-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "@Dewan Kabir here are the instructions to test this ticket. Reach out if you have questions or need help. Thanks!",
           "bodyHtml": "<p>@Dewan Kabir here are the instructions to test this ticket. Reach out if you have questions or need help. Thanks!<br><br> </p>"
         },
         {
           "id": "1171600",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14364?focusedCommentId=1171600",
           "author": "Joshua Marquess",
           "authorAccountId": "557058:61c239b2-3f38-467e-afb0-40b29fe9aa94",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/JM-3.png",
@@ -40,10 +44,15 @@
           "createdDisplay": "May 18, 2026, 1:44 PM",
           "updated": "2026-05-18T13:44:20.777-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "validated customers are now able to be pulled up in GNC. All tabs are operational",
           "bodyHtml": "<p>validated customers are now able to be pulled up in GNC. All tabs are operational</p>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14364?focusedCommentId=1171600",
+      "lastCommentDisplay": "May 18, 2026, 1:44 PM",
+      "lastCommentAuthor": "Joshua Marquess",
       "testChecklist": {
         "files": [
           {
@@ -395,6 +404,7 @@
       "comments": [
         {
           "id": "1158538",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14271?focusedCommentId=1158538",
           "author": "Raghav Kancherla",
           "authorAccountId": "557058:24f78684-6276-42b4-9860-f81502d6d45e",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RK-4.png",
@@ -402,11 +412,14 @@
           "createdDisplay": "Apr 30, 2026, 6:19 PM",
           "updated": "2026-04-30T18:19:47.919-0400",
           "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 1,
           "body": "URL:{{api21_url}}/GolfNowAPI.svc/rest/channel/{{channelId}}/customers/{{apiEmailaddyoc}}/subscriptions/2950605/cancelWithRefund\n\nBody:{\n\"CancellationReasonId\": 1,\n\"CancelEvenIfBenefitsUsed\": true,\n\"RefundType\": 0,\n\"RefundAmount\": 0,\n\"SystemUserId\": 1\n}",
-          "bodyHtml": "<div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260430-221844.png could not be embedded.</div></div><pre><code>URL:{{api21_url}}/GolfNowAPI.svc/rest/channel/{{channelId}}/customers/{{apiEmailaddyoc}}/subscriptions/2950605/cancelWithRefund\n\nBody:{\n    &quot;CancellationReasonId&quot;: 1,\n    &quot;CancelEvenIfBenefitsUsed&quot;: true,\n    &quot;RefundType&quot;: 0,\n    &quot;RefundAmount&quot;: 0,\n    &quot;SystemUserId&quot;: 1\n}</code></pre>"
+          "bodyHtml": "<div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1158538/719240-image-20260430-221844.png\" alt=\"image-20260430-221844.png\" loading=\"lazy\"><figcaption>image-20260430-221844.png</figcaption></figure></div><pre><code>URL:{{api21_url}}/GolfNowAPI.svc/rest/channel/{{channelId}}/customers/{{apiEmailaddyoc}}/subscriptions/2950605/cancelWithRefund\n\nBody:{\n    &quot;CancellationReasonId&quot;: 1,\n    &quot;CancelEvenIfBenefitsUsed&quot;: true,\n    &quot;RefundType&quot;: 0,\n    &quot;RefundAmount&quot;: 0,\n    &quot;SystemUserId&quot;: 1\n}</code></pre>"
         },
         {
           "id": "1168847",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14271?focusedCommentId=1168847",
           "author": "Dewan Kabir",
           "authorAccountId": "630fb06bb433b060db559bdb",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
@@ -414,11 +427,14 @@
           "createdDisplay": "May 12, 2026, 7:41 PM",
           "updated": "2026-05-12T19:41:29.092-0400",
           "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 2,
           "body": "VALIDATED IN AWS STG",
-          "bodyHtml": "<p><strong>VALIDATED IN AWS STG </strong></p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-233941.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-234118.png could not be embedded.</div></div>"
+          "bodyHtml": "<p><strong>VALIDATED IN AWS STG </strong></p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1168847/726228-image-20260512-233941.png\" alt=\"image-20260512-233941.png\" loading=\"lazy\"><figcaption>image-20260512-233941.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1168847/726227-image-20260512-234118.png\" alt=\"image-20260512-234118.png\" loading=\"lazy\"><figcaption>image-20260512-234118.png</figcaption></figure></div>"
         },
         {
           "id": "1169639",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14271?focusedCommentId=1169639",
           "author": "Dewan Kabir",
           "authorAccountId": "630fb06bb433b060db559bdb",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
@@ -426,10 +442,15 @@
           "createdDisplay": "May 13, 2026, 6:44 AM",
           "updated": "2026-05-13T06:44:53.199-0400",
           "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 2,
           "body": "PRODUCTION VALIDATION :",
-          "bodyHtml": "<p><strong>PRODUCTION VALIDATION : </strong></p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260513-104432.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260513-104448.png could not be embedded.</div></div>"
+          "bodyHtml": "<p><strong>PRODUCTION VALIDATION : </strong></p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1169639/726721-image-20260513-104432.png\" alt=\"image-20260513-104432.png\" loading=\"lazy\"><figcaption>image-20260513-104432.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1169639/726720-image-20260513-104448.png\" alt=\"image-20260513-104448.png\" loading=\"lazy\"><figcaption>image-20260513-104448.png</figcaption></figure></div>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14271?focusedCommentId=1169639",
+      "lastCommentDisplay": "May 13, 2026, 6:44 AM",
+      "lastCommentAuthor": "Dewan Kabir",
       "testChecklist": null,
       "type": "Story",
       "isSubtask": false,
@@ -475,6 +496,7 @@
       "comments": [
         {
           "id": "1158568",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1158568",
           "author": "Raghav Kancherla",
           "authorAccountId": "557058:24f78684-6276-42b4-9860-f81502d6d45e",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RK-4.png",
@@ -482,11 +504,14 @@
           "createdDisplay": "May 1, 2026, 12:06 AM",
           "updated": "2026-05-01T00:06:44.578-0400",
           "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 1,
           "body": "Testing steps:\n\n- Create a new customer and subscribe to any product under productTypeId 9 using a New york address and zip code.\n\n- Update the product pricing table RenewalProductPrice for the productPriceId selected in step 1 to any productPriceId under ProductId 71, if that's not available, use any other ProductPriceId under a different ProductId\n\n- Insert this record only if productId 71 is not avialble:\n\nINSERT INTO [Product].[CancellationEligibilityConfig]\n(ProductID, ProductTypeId, StateProvinceCode, CountryCode, DayLimit, IsActive)\nVALUES\n(<ProductId used in step 2>, 9, 'NY', 'US', 15, 1)\n\n- Back date the subscription in step 1 and run the product renewal app, this should renew the product tot he ProductPriceId selected in step 2\n\n- Run the {{api21_url}}/GolfNowAPI.svc/rest/channel/331/customers/{{apiEmailaddyoc}}/subscriptions end point and you will see 2 subscriptions with only the 2ns subscription having  \"IsEligibleForCancellation\": true",
-          "bodyHtml": "<p>Testing steps:</p><ol><li><p>Create a new customer and subscribe to any product under productTypeId 9 using a New york address and zip code.</p></li><li><p>Update the product pricing table RenewalProductPrice for the productPriceId selected in step 1 to any productPriceId under ProductId 71, if that's not available, use any other ProductPriceId under a different ProductId</p></li><li><p>Insert this record only if productId 71 is not avialble:</p></li></ol><p> INSERT INTO [Product].[CancellationEligibilityConfig]<br>        (ProductID, ProductTypeId, StateProvinceCode, CountryCode, DayLimit, IsActive)<br>    VALUES<br>        (&lt;ProductId used in step 2&gt;, 9, 'NY', 'US', 15, 1)</p><ol><li><p>Back date the subscription in step 1 and run the product renewal app, this should renew the product tot he ProductPriceId selected in step 2</p></li><li><p>Run the {{api21_url}}/GolfNowAPI.svc/rest/channel/331/customers/{{apiEmailaddyoc}}/subscriptions end point and you will see 2 subscriptions with only the 2ns subscription having  &quot;IsEligibleForCancellation&quot;: true</p></li></ol><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260501-040632.png could not be embedded.</div></div>"
+          "bodyHtml": "<p>Testing steps:</p><ol><li><p>Create a new customer and subscribe to any product under productTypeId 9 using a New york address and zip code.</p></li><li><p>Update the product pricing table RenewalProductPrice for the productPriceId selected in step 1 to any productPriceId under ProductId 71, if that's not available, use any other ProductPriceId under a different ProductId</p></li><li><p>Insert this record only if productId 71 is not avialble:</p></li></ol><p> INSERT INTO [Product].[CancellationEligibilityConfig]<br>        (ProductID, ProductTypeId, StateProvinceCode, CountryCode, DayLimit, IsActive)<br>    VALUES<br>        (&lt;ProductId used in step 2&gt;, 9, 'NY', 'US', 15, 1)</p><ol><li><p>Back date the subscription in step 1 and run the product renewal app, this should renew the product tot he ProductPriceId selected in step 2</p></li><li><p>Run the {{api21_url}}/GolfNowAPI.svc/rest/channel/331/customers/{{apiEmailaddyoc}}/subscriptions end point and you will see 2 subscriptions with only the 2ns subscription having  &quot;IsEligibleForCancellation&quot;: true</p></li></ol><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1158568/719251-image-20260501-040632.png\" alt=\"image-20260501-040632.png\" loading=\"lazy\"><figcaption>image-20260501-040632.png</figcaption></figure></div>"
         },
         {
           "id": "1168834",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1168834",
           "author": "Dewan Kabir",
           "authorAccountId": "630fb06bb433b060db559bdb",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
@@ -494,10 +519,15 @@
           "createdDisplay": "May 12, 2026, 6:34 PM",
           "updated": "2026-05-12T19:08:05.303-0400",
           "updatedDisplay": "May 12, 2026, 7:08 PM",
+          "hasMedia": true,
+          "mediaCount": 8,
           "body": "VALIDATED IN AWS STG :\n\nUpdate PPID 64 → Renewal PPID to 1048\n\nNow we will purchase PPID 64 using a NY Zip Code and Billing Address Credit Card , and Customer :\n\nNow we will Back date the subscription and run the product renewal app, this should renew the product into the ProductPriceId we configured earlier :\n\nExecute the new endpoint :",
-          "bodyHtml": "<p><strong>VALIDATED IN AWS STG : </strong></p><p>Update PPID 64 → Renewal PPID to 1048</p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-222451.png could not be embedded.</div></div><p>Now we will purchase PPID 64 using a NY Zip Code and Billing Address Credit Card , and Customer : </p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-223229.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-223247.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-223322.png could not be embedded.</div></div><p>Now we will Back date the subscription and run the product renewal app, this should renew the product into the ProductPriceId we configured earlier : </p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-230115.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-230124.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-230158.png could not be embedded.</div></div><p>Execute the new endpoint : </p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-230545.png could not be embedded.</div></div>"
+          "bodyHtml": "<p><strong>VALIDATED IN AWS STG : </strong></p><p>Update PPID 64 → Renewal PPID to 1048</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726210-image-20260512-222451.png\" alt=\"image-20260512-222451.png\" loading=\"lazy\"><figcaption>image-20260512-222451.png</figcaption></figure></div><p>Now we will purchase PPID 64 using a NY Zip Code and Billing Address Credit Card , and Customer : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726211-image-20260512-223229.png\" alt=\"image-20260512-223229.png\" loading=\"lazy\"><figcaption>image-20260512-223229.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726208-image-20260512-223247.png\" alt=\"image-20260512-223247.png\" loading=\"lazy\"><figcaption>image-20260512-223247.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726209-image-20260512-223322.png\" alt=\"image-20260512-223322.png\" loading=\"lazy\"><figcaption>image-20260512-223322.png</figcaption></figure></div><p>Now we will Back date the subscription and run the product renewal app, this should renew the product into the ProductPriceId we configured earlier : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726221-image-20260512-230115.png\" alt=\"image-20260512-230115.png\" loading=\"lazy\"><figcaption>image-20260512-230115.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726222-image-20260512-230124.png\" alt=\"image-20260512-230124.png\" loading=\"lazy\"><figcaption>image-20260512-230124.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726219-image-20260512-230158.png\" alt=\"image-20260512-230158.png\" loading=\"lazy\"><figcaption>image-20260512-230158.png</figcaption></figure></div><p>Execute the new endpoint : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726220-image-20260512-230545.png\" alt=\"image-20260512-230545.png\" loading=\"lazy\"><figcaption>image-20260512-230545.png</figcaption></figure></div>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1168834",
+      "lastCommentDisplay": "May 12, 2026, 6:34 PM",
+      "lastCommentAuthor": "Dewan Kabir",
       "testChecklist": null,
       "type": "Story",
       "isSubtask": false,
@@ -544,6 +574,7 @@
       "comments": [
         {
           "id": "1162672",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14117?focusedCommentId=1162672",
           "author": "Dewan Kabir",
           "authorAccountId": "630fb06bb433b060db559bdb",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
@@ -551,10 +582,15 @@
           "createdDisplay": "May 11, 2026, 4:14 PM",
           "updated": "2026-05-11T16:14:51.777-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "QA TESTING IS BEING COVERED IN https://golfnow.atlassian.net/browse/CORE-14332",
           "bodyHtml": "<p><strong>QA TESTING IS BEING COVERED IN </strong><a href=\"https://golfnow.atlassian.net/browse/CORE-14332\" target=\"_blank\" rel=\"noopener\">https://golfnow.atlassian.net/browse/CORE-14332</a> </p>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14117?focusedCommentId=1162672",
+      "lastCommentDisplay": "May 11, 2026, 4:14 PM",
+      "lastCommentAuthor": "Dewan Kabir",
       "testChecklist": null,
       "type": "Story",
       "isSubtask": false,
@@ -602,6 +638,7 @@
       "comments": [
         {
           "id": "1155175",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14210?focusedCommentId=1155175",
           "author": "Nicole Greer",
           "authorAccountId": "712020:8fa0be04-9400-422d-8c63-61e7d7b54669",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:8fa0be04-9400-422d-8c63-61e7d7b54669/01136d3f-e8cd-4bac-9ba8-24e390f7c07e/32",
@@ -609,10 +646,15 @@
           "createdDisplay": "Apr 22, 2026, 5:39 PM",
           "updated": "2026-04-22T17:39:56.455-0400",
           "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 4,
           "body": "Convenience fee looks to now be showing correctly",
-          "bodyHtml": "<p>Convenience fee looks to now be showing correctly</p><div class=\"description-media-group\"><div class=\"description-media-missing\">davidClarkHotDealConvFee.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">ahatathear.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">davidClarkHotDealConFeeTest.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">davidCalrkConFeeTestPostman.png could not be embedded.</div></div>"
+          "bodyHtml": "<p>Convenience fee looks to now be showing correctly</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14210/comments/1155175/716785-davidClarkHotDealConvFee.png\" alt=\"davidClarkHotDealConvFee.png\" loading=\"lazy\"><figcaption>davidClarkHotDealConvFee.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14210/comments/1155175/716784-ahatathear.png\" alt=\"ahatathear.png\" loading=\"lazy\"><figcaption>ahatathear.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14210/comments/1155175/716787-davidClarkHotDealConFeeTest.png\" alt=\"davidClarkHotDealConFeeTest.png\" loading=\"lazy\"><figcaption>davidClarkHotDealConFeeTest.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14210/comments/1155175/716786-davidCalrkConFeeTestPostman.png\" alt=\"davidCalrkConFeeTestPostman.png\" loading=\"lazy\"><figcaption>davidCalrkConFeeTestPostman.png</figcaption></figure></div>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14210?focusedCommentId=1155175",
+      "lastCommentDisplay": "Apr 22, 2026, 5:39 PM",
+      "lastCommentAuthor": "Nicole Greer",
       "testChecklist": null,
       "type": "Bug",
       "isSubtask": false,
@@ -658,6 +700,7 @@
       "comments": [
         {
           "id": "1168647",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14462?focusedCommentId=1168647",
           "author": "Yoel Martin Pardo",
           "authorAccountId": "625571809e7380006fb29599",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
@@ -665,10 +708,15 @@
           "createdDisplay": "May 12, 2026, 2:43 PM",
           "updated": "2026-05-12T14:43:35.600-0400",
           "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 1,
           "body": "QA: We have fixed the issue. Please make sure that all checkout flows, API 2.1, TR, you can also test the GetReservationDetails endpoint from API 2.1:\n\n{{api21_url}}/rest/customers/Automation@1778538358422user.com/reservations/416784247",
-          "bodyHtml": "<p>QA: We have fixed the issue. Please make sure that all checkout flows, API 2.1, TR, you can also test the GetReservationDetails endpoint from API 2.1: </p><pre><code>{{api21_url}}/rest/customers/Automation@1778538358422user.com/reservations/416784247</code></pre><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-184218.png could not be embedded.</div></div>"
+          "bodyHtml": "<p>QA: We have fixed the issue. Please make sure that all checkout flows, API 2.1, TR, you can also test the GetReservationDetails endpoint from API 2.1: </p><pre><code>{{api21_url}}/rest/customers/Automation@1778538358422user.com/reservations/416784247</code></pre><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14462/comments/1168647/726040-image-20260512-184218.png\" alt=\"image-20260512-184218.png\" loading=\"lazy\"><figcaption>image-20260512-184218.png</figcaption></figure></div>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14462?focusedCommentId=1168647",
+      "lastCommentDisplay": "May 12, 2026, 2:43 PM",
+      "lastCommentAuthor": "Yoel Martin Pardo",
       "testChecklist": null,
       "type": "Bug",
       "isSubtask": false,
@@ -704,6 +752,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Bug",
       "isSubtask": false,
@@ -741,6 +792,7 @@
       "comments": [
         {
           "id": "1161461",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14448?focusedCommentId=1161461",
           "author": "Yoel Martin Pardo",
           "authorAccountId": "625571809e7380006fb29599",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
@@ -748,11 +800,14 @@
           "createdDisplay": "May 7, 2026, 7:09 PM",
           "updated": "2026-05-07T19:09:49.654-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "QA: We will need to test Apple Pay using Guest account since we were not allowing Apple Pay to be stored on the wallet for Guest accounts. Now they should be able to stored it and purchase teetimes and subscriptions. Please test with Guest and Regular customers.\n\n-In order to test Apple Pay right now if you have are booking on a fullstackfacility, please make sure that it has the same merchantKey as the CRmChargeBy (until payment processing fix the merchantKey issue).\n\n-Do not test $0 due Online teetimes until payment processing fix that restriction on their side. We can test greater than $0 due online teetimes for now.\n\nImportant note: Once Payment processing fix those two issues we can test those scenarios as well. Also make sure to test NoShows and Subscription renewals.",
           "bodyHtml": "<p>QA: We will need to test Apple Pay using Guest account since we were not allowing Apple Pay to be stored on the wallet for Guest accounts. Now they should be able to stored it and purchase teetimes and subscriptions. Please test with Guest and Regular customers.</p><p>-In order to test Apple Pay right now if you have are booking on a fullstackfacility, please make sure that it has the same merchantKey as the CRmChargeBy (until payment processing fix the merchantKey issue). </p><p>-Do not test $0 due Online teetimes until payment processing fix that restriction on their side. We can test greater than $0 due online teetimes for now.</p><p>Important note: Once Payment processing fix those two issues we can test those scenarios as well. Also make sure to test NoShows and Subscription renewals.</p>"
         },
         {
           "id": "1168407",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14448?focusedCommentId=1168407",
           "author": "Dewan Kabir",
           "authorAccountId": "630fb06bb433b060db559bdb",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
@@ -760,11 +815,14 @@
           "createdDisplay": "May 12, 2026, 8:06 AM",
           "updated": "2026-05-12T08:06:43.916-0400",
           "updatedDisplay": "May 12, 2026, 8:06 AM",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "Validations Conducted in AWS STG For the the Apple Pay Follow Up Items :\n\n1. Guest Account Tee Time Purchase with Apple Pay\n2. Guest Account No Show Flow ( Submission ) with Apple Pay\n3. Guest Account No Show Flow ( Refund ) with Apple Pay\n4. Regular Customer Subscription Purchase with Apple Pay\n5. Regular Customer Tee Time Purchase with Apple Pay\n6. Regular Customer No Show Flow ( Submission ) with Apple Pay\n7. Regular Customer No Show Flow ( Refund ) with Apple Pay\n8. Regular Customer Full stack Facility Tee Time Purchase with Apple Pay\n9. Regular Customer Full stack Facility No Show Flow ( Submission and Refund ) with Apple Pay\n10. $0 Tee Time Purchase and No Show Flow for Guest Customer with Apple Pay\n11. $0 Tee Time Purchase for Regular Customer and No Show Flow with Apple Pay",
           "bodyHtml": "<p><strong>Validations Conducted in AWS STG For the the Apple Pay Follow Up Items : </strong><br><br>1. Guest Account Tee Time Purchase with Apple Pay <br>2. Guest Account No Show Flow ( Submission ) with Apple Pay <br>3. Guest Account No Show Flow ( Refund ) with Apple Pay <br>4. Regular Customer Subscription Purchase with Apple Pay <br>5. Regular Customer Tee Time Purchase with Apple Pay <br>6. Regular Customer No Show Flow ( Submission ) with Apple Pay <br>7. Regular Customer No Show Flow ( Refund ) with Apple Pay <br>8. Regular Customer Full stack Facility Tee Time Purchase with Apple Pay <br>9. Regular Customer Full stack Facility No Show Flow ( Submission and Refund ) with Apple Pay <br>10. $0 Tee Time Purchase and No Show Flow for Guest Customer with Apple Pay<br>11. $0 Tee Time Purchase for Regular Customer and No Show Flow with Apple Pay</p>"
         },
         {
           "id": "1168408",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14448?focusedCommentId=1168408",
           "author": "Dewan Kabir",
           "authorAccountId": "630fb06bb433b060db559bdb",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
@@ -772,10 +830,15 @@
           "createdDisplay": "May 12, 2026, 8:07 AM",
           "updated": "2026-05-12T08:07:27.734-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "AWS STG Subscription Renewal Testing :",
           "bodyHtml": "<p><strong>AWS STG Subscription Renewal Testing : </strong></p>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14448?focusedCommentId=1168408",
+      "lastCommentDisplay": "May 12, 2026, 8:07 AM",
+      "lastCommentAuthor": "Dewan Kabir",
       "testChecklist": null,
       "type": "Bug",
       "isSubtask": false,
@@ -820,6 +883,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Task",
       "isSubtask": false,
@@ -855,6 +921,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -898,6 +967,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -941,6 +1013,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -986,6 +1061,7 @@
       "comments": [
         {
           "id": "1158517",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14431?focusedCommentId=1158517",
           "author": "Yoel Martin Pardo",
           "authorAccountId": "625571809e7380006fb29599",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
@@ -993,10 +1069,15 @@
           "createdDisplay": "Apr 30, 2026, 5:06 PM",
           "updated": "2026-04-30T17:06:00.791-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "QA: Please we will need to test Cache Manager on this ticket. To do a valid test you will need to make sure that we have NULL values on the Icon column.\n\nYou can check if the CRMRackRate for the golfcourse has NULL values on Icon column, if not then you can update all of them for that golfcouse\n\nselect * FROM dbo.CRMRackRate RC\nINNER JOIN dbo.CRMRackPeriod RP ON RP.RackPeriodID = RC.RackPeriodID\nWHERE RP.GolfCourseID = #\nAND RC.Icons IS NULL\n\nUSE[CRM]\nGO\n\nUPDATE RC\nSET RC.Icons = NULL\nFROM dbo.CRMRackRate RC\nINNER JOIN dbo.CRMRackPeriod RP ON RP.RackPeriodID = RC.RackPeriodID\nWHERE RP.GolfCourseID = #\n\nGO",
           "bodyHtml": "<p>QA: Please we will need to test Cache Manager on this ticket. To do a valid test you will need to make sure that we have NULL values on the Icon column.</p><p>You can check if the CRMRackRate for the golfcourse has NULL values on Icon column, if not then you can update all of them for that golfcouse</p><pre><code>select * FROM dbo.CRMRackRate RC\nINNER JOIN dbo.CRMRackPeriod RP ON RP.RackPeriodID = RC.RackPeriodID\nWHERE RP.GolfCourseID = # \nAND RC.Icons IS NULL\n</code></pre><pre><code>USE[CRM]\nGO\n\nUPDATE RC\nSET RC.Icons = NULL\nFROM dbo.CRMRackRate RC\nINNER JOIN dbo.CRMRackPeriod RP ON RP.RackPeriodID = RC.RackPeriodID\nWHERE RP.GolfCourseID = #\n\nGO</code></pre>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14431?focusedCommentId=1158517",
+      "lastCommentDisplay": "Apr 30, 2026, 5:06 PM",
+      "lastCommentAuthor": "Yoel Martin Pardo",
       "testChecklist": null,
       "type": "Bug",
       "isSubtask": false,
@@ -1033,6 +1114,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -1076,6 +1160,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -1121,6 +1208,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -1166,6 +1256,7 @@
       "comments": [
         {
           "id": "1160205",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14420?focusedCommentId=1160205",
           "author": "Dewan Kabir",
           "authorAccountId": "630fb06bb433b060db559bdb",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
@@ -1173,10 +1264,15 @@
           "createdDisplay": "May 5, 2026, 3:42 PM",
           "updated": "2026-05-05T15:42:20.023-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "VALIDATE BOOKING ENGINE REGRESSION TESTING ON GN AWS STG",
           "bodyHtml": "<p><strong>VALIDATE BOOKING ENGINE REGRESSION TESTING ON GN AWS STG </strong></p>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14420?focusedCommentId=1160205",
+      "lastCommentDisplay": "May 5, 2026, 3:42 PM",
+      "lastCommentAuthor": "Dewan Kabir",
       "testChecklist": null,
       "type": "Bug",
       "isSubtask": false,
@@ -1214,6 +1310,7 @@
       "comments": [
         {
           "id": "1157256",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14412?focusedCommentId=1157256",
           "author": "Luis Vallejo Mursuli",
           "authorAccountId": "712020:2e637bb4-c610-467b-839d-9a5b84f75f01",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:2e637bb4-c610-467b-839d-9a5b84f75f01/4dca1d1b-3faa-4d03-90b8-2b3e0cc02887/32",
@@ -1221,11 +1318,14 @@
           "createdDisplay": "Apr 28, 2026, 1:04 PM",
           "updated": "2026-04-28T13:04:46.263-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "Fix Implemented\n\nUpdated CakeApi.cs to accept the new CAKE API response format.\n\nChanges Made:\n\nFile: DotNet2/TeeTimesAPI/GolfNow.API.2.1/GolfNow.API.Business/AffiliateNetworks/CakeApi.cs\n\n- Updated Constants (lines 16-18):\n\n- Replaced API_MESSAGE = \"SUCCESS\" with three specific constants:\n\n- API_MESSAGE_SUCCESS = \"SUCCESS\" (old format, Code=0)\n\n- API_MESSAGE_RECEIVED = \"RECEIVED\" (new format, Code=1)\n\n- API_MESSAGE_DUPLICATED = \"DUPLICATED\" (duplicate tracking, Code=1)\n\n- Enhanced Validation Logic (lines 36-56):\n\n- Now accepts multiple valid response formats:\n\n- Code=0 with Msg=SUCCESS (old format, backward compatible)\n\n- Code=1 with Msg=RECEIVED (new format as of March 2026)\n\n- Code=1 with Msg=DUPLICATED (duplicate conversions still valid)\n\n- Added logging support using ServiceLocator pattern\n\n- Logs successful responses for monitoring\n\n- Logs unexpected responses for debugging\n\nWhat This Fixes:\n\n- CAKE affiliate conversions will now be properly tracked and written to CRM.dbo.CRMAffNetworkReservations\n\n- Backward compatible with old CAKE API format (Code=0, Msg=SUCCESS)\n\n- Handles duplicate tracking scenarios gracefully\n\n- Improved observability with logging of all response types\n\nNext Steps:\n\n- Build and deploy to dev environment for testing\n\n- Verify with actual CAKE API calls that responses are accepted\n\n- Check database to confirm records are being written\n\n- Deploy to staging and production\n\n- Data backfill for March 11 - April 21, 2026 (tracked separately)",
           "bodyHtml": "<h3>Fix Implemented</h3><p>Updated <code>CakeApi.cs</code> to accept the new CAKE API response format.</p><h3>Changes Made:</h3><p><strong>File:</strong> <code>DotNet2/TeeTimesAPI/GolfNow.API.2.1/GolfNow.API.Business/AffiliateNetworks/CakeApi.cs</code></p><ol><li><p><strong>Updated Constants</strong> (lines 16-18):</p><ul><li><p>Replaced <code>API_MESSAGE = &quot;SUCCESS&quot;</code> with three specific constants:</p><ul><li><p><code>API_MESSAGE_SUCCESS = &quot;SUCCESS&quot;</code> (old format, Code=0)</p></li><li><p><code>API_MESSAGE_RECEIVED = &quot;RECEIVED&quot;</code> (new format, Code=1)</p></li><li><p><code>API_MESSAGE_DUPLICATED = &quot;DUPLICATED&quot;</code> (duplicate tracking, Code=1)</p></li></ul></li></ul></li><li><p><strong>Enhanced Validation Logic</strong> (lines 36-56):</p><ul><li><p>Now accepts multiple valid response formats:</p><ul><li><p>Code=0 with Msg=SUCCESS (old format, backward compatible)</p></li><li><p>Code=1 with Msg=RECEIVED (new format as of March 2026)</p></li><li><p>Code=1 with Msg=DUPLICATED (duplicate conversions still valid)</p></li></ul></li><li><p>Added logging support using ServiceLocator pattern</p></li><li><p>Logs successful responses for monitoring</p></li><li><p>Logs unexpected responses for debugging</p></li></ul></li></ol><h3>What This Fixes:</h3><ul><li><p>CAKE affiliate conversions will now be properly tracked and written to <code>CRM.dbo.CRMAffNetworkReservations</code></p></li><li><p>Backward compatible with old CAKE API format (Code=0, Msg=SUCCESS)</p></li><li><p>Handles duplicate tracking scenarios gracefully</p></li><li><p>Improved observability with logging of all response types</p></li></ul><h3>Next Steps:</h3><ol><li><p>Build and deploy to dev environment for testing</p></li><li><p>Verify with actual CAKE API calls that responses are accepted</p></li><li><p>Check database to confirm records are being written</p></li><li><p>Deploy to staging and production</p></li><li><p>Data backfill for March 11 - April 21, 2026 (tracked separately)</p></li></ol>"
         },
         {
           "id": "1157698",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14412?focusedCommentId=1157698",
           "author": "Luis Vallejo Mursuli",
           "authorAccountId": "712020:2e637bb4-c610-467b-839d-9a5b84f75f01",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:2e637bb4-c610-467b-839d-9a5b84f75f01/4dca1d1b-3faa-4d03-90b8-2b3e0cc02887/32",
@@ -1233,11 +1333,14 @@
           "createdDisplay": "Apr 29, 2026, 11:15 AM",
           "updated": "2026-04-29T11:15:26.713-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "@Dewan Kabir, attached are the instructions for testing this ticket. Reach out if you need help or clarification. Thanks!",
           "bodyHtml": "<p>@Dewan Kabir, attached are the instructions for testing this ticket. Reach out if you need help or clarification. Thanks!<br><br> </p>"
         },
         {
           "id": "1160206",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14412?focusedCommentId=1160206",
           "author": "Jake Hart",
           "authorAccountId": "5bfc10be10c30e4ac8c8a4e3",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/JH-1.png",
@@ -1245,10 +1348,15 @@
           "createdDisplay": "May 5, 2026, 3:46 PM",
           "updated": "2026-05-05T15:46:19.765-0400",
           "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 3,
           "body": "Web UI validations completed and confirmed both web and CORE fixes were now working when booking Affiliate Tracking reservations.\n\nTesting completed using a test url like the one below and booking on WEB UI and confirming on the tee time details page, the affiliate cookie was now being generated in the “Network” tab of web dev inspect tools. After the reservation was booked on dev web ui. QA confirmed the reservation id was showing in the dev database table: CRMAffNetworkReservations.\n\nQA CORE example tee time URL for testing DB fix - https://gnus.stg.golfnow.io/dt/dtclick.aspx?p=123&c=001&r=REQ_TEST_001&af=456&ad=789&o=321&cr=654&ref=AFF_TEST&tid=1019431&pl=4&gnred=%2Ftee-times%2Fsearch",
-          "bodyHtml": "<p>Web UI validations completed and confirmed both web and CORE fixes were now working when booking Affiliate Tracking reservations.  <br><br>Testing completed using a test url like the one below and booking on WEB UI and confirming on the tee time details page, the affiliate cookie was now being generated in the “Network” tab of web dev inspect tools. After the reservation was booked on dev web ui. QA confirmed the reservation id was showing in the dev database table: CRMAffNetworkReservations.</p><div class=\"description-media-group\"><div class=\"description-media-missing\">Jira description media could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">Jira description media could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">Jira description media could not be embedded.</div></div><p><br>QA CORE example tee time URL for testing DB fix - <a href=\"https://gnus.stg.golfnow.io/dt/dtclick.aspx?p=123&amp;c=001&amp;r=REQ_TEST_001&amp;af=456&amp;ad=789&amp;o=321&amp;cr=654&amp;ref=AFF_TEST&amp;tid=1019431&amp;pl=4&amp;gnred=%2Ftee-times%2Fsearch\" target=\"_blank\" rel=\"noopener\">https://gnus.stg.golfnow.io/dt/dtclick.aspx?p=123&amp;c=001&amp;r=REQ_TEST_001&amp;af=456&amp;ad=789&amp;o=321&amp;cr=654&amp;ref=AFF_TEST&amp;tid=1019431&amp;pl=4&amp;gnred=%2Ftee-times%2Fsearch</a> </p>"
+          "bodyHtml": "<p>Web UI validations completed and confirmed both web and CORE fixes were now working when booking Affiliate Tracking reservations.  <br><br>Testing completed using a test url like the one below and booking on WEB UI and confirming on the tee time details page, the affiliate cookie was now being generated in the “Network” tab of web dev inspect tools. After the reservation was booked on dev web ui. QA confirmed the reservation id was showing in the dev database table: CRMAffNetworkReservations.</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14412/comments/1160206/718941-codex-comment-screenshot.png\" alt=\"codex-comment-screenshot.png\" loading=\"lazy\"><figcaption>codex-comment-screenshot.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14412/comments/1160206/720266-Final-Pass-Affiliate-Tracking-Web-to-Core-test-DB-Affiliate-table-showing-the-same-reservation.png\" alt=\"Final-Pass-Affiliate Tracking-Web to Core test-DB Affiliate table showing the same reservation.png\" loading=\"lazy\"><figcaption>Final-Pass-Affiliate Tracking-Web to Core test-DB Affiliate table showing the same reservation.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14412/comments/1160206/720265-Final-Pass-Affiliate-Tracking-Web-to-Core-test-Web-Confirmation.png\" alt=\"Final-Pass-Affiliate Tracking-Web to Core test-Web Confirmation.png\" loading=\"lazy\"><figcaption>Final-Pass-Affiliate Tracking-Web to Core test-Web Confirmation.png</figcaption></figure></div><p><br>QA CORE example tee time URL for testing DB fix - <a href=\"https://gnus.stg.golfnow.io/dt/dtclick.aspx?p=123&amp;c=001&amp;r=REQ_TEST_001&amp;af=456&amp;ad=789&amp;o=321&amp;cr=654&amp;ref=AFF_TEST&amp;tid=1019431&amp;pl=4&amp;gnred=%2Ftee-times%2Fsearch\" target=\"_blank\" rel=\"noopener\">https://gnus.stg.golfnow.io/dt/dtclick.aspx?p=123&amp;c=001&amp;r=REQ_TEST_001&amp;af=456&amp;ad=789&amp;o=321&amp;cr=654&amp;ref=AFF_TEST&amp;tid=1019431&amp;pl=4&amp;gnred=%2Ftee-times%2Fsearch</a> </p>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14412?focusedCommentId=1160206",
+      "lastCommentDisplay": "May 5, 2026, 3:46 PM",
+      "lastCommentAuthor": "Jake Hart",
       "testChecklist": {
         "files": [
           {
@@ -1478,6 +1586,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -1521,6 +1632,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Bug",
       "isSubtask": false,
@@ -1557,6 +1671,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -1600,6 +1717,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -1645,6 +1765,7 @@
       "comments": [
         {
           "id": "1154860",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14398?focusedCommentId=1154860",
           "author": "Yoel Martin Pardo",
           "authorAccountId": "625571809e7380006fb29599",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
@@ -1652,11 +1773,14 @@
           "createdDisplay": "Apr 22, 2026, 10:18 AM",
           "updated": "2026-04-22T10:18:04.544-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "PR: https://github.com/GolfNowEng/gn-main-db/pull/622",
           "bodyHtml": "<p>PR: <a href=\"https://github.com/GolfNowEng/gn-main-db/pull/622\" target=\"_blank\" rel=\"noopener\">https://github.com/GolfNowEng/gn-main-db/pull/622</a> </p>"
         },
         {
           "id": "1154865",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14398?focusedCommentId=1154865",
           "author": "Yoel Martin Pardo",
           "authorAccountId": "625571809e7380006fb29599",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
@@ -1664,11 +1788,14 @@
           "createdDisplay": "Apr 22, 2026, 10:20 AM",
           "updated": "2026-04-22T10:20:41.580-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "QA: The issue reported in this ticket is a timeout issue when someone was purchasing a side cart and promo code GPSAVE25 was been added to the cart. Please retest that scenario and also we need to make sure that the new version of the stored procedure returns the same data as the old. We can do some validations between AWS DEV and STG from SSMS. Please let me know if you need any help on testing this from the backend. Below is an example of the SP execution.\n\ndeclare @p2 dbo.udtStringList\ninsert into @p2 values(N'GPSAVE25')\n\nexec dbo.GetCouponCodeUsedByCustomer @CustomerId='0AF06E12-7D6C-4B3D-BAF3-E232EE0EF6E3',@CouponCodeList=@p2",
           "bodyHtml": "<p>QA: The issue reported in this ticket is a timeout issue when someone was purchasing a side cart and promo code GPSAVE25 was been added to the cart. Please retest that scenario and also we need to make sure that the new version of the stored procedure returns the same data as the old. We can do some validations between AWS DEV and STG from SSMS. Please let me know if you need any help on testing this from the backend. Below is an example of the SP execution.</p><pre><code>declare @p2 dbo.udtStringList\ninsert into @p2 values(N'GPSAVE25')\n\nexec dbo.GetCouponCodeUsedByCustomer @CustomerId='0AF06E12-7D6C-4B3D-BAF3-E232EE0EF6E3',@CouponCodeList=@p2</code></pre>"
         },
         {
           "id": "1168536",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14398?focusedCommentId=1168536",
           "author": "Nicole Greer",
           "authorAccountId": "712020:8fa0be04-9400-422d-8c63-61e7d7b54669",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:8fa0be04-9400-422d-8c63-61e7d7b54669/01136d3f-e8cd-4bac-9ba8-24e390f7c07e/32",
@@ -1676,10 +1803,15 @@
           "createdDisplay": "May 12, 2026, 12:00 PM",
           "updated": "2026-05-12T12:01:10.786-0400",
           "updatedDisplay": "May 12, 2026, 12:01 PM",
+          "hasMedia": true,
+          "mediaCount": 5,
           "body": "Tested STG and DEV working in Postman. The stored procedures both return the same data successfully as well in SSMS. Had no timeout errors.",
-          "bodyHtml": "<p>Tested STG and DEV working in Postman. The stored procedures both return the same data successfully as well in SSMS. Had no timeout errors.</p><div class=\"description-media-group\"><div class=\"description-media-missing\">rtgwggwg.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-155909.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">workingstg.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">Screenshot 2026-05-12 115301.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">Screenshot 2026-05-12 110420.png could not be embedded.</div></div>"
+          "bodyHtml": "<p>Tested STG and DEV working in Postman. The stored procedures both return the same data successfully as well in SSMS. Had no timeout errors.</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14398/comments/1168536/725925-rtgwggwg.png\" alt=\"rtgwggwg.png\" loading=\"lazy\"><figcaption>rtgwggwg.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14398/comments/1168536/725924-image-20260512-155909.png\" alt=\"image-20260512-155909.png\" loading=\"lazy\"><figcaption>image-20260512-155909.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14398/comments/1168536/725923-workingstg.png\" alt=\"workingstg.png\" loading=\"lazy\"><figcaption>workingstg.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14398/comments/1168536/725922-Screenshot-2026-05-12-115301.png\" alt=\"Screenshot 2026-05-12 115301.png\" loading=\"lazy\"><figcaption>Screenshot 2026-05-12 115301.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14398/comments/1168536/725921-Screenshot-2026-05-12-110420.png\" alt=\"Screenshot 2026-05-12 110420.png\" loading=\"lazy\"><figcaption>Screenshot 2026-05-12 110420.png</figcaption></figure></div>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14398?focusedCommentId=1168536",
+      "lastCommentDisplay": "May 12, 2026, 12:00 PM",
+      "lastCommentAuthor": "Nicole Greer",
       "testChecklist": null,
       "type": "Bug",
       "isSubtask": false,
@@ -1717,6 +1849,7 @@
       "comments": [
         {
           "id": "1154085",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14386?focusedCommentId=1154085",
           "author": "Luis Vallejo Mursuli",
           "authorAccountId": "712020:2e637bb4-c610-467b-839d-9a5b84f75f01",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:2e637bb4-c610-467b-839d-9a5b84f75f01/4dca1d1b-3faa-4d03-90b8-2b3e0cc02887/32",
@@ -1724,11 +1857,14 @@
           "createdDisplay": "Apr 20, 2026, 4:25 PM",
           "updated": "2026-04-20T16:25:34.392-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "These are additional logs from the GolfNow.Services.Customer side related to the original error in this ticket:\n\nSystem.Data.SqlClient.SqlException (0x80131904): Procedure or function 'InsertCustomerMembership' expects parameter '@Value', which was not supplied.\nat System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)\nat System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)\nat System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)\nat System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)\nat System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()\nat System.Data.SqlClient.SqlDataReader.get_MetaData()\nat System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)\nat System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)\nat System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)\nat System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)\nat System.Data.SqlClient.SqlCommand.ExecuteScalar()\nat GolfNow.Services.Customer.DAL.DAO.CustomerDao.InsertMembership(Int32 customerNumber, Int32 providerId, String value, Int32 customerMembershipStatusId) in C:\\actions-runner-01\\_work\\gn-main\\gn-main\\Internal Services\\GolfNow.Services.Customer\\GolfNow.Services.Customer.DAL\\DAO\\CustomerDao.cs:line 880\nat GolfNow.Services.Customer.Provider.Providers.CustomerProvider.GenerateMembership(Int32 customerNumber, Int32 providerID) in C:\\actions-runner-01\\_work\\gn-main\\gn-main\\Internal Services\\GolfNow.Services.Customer\\GolfNow.Services.Customer.Provider\\Providers\\CustomerProvider.cs:line 775\nat GolfNow.Services.Customer.Service.CustomerService.GenerateMembership(GenerateMembershipRequest request) in C:\\actions-runner-01\\_work\\gn-main\\gn-main\\Internal Services\\GolfNow.Services.Customer\\CustomerService.svc.cs:line 610\nClientConnectionId:3a44357e-8ce6-41c7-acb6-1b8011fa64cc\nError Number:201,State:4,Class:16\n\nBelow is the payload used to generate the previous error in the Customer service when the endpoint {{api-base-url}}/GolfNowAPI.svc/rest/channel/331/customers/{{EmailAddress}}/orders is called:\n\n{\n\"Id\": null,\n\"EffectiveDate\": \"2026-04-20T20:15:00Z\",\n\"GuestInfo\": {\n\"FirstName\": \"John\",\n\"LastName\": \"Doe\",\n\"EmailAddress\": \"john.doe@gmail.com\",\n\"PhoneNumber\": \"5551234567\"\n},\n\"Details\": [\n{\n\"__type\": \"ProductOrderItemDetail:#GolfNow.API.Service.Order.Items\",\n\"ReferenceId\": \"639121847523456789\",\n\"ProductPriceId\": 14,\n\"PurchaseMetadata\": null,\n\"ReferralToken\": null,\n\"LoyaltyRedemption\": {\n\"RedemptionPointsApplied\": 0.0\n}\n}\n],\n\"PaymentInformation\": [\n{\n\"__type\": \"SavedCreditCardPayment:#GolfNow.API.Contracts.DataContracts\",\n\"Amount\": 0,\n\"PaymentOptionID\": 98765,\n\"CVVCode\": \"123\"\n}\n],\n\"PromotionalCodes\": [],\n\"Donations\": null,\n\"AffiliateTracking\": null,\n\"TrackingCode\": null,\n\"ShippingAddress\": null,\n\"SuppressNotification\": false,\n\"Source\": null,\n\"CreditsToApply\": null,\n\"ReturnUrl\": \"https://mob3.golfnow.com/memberships/checkout-validation\",\n\"PreAuth\": null\n}",
           "bodyHtml": "<p>These are additional logs from the <code>GolfNow.Services.Customer</code> side related to the original error in this ticket:<br></p><pre><code>System.Data.SqlClient.SqlException (0x80131904): Procedure or function 'InsertCustomerMembership' expects parameter '@Value', which was not supplied.\n   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)\n   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)\n   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)\n   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean&amp; dataReady)\n   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()\n   at System.Data.SqlClient.SqlDataReader.get_MetaData()\n   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)\n   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task&amp; task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)\n   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task&amp; task, Boolean&amp; usedCache, Boolean asyncWrite, Boolean inRetry)\n   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)\n   at System.Data.SqlClient.SqlCommand.ExecuteScalar()\n   at GolfNow.Services.Customer.DAL.DAO.CustomerDao.InsertMembership(Int32 customerNumber, Int32 providerId, String value, Int32 customerMembershipStatusId) in C:\\actions-runner-01\\_work\\gn-main\\gn-main\\Internal Services\\GolfNow.Services.Customer\\GolfNow.Services.Customer.DAL\\DAO\\CustomerDao.cs:line 880\n   at GolfNow.Services.Customer.Provider.Providers.CustomerProvider.GenerateMembership(Int32 customerNumber, Int32 providerID) in C:\\actions-runner-01\\_work\\gn-main\\gn-main\\Internal Services\\GolfNow.Services.Customer\\GolfNow.Services.Customer.Provider\\Providers\\CustomerProvider.cs:line 775\n   at GolfNow.Services.Customer.Service.CustomerService.GenerateMembership(GenerateMembershipRequest request) in C:\\actions-runner-01\\_work\\gn-main\\gn-main\\Internal Services\\GolfNow.Services.Customer\\CustomerService.svc.cs:line 610\nClientConnectionId:3a44357e-8ce6-41c7-acb6-1b8011fa64cc\nError Number:201,State:4,Class:16</code></pre><p><br>Below is the payload used to generate the previous error in the Customer service when the endpoint <code>{{api-base-url}}/GolfNowAPI.svc/rest/channel/331/customers/{{EmailAddress}}/orders</code> is called:<br></p><pre><code>{\n  &quot;Id&quot;: null,\n  &quot;EffectiveDate&quot;: &quot;2026-04-20T20:15:00Z&quot;,\n  &quot;GuestInfo&quot;: {\n    &quot;FirstName&quot;: &quot;John&quot;,\n    &quot;LastName&quot;: &quot;Doe&quot;,\n    &quot;EmailAddress&quot;: &quot;john.doe@gmail.com&quot;,\n    &quot;PhoneNumber&quot;: &quot;5551234567&quot;\n  },\n  &quot;Details&quot;: [\n    {\n      &quot;__type&quot;: &quot;ProductOrderItemDetail:#GolfNow.API.Service.Order.Items&quot;,\n      &quot;ReferenceId&quot;: &quot;639121847523456789&quot;,\n      &quot;ProductPriceId&quot;: 14,\n      &quot;PurchaseMetadata&quot;: null,\n      &quot;ReferralToken&quot;: null,\n      &quot;LoyaltyRedemption&quot;: {\n        &quot;RedemptionPointsApplied&quot;: 0.0\n      }\n    }\n  ],\n  &quot;PaymentInformation&quot;: [\n    {\n      &quot;__type&quot;: &quot;SavedCreditCardPayment:#GolfNow.API.Contracts.DataContracts&quot;,\n      &quot;Amount&quot;: 0,\n      &quot;PaymentOptionID&quot;: 98765,\n      &quot;CVVCode&quot;: &quot;123&quot;\n    }\n  ],\n  &quot;PromotionalCodes&quot;: [],\n  &quot;Donations&quot;: null,\n  &quot;AffiliateTracking&quot;: null,\n  &quot;TrackingCode&quot;: null,\n  &quot;ShippingAddress&quot;: null,\n  &quot;SuppressNotification&quot;: false,\n  &quot;Source&quot;: null,\n  &quot;CreditsToApply&quot;: null,\n  &quot;ReturnUrl&quot;: &quot;https://mob3.golfnow.com/memberships/checkout-validation&quot;,\n  &quot;PreAuth&quot;: null\n}</code></pre>"
         },
         {
           "id": "1154125",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14386?focusedCommentId=1154125",
           "author": "Daniel McNaughton",
           "authorAccountId": "5a53cc00246f8c21033ff5a6",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5a53cc00246f8c21033ff5a6/9d9bf25d-bfdb-4c2c-8a73-8182ef838b09/32",
@@ -1736,10 +1872,15 @@
           "createdDisplay": "Apr 20, 2026, 7:03 PM",
           "updated": "2026-04-20T19:03:54.608-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "This is caused by an exhaustion of the records in Customer.MembershipProviderNumber which is not being gracefully handled. Opened up https://golfnow.atlassian.net/browse/GNDS-285 to resolve by topping up this table with 100K IDs.",
           "bodyHtml": "<p>This is caused by an exhaustion of the records in Customer.MembershipProviderNumber which is not being gracefully handled. Opened up <a href=\"https://golfnow.atlassian.net/browse/GNDS-285\" target=\"_blank\" rel=\"noopener\">https://golfnow.atlassian.net/browse/GNDS-285</a> to resolve by topping up this table with 100K IDs.</p>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14386?focusedCommentId=1154125",
+      "lastCommentDisplay": "Apr 20, 2026, 7:03 PM",
+      "lastCommentAuthor": "Daniel McNaughton",
       "testChecklist": null,
       "type": "Bug",
       "isSubtask": false,
@@ -1775,6 +1916,7 @@
       "comments": [
         {
           "id": "1155925",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14391?focusedCommentId=1155925",
           "author": "Luis Vallejo Mursuli",
           "authorAccountId": "712020:2e637bb4-c610-467b-839d-9a5b84f75f01",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:2e637bb4-c610-467b-839d-9a5b84f75f01/4dca1d1b-3faa-4d03-90b8-2b3e0cc02887/32",
@@ -1782,10 +1924,15 @@
           "createdDisplay": "Apr 23, 2026, 7:11 PM",
           "updated": "2026-04-23T19:11:32.164-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "Daniel provided a solution for that.",
           "bodyHtml": "<p>Daniel provided a solution for that.</p>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14391?focusedCommentId=1155925",
+      "lastCommentDisplay": "Apr 23, 2026, 7:11 PM",
+      "lastCommentAuthor": "Luis Vallejo Mursuli",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -1829,6 +1976,7 @@
       "comments": [
         {
           "id": "1153353",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14385?focusedCommentId=1153353",
           "author": "Dewan Kabir",
           "authorAccountId": "630fb06bb433b060db559bdb",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
@@ -1836,11 +1984,14 @@
           "createdDisplay": "Apr 19, 2026, 3:01 PM",
           "updated": "2026-04-19T15:01:11.597-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "Hi ! @Lara Golovachenko Has this been tested in AWS DEV and AWS STG connected Web Pages ?",
           "bodyHtml": "<p>Hi ! @Lara Golovachenko Has this been tested in AWS DEV and AWS STG connected Web Pages ? </p>"
         },
         {
           "id": "1153754",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14385?focusedCommentId=1153754",
           "author": "Lara Golovachenko",
           "authorAccountId": "557058:949a46b9-28b8-4a1d-9abc-8a403e8836aa",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/557058:949a46b9-28b8-4a1d-9abc-8a403e8836aa/631edf5e-a1b0-4f2e-82f3-74b047a90ac7/32",
@@ -1848,11 +1999,14 @@
           "createdDisplay": "Apr 20, 2026, 10:05 AM",
           "updated": "2026-04-20T10:05:03.840-0400",
           "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 3,
           "body": "I’m not seeing fix for Golf du Tremblay sur Mauldre - Chateau Bertin facility, but I do see fix for the Golf Bastide de la Salette facility though. Both facilities are still active in CRM.",
-          "bodyHtml": "<p>I’m not seeing fix for <code>Golf du Tremblay sur Mauldre - Chateau Bertin</code> facility, but I do see fix for the <code>Golf Bastide de la Salette</code> facility though. Both facilities are still active in CRM.</p><div class=\"description-media-group\"><div class=\"description-media-missing\">Screenshot 2026-04-20 at 10.02.21.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">Screenshot 2026-04-20 at 10.04.05.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">Screenshot 2026-04-20 at 09.55.49.png could not be embedded.</div></div>"
+          "bodyHtml": "<p>I’m not seeing fix for <code>Golf du Tremblay sur Mauldre - Chateau Bertin</code> facility, but I do see fix for the <code>Golf Bastide de la Salette</code> facility though. Both facilities are still active in CRM.</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14385/comments/1153754/715652-Screenshot-2026-04-20-at-10.02.21.png\" alt=\"Screenshot 2026-04-20 at 10.02.21.png\" loading=\"lazy\"><figcaption>Screenshot 2026-04-20 at 10.02.21.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14385/comments/1153754/715653-Screenshot-2026-04-20-at-10.04.05.png\" alt=\"Screenshot 2026-04-20 at 10.04.05.png\" loading=\"lazy\"><figcaption>Screenshot 2026-04-20 at 10.04.05.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14385/comments/1153754/715654-Screenshot-2026-04-20-at-09.55.49.png\" alt=\"Screenshot 2026-04-20 at 09.55.49.png\" loading=\"lazy\"><figcaption>Screenshot 2026-04-20 at 09.55.49.png</figcaption></figure></div>"
         },
         {
           "id": "1154510",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14385?focusedCommentId=1154510",
           "author": "Yu-Sheng Tu",
           "authorAccountId": "60d0cfa7d5dde8007174dd0b",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/60d0cfa7d5dde8007174dd0b/25cdd204-3aea-49fd-97fb-2f563849c2ed/32",
@@ -1860,11 +2014,14 @@
           "createdDisplay": "Apr 21, 2026, 1:39 PM",
           "updated": "2026-04-21T13:39:18.533-0400",
           "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 1,
           "body": "@Lara Golovachenko , this should be fix now.\nJust for more validation, when you have a chance could you set a InActive facility in AWS STG to Active and we can validate it again once the midnight sync job ran?",
-          "bodyHtml": "<p>@Lara Golovachenko , this should be fix now. <br>Just for more validation, when you have a chance could you set a InActive facility in AWS STG to Active and we can validate it again once the midnight sync job ran?</p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260421-173800.png could not be embedded.</div></div>"
+          "bodyHtml": "<p>@Lara Golovachenko , this should be fix now. <br>Just for more validation, when you have a chance could you set a InActive facility in AWS STG to Active and we can validate it again once the midnight sync job ran?</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14385/comments/1154510/716228-image-20260421-173800.png\" alt=\"image-20260421-173800.png\" loading=\"lazy\"><figcaption>image-20260421-173800.png</figcaption></figure></div>"
         },
         {
           "id": "1156658",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14385?focusedCommentId=1156658",
           "author": "Lara Golovachenko",
           "authorAccountId": "557058:949a46b9-28b8-4a1d-9abc-8a403e8836aa",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/557058:949a46b9-28b8-4a1d-9abc-8a403e8836aa/631edf5e-a1b0-4f2e-82f3-74b047a90ac7/32",
@@ -1872,11 +2029,14 @@
           "createdDisplay": "Apr 27, 2026, 12:32 PM",
           "updated": "2026-04-28T01:22:10.804-0400",
           "updatedDisplay": "Apr 28, 2026, 1:22 AM",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "Confirmed that main issues #2&3 are resolved now. Good to pass.\n\nAlso moving out issue #1 into separate ticket. https://golfnow.atlassian.net/browse/CORE-14410\n\nNote #2: Also noticed additional abnormal behavior (current production as well) https://golfnow.atlassian.net/browse/CORE-14413",
           "bodyHtml": "<p>Confirmed that main issues #2&amp;3 are resolved now. Good to pass.</p><p>Also moving out issue #1 into separate ticket. <a href=\"https://golfnow.atlassian.net/browse/CORE-14410\" target=\"_blank\" rel=\"noopener\">https://golfnow.atlassian.net/browse/CORE-14410</a> </p><p>Note #2: Also noticed additional abnormal behavior (current production as well) <a href=\"https://golfnow.atlassian.net/browse/CORE-14413\" target=\"_blank\" rel=\"noopener\">https://golfnow.atlassian.net/browse/CORE-14413</a> </p>"
         },
         {
           "id": "1156866",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14385?focusedCommentId=1156866",
           "author": "Lara Golovachenko",
           "authorAccountId": "557058:949a46b9-28b8-4a1d-9abc-8a403e8836aa",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/557058:949a46b9-28b8-4a1d-9abc-8a403e8836aa/631edf5e-a1b0-4f2e-82f3-74b047a90ac7/32",
@@ -1884,10 +2044,15 @@
           "createdDisplay": "Apr 28, 2026, 1:42 AM",
           "updated": "2026-04-28T01:42:38.572-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "Regression is completed but not quite passing yet before we can release this. Need to look into https://golfnow.atlassian.net/browse/CORE-14414 first",
           "bodyHtml": "<p>Regression is completed but not quite passing yet before we can release this. Need to look into <a href=\"https://golfnow.atlassian.net/browse/CORE-14414\" target=\"_blank\" rel=\"noopener\">https://golfnow.atlassian.net/browse/CORE-14414</a> first</p>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14385?focusedCommentId=1156866",
+      "lastCommentDisplay": "Apr 28, 2026, 1:42 AM",
+      "lastCommentAuthor": "Lara Golovachenko",
       "testChecklist": null,
       "type": "Task",
       "isSubtask": false,
@@ -1923,6 +2088,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -1967,6 +2135,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -2011,6 +2182,9 @@
       "descriptionMediaCount": 0,
       "commentCount": 0,
       "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -2057,6 +2231,7 @@
       "comments": [
         {
           "id": "1142946",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14331?focusedCommentId=1142946",
           "author": "Yu-Sheng Tu",
           "authorAccountId": "60d0cfa7d5dde8007174dd0b",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/60d0cfa7d5dde8007174dd0b/25cdd204-3aea-49fd-97fb-2f563849c2ed/32",
@@ -2064,10 +2239,15 @@
           "createdDisplay": "Mar 25, 2026, 10:46 AM",
           "updated": "2026-03-25T10:46:35.575-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "New: Product Vertical Management & Assignment (PR #84)\n\nTwo new capabilities have been added that should be tested between Steps 3 and 4:\n\nCreate Product Verticals\n\nProduct verticals classify offerings (e.g., \"Golf\", \"Simulator\", \"Fitting\"). The Value is now auto-incremented — no need to pass it in the request body.\n\nAction\n\nMethod\n\nEndpoint\n\nList product verticals\n\nGET\n\n/api/v1/management/productvertical\n\nGet by ID\n\nGET\n\n/api/v1/management/productvertical/{id}\n\nCreate product vertical\n\nPOST\n\n/api/v1/management/productvertical\n\nUpdate product vertical\n\nPUT\n\n/api/v1/management/productvertical/{id}\n\nDelete product vertical\n\nDELETE\n\n/api/v1/management/productvertical/{id}\n\nActivate\n\nPOST\n\n/api/v1/management/productvertical/{id}/activate\n\nDeactivate\n\nPOST\n\n/api/v1/management/productvertical/{id}/deactivate\n\nCreate request body: { \"name\": \"Simulator\" } (Value auto-assigned as max + 1)\n\nValidation:\n\n- Confirm Value is auto-incremented (1, 2, 3, ...)\n\n- Confirm Name must be unique\n\n- Confirm Value is immutable after creation (not editable via update)\n\nAssign Product Vertical to Offering\n\nAssigns a product vertical to an existing offering using the ProductVertical's integer Value and the Offering's CRM GolfCourseID.\n\nAction\n\nMethod\n\nEndpoint\n\nAssign to offering\n\nPOST\n\n/api/v1/management/productvertical/{value}/assign/{offeringCrmId}\n\nExample: POST /api/v1/management/productvertical/1/assign/12951\n\nValidation:\n\n- Confirm the response returns the updated OfferingDto with productVerticalType set\n\n- Confirm assigning an inactive product vertical returns 400\n\n- Confirm non-existent Value or CRM ID returns 404\n\n- Verify the offering in MongoDB shows updated ProductVerticalType field\n\nPR: https://github.com/GolfNowEng/gn-svc-timelyst/pull/84",
           "bodyHtml": "<h3>New: Product Vertical Management &amp; Assignment (PR #84)</h3><p>Two new capabilities have been added that should be tested between Steps 3 and 4:</p><h3>Create Product Verticals</h3><p>Product verticals classify offerings (e.g., &quot;Golf&quot;, &quot;Simulator&quot;, &quot;Fitting&quot;). The <code>Value</code> is now <strong>auto-incremented</strong> — no need to pass it in the request body.</p><div class=\"description-table-wrap\"><table><tr><th><p>Action</p></th><th><p>Method</p></th><th><p>Endpoint</p></th></tr><tr><td><p>List product verticals</p></td><td><p><code>GET</code></p></td><td><p><code>/api/v1/management/productvertical</code></p></td></tr><tr><td><p>Get by ID</p></td><td><p><code>GET</code></p></td><td><p><code>/api/v1/management/productvertical/{id}</code></p></td></tr><tr><td><p>Create product vertical</p></td><td><p><code>POST</code></p></td><td><p><code>/api/v1/management/productvertical</code></p></td></tr><tr><td><p>Update product vertical</p></td><td><p><code>PUT</code></p></td><td><p><code>/api/v1/management/productvertical/{id}</code></p></td></tr><tr><td><p>Delete product vertical</p></td><td><p><code>DELETE</code></p></td><td><p><code>/api/v1/management/productvertical/{id}</code></p></td></tr><tr><td><p>Activate</p></td><td><p><code>POST</code></p></td><td><p><code>/api/v1/management/productvertical/{id}/activate</code></p></td></tr><tr><td><p>Deactivate</p></td><td><p><code>POST</code></p></td><td><p><code>/api/v1/management/productvertical/{id}/deactivate</code></p></td></tr></table></div><p><strong>Create request body:</strong> <code>{ &quot;name&quot;: &quot;Simulator&quot; }</code> (Value auto-assigned as max + 1)</p><p><strong>Validation:</strong></p><ul><li><p>Confirm <code>Value</code> is auto-incremented (1, 2, 3, ...)</p></li><li><p>Confirm <code>Name</code> must be unique</p></li><li><p>Confirm <code>Value</code> is immutable after creation (not editable via update)</p></li></ul><h3>Assign Product Vertical to Offering</h3><p>Assigns a product vertical to an existing offering using the ProductVertical's integer Value and the Offering's CRM GolfCourseID.</p><div class=\"description-table-wrap\"><table><tr><th><p>Action</p></th><th><p>Method</p></th><th><p>Endpoint</p></th></tr><tr><td><p>Assign to offering</p></td><td><p><code>POST</code></p></td><td><p><code>/api/v1/management/productvertical/{value}/assign/{offeringCrmId}</code></p></td></tr></table></div><p><strong>Example:</strong> <code>POST /api/v1/management/productvertical/1/assign/12951</code></p><p><strong>Validation:</strong></p><ul><li><p>Confirm the response returns the updated <code>OfferingDto</code> with <code>productVerticalType</code> set</p></li><li><p>Confirm assigning an inactive product vertical returns 400</p></li><li><p>Confirm non-existent Value or CRM ID returns 404</p></li><li><p>Verify the offering in MongoDB shows updated <code>ProductVerticalType</code> field</p></li></ul><p><strong>PR:</strong> https://github.com/GolfNowEng/gn-svc-timelyst/pull/84</p>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14331?focusedCommentId=1142946",
+      "lastCommentDisplay": "Mar 25, 2026, 10:46 AM",
+      "lastCommentAuthor": "Yu-Sheng Tu",
       "testChecklist": null,
       "type": "Task",
       "isSubtask": false,
@@ -2113,6 +2293,7 @@
       "comments": [
         {
           "id": "1154536",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14329?focusedCommentId=1154536",
           "author": "Yoel Martin Pardo",
           "authorAccountId": "625571809e7380006fb29599",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
@@ -2120,11 +2301,14 @@
           "createdDisplay": "Apr 21, 2026, 2:28 PM",
           "updated": "2026-04-21T14:28:02.923-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "Internal note: We did some test on our local and we couldn’t recreate the issue.\n\n*First test:\n\n(Ensure release groups are set to 331.)\n1-Configure and run Auto Load.\n2-Disable AutoLoad.\n3-Enable TSP.\n4-Block all TeeTime manually.\n5-Run Cache Manager.\n\nExpected Result: RackTimes should be created.\n\nResult: RackTimes were created. Also GetTeeTimeByFacility endpoint returns racktimes.\n\nSecond test:\n(Ensure release groups are set to 331.)\n1-Run cache Manager. To have racktimes created.\n2-configure and run Auto Load.\n3-Disable AutoLoad.\n4-Enable TSP.\n5-Block all TeeTime manually.\n6-Run Cache Manager.\n\nExpected Result: RackTimes should be created.\n\nResult: RackTimes were created. Also GetTeeTimeByFacility endpoint returns racktimes.\n\nRacktimes are created based of the inventory",
           "bodyHtml": "<p>Internal note: We did some test on our local and we couldn’t recreate the issue.</p><p>*First test:</p><p>(Ensure release groups are set to 331.)<br>1-Configure and run Auto Load.<br>2-Disable AutoLoad.<br>3-Enable TSP.<br>4-Block all TeeTime manually.<br>5-Run Cache Manager. </p><p>Expected Result: RackTimes should be created.</p><p>Result: RackTimes were created. Also GetTeeTimeByFacility endpoint returns racktimes.</p><p>Second test:<br>(Ensure release groups are set to 331.)<br>1-Run cache Manager. To have racktimes created.<br>2-configure and run Auto Load.<br>3-Disable AutoLoad.<br>4-Enable TSP.<br>5-Block all TeeTime manually. <br>6-Run Cache Manager. </p><p>Expected Result: RackTimes should be created.</p><p>Result: RackTimes were created. Also GetTeeTimeByFacility endpoint returns racktimes.</p><p>Racktimes are created based of the inventory </p>"
         },
         {
           "id": "1154600",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14329?focusedCommentId=1154600",
           "author": "Joshua Marquess",
           "authorAccountId": "557058:61c239b2-3f38-467e-afb0-40b29fe9aa94",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/JM-3.png",
@@ -2132,11 +2316,14 @@
           "createdDisplay": "Apr 21, 2026, 4:50 PM",
           "updated": "2026-04-21T16:52:01.246-0400",
           "updatedDisplay": "Apr 21, 2026, 4:52 PM",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "We are currently blocked waiting on Interface support as well as @Conor Maley to provide more information here.\n\nCORE was not able to reproduce any issues here. In both dev and prod, we are following all steps and calling GetTeeTimesByFacility and getting the RackTimes to return in the response.\n\nI passed the results to Conor and he mentioned that there is likely a filter that is causing the BE to not show the results.\n@Brian Pugh @Jeremy Waters",
           "bodyHtml": "<p>We are currently blocked waiting on Interface support as well as @Conor Maley to provide more information here.</p><p>CORE was not able to reproduce any issues here. In both dev and prod, we are following all steps and calling GetTeeTimesByFacility and getting the RackTimes to return in the response. <br><br>I passed the results to Conor and he mentioned that there is likely a filter that is causing the BE to not show the results. <br>@Brian Pugh @Jeremy Waters </p>"
         },
         {
           "id": "1154857",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14329?focusedCommentId=1154857",
           "author": "Jeremy Waters",
           "authorAccountId": "557058:804ab819-57b9-4d68-b42f-48347ab670cb",
           "authorAvatarUrl": "https://secure.gravatar.com/avatar/0d78992839a8a4617e029be617edb68c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FJW-0.png",
@@ -2144,11 +2331,14 @@
           "createdDisplay": "Apr 22, 2026, 10:14 AM",
           "updated": "2026-04-22T10:15:46.926-0400",
           "updatedDisplay": "Apr 22, 2026, 10:15 AM",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "@Joshua Marquess @Brian Pugh this is also happening for the vacayou owner id at Indian Wells.  This is not BE specific. XCS does not show the TS pricing rounds on the rate sets in support site. After the purge it initially will show times correctly but after a sync it takes all the tee times down",
           "bodyHtml": "<p>@Joshua Marquess @Brian Pugh this is also happening for the vacayou owner id at Indian Wells.  This is not BE specific. XCS does not show the TS pricing rounds on the rate sets in support site. After the purge it initially will show times correctly but after a sync it takes all the tee times down</p>"
         },
         {
           "id": "1157181",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14329?focusedCommentId=1157181",
           "author": "Yoel Martin Pardo",
           "authorAccountId": "625571809e7380006fb29599",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
@@ -2156,11 +2346,14 @@
           "createdDisplay": "Apr 28, 2026, 11:45 AM",
           "updated": "2026-04-28T11:45:43.426-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "PR: https://github.com/GolfNowEng/gn-main/pull/2119",
           "bodyHtml": "<p>PR: <a href=\"https://github.com/GolfNowEng/gn-main/pull/2119\" target=\"_blank\" rel=\"noopener\">https://github.com/GolfNowEng/gn-main/pull/2119</a> </p>"
         },
         {
           "id": "1157211",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14329?focusedCommentId=1157211",
           "author": "Yoel Martin Pardo",
           "authorAccountId": "625571809e7380006fb29599",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
@@ -2168,10 +2361,15 @@
           "createdDisplay": "Apr 28, 2026, 12:16 PM",
           "updated": "2026-04-28T12:16:48.788-0400",
           "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 2,
           "body": "QA: To make sure that we are doing a good test, please make sure that the golfcourse/s that we are testing have a record like the one below on the CRMRackPeriod table:\n\nYou can run this query to validate.\n\nSELECT * FROM dbo.CRMRackPeriod WHERE GolfCourseID = 179142\n\nPlease test all scenarios mentioned by Brian, and also test scenarios where we have a rate period and we do not have rate periods created. When the Souce is None on the rate period, the price should be 0 for the rack times.",
-          "bodyHtml": "<p>QA: To make sure that we are doing a good test, please make sure that the golfcourse/s that we are testing have a record like the one below on the <code>CRMRackPeriod</code> table:</p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260428-161434.png could not be embedded.</div></div><p>You can run this query to validate.</p><pre><code>SELECT * FROM dbo.CRMRackPeriod WHERE GolfCourseID = 179142</code></pre><p>Please test all scenarios mentioned by Brian, and also test scenarios where we have a rate period and we do not have rate periods created. When the Souce is None on the rate period, the price should be 0 for the rack times.</p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260428-161541.png could not be embedded.</div></div>"
+          "bodyHtml": "<p>QA: To make sure that we are doing a good test, please make sure that the golfcourse/s that we are testing have a record like the one below on the <code>CRMRackPeriod</code> table:</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14329/comments/1157211/718433-image-20260428-161434.png\" alt=\"image-20260428-161434.png\" loading=\"lazy\"><figcaption>image-20260428-161434.png</figcaption></figure></div><p>You can run this query to validate.</p><pre><code>SELECT * FROM dbo.CRMRackPeriod WHERE GolfCourseID = 179142</code></pre><p>Please test all scenarios mentioned by Brian, and also test scenarios where we have a rate period and we do not have rate periods created. When the Souce is None on the rate period, the price should be 0 for the rack times.</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14329/comments/1157211/718432-image-20260428-161541.png\" alt=\"image-20260428-161541.png\" loading=\"lazy\"><figcaption>image-20260428-161541.png</figcaption></figure></div>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14329?focusedCommentId=1157211",
+      "lastCommentDisplay": "Apr 28, 2026, 12:16 PM",
+      "lastCommentAuthor": "Yoel Martin Pardo",
       "testChecklist": null,
       "type": "Story",
       "isSubtask": false,
@@ -2209,6 +2407,7 @@
       "comments": [
         {
           "id": "1156736",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14332?focusedCommentId=1156736",
           "author": "Luis Vallejo Mursuli",
           "authorAccountId": "712020:2e637bb4-c610-467b-839d-9a5b84f75f01",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:2e637bb4-c610-467b-839d-9a5b84f75f01/4dca1d1b-3faa-4d03-90b8-2b3e0cc02887/32",
@@ -2216,11 +2415,14 @@
           "createdDisplay": "Apr 27, 2026, 2:58 PM",
           "updated": "2026-04-27T14:58:13.102-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "@Dewan Kabir, attached are the instructions for testing this ticket and the https://golfnow.atlassian.net/browse/CORE-14117, since both are related. Reach out if you need help or clarification. Thanks!",
           "bodyHtml": "<p>@Dewan Kabir, attached are the instructions for testing this ticket and the <a href=\"https://golfnow.atlassian.net/browse/CORE-14117\" target=\"_blank\" rel=\"noopener\">https://golfnow.atlassian.net/browse/CORE-14117</a>, since both are related. Reach out if you need help or clarification. Thanks!<br><br> </p>"
         },
         {
           "id": "1162678",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14332?focusedCommentId=1162678",
           "author": "Dewan Kabir",
           "authorAccountId": "630fb06bb433b060db559bdb",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
@@ -2228,10 +2430,15 @@
           "createdDisplay": "May 11, 2026, 4:37 PM",
           "updated": "2026-05-11T16:37:31.141-0400",
           "updatedDisplay": "May 11, 2026, 4:37 PM",
+          "hasMedia": true,
+          "mediaCount": 6,
           "body": "TESTED IN AWS STG :\n\nFor Trade Hot Deals\n\nTRADE / HOT DEAL :\n\nValidate the overrides for the TransactionFeesTotal in the Response → and TransactionFeesTotal  ,  FeeMessagingDisplayRates is using this to show the total breakdown.\n\nIf there are no other fees configured other than the  → OGFOwnerTransactionFee  → From the CRMOwnerGolfFacility table , then that will be displayed on the Fee Messaging Object for TRNFEE\n\nThat Value can be Overridden by → the Fee value from the -> Reservation.DynamicTransactionFees table , if it has a value for the facility ( which is controlled by the constrain if the Facility is Master or not ) → and that is provided by the CRMGolfFacility table which tells us that value from the → GFStatus column\n\nThe Fee Value from the → Reservation.DynamicTransactionFees table can be Overridden by → Launch Darkly Flag → Based off of the Channel ID\n\nIf the Flag is disabled → and there is a value in the Reservation.DynamicTransactionFees table , then that will be shown\n\nIf the Flag is Enabled → the value form the Amount Column from the CRM.Revenue.FeeConfiguration table will be displayed\n\n---\nBelow is what we have setup for the Reservation.DynamicTransactionFees table for trade tee times :\n\nWe see the TRNFEE reflected form that table in the GET Tee Time endpoint responses :\n\nWe also have the a value in the CRM.Revenue.FeeConfiguration table , but because the Launch Darkly Flag is OFF , we are not seeing that value :\n\nAfter Turning ON that flag , we should see that value override the TRNFEE amount from the Reservation.DynamicTransactionFees table :\n\n---\nCOURSE :\n\n→ Not affected by Reservation.DynamicTransactionFees , as they apply to Trade Tee Times\n\n→ When Launch Darkly is ON , the TRNFEE from will be displayed for Course Tee Times :",
-          "bodyHtml": "<p><strong>TESTED IN AWS STG : </strong></p><p><strong>For Trade Hot Deals </strong></p><p><strong>TRADE / HOT DEAL : </strong></p><p>Validate the overrides for the <strong>TransactionFeesTotal</strong> in the Response → and <strong>TransactionFeesTotal</strong>  ,  <strong>FeeMessagingDisplayRates</strong> is using this to show the total breakdown. <br></p><p>If there are no other fees configured other than the  → OGFOwnerTransactionFee  → From the CRMOwnerGolfFacility table , then that will be displayed on the Fee Messaging Object for TRNFEE <br><br>That Value can be Overridden by → the Fee value from the -&gt; Reservation.DynamicTransactionFees table , if it has a value for the facility ( which is controlled by the constrain if the Facility is Master or not ) → and that is provided by the CRMGolfFacility table which tells us that value from the → GFStatus column<br><br>The Fee Value from the → Reservation.DynamicTransactionFees table can be Overridden by → Launch Darkly Flag → Based off of the Channel ID<br><br>If the Flag is disabled → and there is a value in the Reservation.DynamicTransactionFees table , then that will be shown <br><br>If the Flag is Enabled → the value form the Amount Column from the CRM.Revenue.FeeConfiguration table will be displayed </p><hr><p>Below is what we have setup for the Reservation.DynamicTransactionFees table for trade tee times :  </p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260511-164547.png could not be embedded.</div></div><p>We see the TRNFEE reflected form that table in the GET Tee Time endpoint responses : </p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260511-200405.png could not be embedded.</div></div><p>We also have the a value in the CRM.Revenue.FeeConfiguration table , but because the Launch Darkly Flag is OFF , we are not seeing that value : </p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260511-200531.png could not be embedded.</div></div><p>After Turning ON that flag , we should see that value override the TRNFEE amount from the Reservation.DynamicTransactionFees table : </p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260511-200649.png could not be embedded.</div></div><hr><p><strong>COURSE : </strong></p><p>→ Not affected by Reservation.DynamicTransactionFees , as they apply to Trade Tee Times </p><p>→ When Launch Darkly is ON , the TRNFEE from will be displayed for Course Tee Times : </p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260511-203600.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260511-203543.png could not be embedded.</div></div><p><br></p>"
+          "bodyHtml": "<p><strong>TESTED IN AWS STG : </strong></p><p><strong>For Trade Hot Deals </strong></p><p><strong>TRADE / HOT DEAL : </strong></p><p>Validate the overrides for the <strong>TransactionFeesTotal</strong> in the Response → and <strong>TransactionFeesTotal</strong>  ,  <strong>FeeMessagingDisplayRates</strong> is using this to show the total breakdown. <br></p><p>If there are no other fees configured other than the  → OGFOwnerTransactionFee  → From the CRMOwnerGolfFacility table , then that will be displayed on the Fee Messaging Object for TRNFEE <br><br>That Value can be Overridden by → the Fee value from the -&gt; Reservation.DynamicTransactionFees table , if it has a value for the facility ( which is controlled by the constrain if the Facility is Master or not ) → and that is provided by the CRMGolfFacility table which tells us that value from the → GFStatus column<br><br>The Fee Value from the → Reservation.DynamicTransactionFees table can be Overridden by → Launch Darkly Flag → Based off of the Channel ID<br><br>If the Flag is disabled → and there is a value in the Reservation.DynamicTransactionFees table , then that will be shown <br><br>If the Flag is Enabled → the value form the Amount Column from the CRM.Revenue.FeeConfiguration table will be displayed </p><hr><p>Below is what we have setup for the Reservation.DynamicTransactionFees table for trade tee times :  </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14332/comments/1162678/722552-image-20260511-164547.png\" alt=\"image-20260511-164547.png\" loading=\"lazy\"><figcaption>image-20260511-164547.png</figcaption></figure></div><p>We see the TRNFEE reflected form that table in the GET Tee Time endpoint responses : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14332/comments/1162678/722551-image-20260511-200405.png\" alt=\"image-20260511-200405.png\" loading=\"lazy\"><figcaption>image-20260511-200405.png</figcaption></figure></div><p>We also have the a value in the CRM.Revenue.FeeConfiguration table , but because the Launch Darkly Flag is OFF , we are not seeing that value : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14332/comments/1162678/722556-image-20260511-200531.png\" alt=\"image-20260511-200531.png\" loading=\"lazy\"><figcaption>image-20260511-200531.png</figcaption></figure></div><p>After Turning ON that flag , we should see that value override the TRNFEE amount from the Reservation.DynamicTransactionFees table : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14332/comments/1162678/722555-image-20260511-200649.png\" alt=\"image-20260511-200649.png\" loading=\"lazy\"><figcaption>image-20260511-200649.png</figcaption></figure></div><hr><p><strong>COURSE : </strong></p><p>→ Not affected by Reservation.DynamicTransactionFees , as they apply to Trade Tee Times </p><p>→ When Launch Darkly is ON , the TRNFEE from will be displayed for Course Tee Times : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14332/comments/1162678/722554-image-20260511-203600.png\" alt=\"image-20260511-203600.png\" loading=\"lazy\"><figcaption>image-20260511-203600.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14332/comments/1162678/722553-image-20260511-203543.png\" alt=\"image-20260511-203543.png\" loading=\"lazy\"><figcaption>image-20260511-203543.png</figcaption></figure></div><p><br></p>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14332?focusedCommentId=1162678",
+      "lastCommentDisplay": "May 11, 2026, 4:37 PM",
+      "lastCommentAuthor": "Dewan Kabir",
       "testChecklist": {
         "files": [
           {
@@ -2588,6 +2795,7 @@
       "comments": [
         {
           "id": "1151585",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14215?focusedCommentId=1151585",
           "author": "Sebastian Calzadilla Gonzalez",
           "authorAccountId": "712020:99d14cf5-150b-43f9-9207-31630f8747f0",
           "authorAvatarUrl": "https://secure.gravatar.com/avatar/4bc51cc1e5078afe30e9a981c8f3cd62?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSG-3.png",
@@ -2595,11 +2803,14 @@
           "createdDisplay": "Apr 14, 2026, 3:54 PM",
           "updated": "2026-04-14T15:54:27.123-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "As discussed with Daniel, there should be another ticket that will tackle duplication of Wallets in the DB and perform a data clean up. Currently able to see the issue in dev by running the following query\n\nSELECT top 100 CustomerNumber, String_agg(WalletType, ', ') as WalletTypes\nFROM [dbo].[Wallet] w\n--where w.WalletType = 1\ngroup by w.CustomerNumber\nhaving count(1) > 1",
           "bodyHtml": "<p>As discussed with Daniel, there should be another ticket that will tackle duplication of Wallets in the DB and perform a data clean up. Currently able to see the issue in dev by running the following query </p><pre><code>SELECT top 100 CustomerNumber, String_agg(WalletType, ', ') as WalletTypes\nFROM [dbo].[Wallet] w\n--where w.WalletType = 1\ngroup by w.CustomerNumber\nhaving count(1) &gt; 1</code></pre>"
         },
         {
           "id": "1151868",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14215?focusedCommentId=1151868",
           "author": "Sebastian Calzadilla Gonzalez",
           "authorAccountId": "712020:99d14cf5-150b-43f9-9207-31630f8747f0",
           "authorAvatarUrl": "https://secure.gravatar.com/avatar/4bc51cc1e5078afe30e9a981c8f3cd62?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSG-3.png",
@@ -2607,11 +2818,14 @@
           "createdDisplay": "Apr 15, 2026, 9:16 AM",
           "updated": "2026-04-15T09:16:27.789-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "QA Notes: try adding a balance on the View customer page in GNC, under the balance tab, to either of the users mentioned on the ticket description and it should successfully add the balance. Also, try with another user and it should be able to add balance as before.\n\nPS: There is known issue mentioned on below comment that is outside of the scope of this ticket. If the customer you’re testing with has multiple wallets of the same type, the error shown on description will still be present. A data fix will be done so this separate issue stops from happening.",
           "bodyHtml": "<p>QA Notes: try adding a balance on the View customer page in GNC, under the balance tab, to either of the users mentioned on the ticket description and it should successfully add the balance. Also, try with another user and it should be able to add balance as before. </p><p>PS: There is known issue mentioned on below comment that is outside of the scope of this ticket. If the customer you’re testing with has multiple wallets of the same type, the error shown on description will still be present. A data fix will be done so this separate issue stops from happening.</p>"
         },
         {
           "id": "1153346",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14215?focusedCommentId=1153346",
           "author": "Dewan Kabir",
           "authorAccountId": "630fb06bb433b060db559bdb",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
@@ -2619,10 +2833,15 @@
           "createdDisplay": "Apr 19, 2026, 2:42 PM",
           "updated": "2026-04-19T14:42:24.114-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "The code for this ticket ahs been reverted , as it was causing issues with Guest Checkout flows .\n\n@Corrie Thomas @Sebastian Calzadilla GonzalezPlease reprioritize this ticket for a Off-Cycle  / Hot Fix ( Fast Follow )  or upcoming regular release . Thank You !",
           "bodyHtml": "<p>The code for this ticket ahs been reverted , as it was causing issues with Guest Checkout flows . <br><br>@Corrie Thomas @Sebastian Calzadilla GonzalezPlease reprioritize this ticket for a Off-Cycle  / Hot Fix ( Fast Follow )  or upcoming regular release . Thank You ! </p>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14215?focusedCommentId=1153346",
+      "lastCommentDisplay": "Apr 19, 2026, 2:42 PM",
+      "lastCommentAuthor": "Dewan Kabir",
       "testChecklist": null,
       "type": "Bug",
       "isSubtask": false,
@@ -2660,6 +2879,7 @@
       "comments": [
         {
           "id": "1157003",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14400?focusedCommentId=1157003",
           "author": "Yoel Martin Pardo",
           "authorAccountId": "625571809e7380006fb29599",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
@@ -2667,10 +2887,15 @@
           "createdDisplay": "Apr 28, 2026, 8:42 AM",
           "updated": "2026-04-28T08:42:26.986-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "PR: https://github.com/GolfNowEng/gn-main/pull/2118",
           "bodyHtml": "<p>PR: <a href=\"https://github.com/GolfNowEng/gn-main/pull/2118\" target=\"_blank\" rel=\"noopener\">https://github.com/GolfNowEng/gn-main/pull/2118</a> </p>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14400?focusedCommentId=1157003",
+      "lastCommentDisplay": "Apr 28, 2026, 8:42 AM",
+      "lastCommentAuthor": "Yoel Martin Pardo",
       "testChecklist": null,
       "type": "Developer Task (sub task)",
       "isSubtask": true,
@@ -2717,6 +2942,7 @@
       "comments": [
         {
           "id": "1155037",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14342?focusedCommentId=1155037",
           "author": "Yoel Martin Pardo",
           "authorAccountId": "625571809e7380006fb29599",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
@@ -2724,11 +2950,14 @@
           "createdDisplay": "Apr 22, 2026, 12:18 PM",
           "updated": "2026-04-22T12:18:09.368-0400",
           "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
           "body": "QA: You will need to run the update sql script on each\n\nAWS DEV:\n\nUSE[CRM]\nGO\n\nUPDATE dbo.CRMInterfaceAttribute\nSET AttributeValue = 'https://integrations-qa.np.ezlinksgolf.com'\nWHERE InterfaceCode = 'EZL' AND AttributeName = 'EZL_INTEGRATION_API_URL'\n\nGO\n\nAWS STG:\n\nUSE[CRM]\nGO\n\nUPDATE dbo.CRMInterfaceAttribute\nSET AttributeValue = 'https://integrations-stage.np.ezlinksgolf.com'\nWHERE InterfaceCode = 'EZL' AND AttributeName = 'EZL_INTEGRATION_API_URL'\n\nGO",
           "bodyHtml": "<p>QA: You will need to run the update sql script on each </p><p>AWS DEV:</p><pre><code>USE[CRM]\nGO\n\nUPDATE dbo.CRMInterfaceAttribute\nSET AttributeValue = 'https://integrations-qa.np.ezlinksgolf.com'\nWHERE InterfaceCode = 'EZL' AND AttributeName = 'EZL_INTEGRATION_API_URL'\n\nGO</code></pre><p>AWS STG:</p><pre><code>USE[CRM]\nGO\n\nUPDATE dbo.CRMInterfaceAttribute\nSET AttributeValue = 'https://integrations-stage.np.ezlinksgolf.com'\nWHERE InterfaceCode = 'EZL' AND AttributeName = 'EZL_INTEGRATION_API_URL'\n\nGO</code></pre>"
         },
         {
           "id": "1168422",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14342?focusedCommentId=1168422",
           "author": "Dewan Kabir",
           "authorAccountId": "630fb06bb433b060db559bdb",
           "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
@@ -2736,10 +2965,15 @@
           "createdDisplay": "May 12, 2026, 8:47 AM",
           "updated": "2026-05-12T08:47:41.805-0400",
           "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 4,
           "body": "VALIDATED AGAINST THE EZL QA ENVIRONMENT :\n\n- Use EZ Legacy API AddMember call to create a new customer in the ETNv4.dbo_Contact.\nMake a Reservation on EZL QA : via API 2.1 :\nSensibleWeather-User@1778095149426user.com\nConfirmation #:345984500\nReservation #:419817979\n\n- See if that ContactID also exists (as ETNContactID) in dbo.ContactFacility. → See Screenshot above :arrow_up:\n\n- Make the (new customer search api call on the new platform) call on the Integrations API (using the same SponsorID as step 1) and see if it returns the golfer/Contact record in the results.\n\nREGRESSION ON BOTH EZRTS QA AND STAGE WERE PERFORMED",
-          "bodyHtml": "<p><strong>VALIDATED AGAINST THE EZL QA ENVIRONMENT : </strong><br></p><ol><li><p>Use <strong>EZ Legacy API</strong> <code>AddMember</code> call to create a new customer in the <strong>ETNv4.dbo_Contact</strong>.<br>Make a Reservation on EZL QA : via API 2.1 : <br><a href=\"mailto:SensibleWeather-User@1778095149426user.com\" target=\"_blank\" rel=\"noopener\">SensibleWeather-User@1778095149426user.com</a><br>Confirmation #:345984500<br>Reservation #:419817979<br></p><div class=\"description-media-group\"><div class=\"description-media-missing\">image (28).png could not be embedded.</div></div></li><li><p>See if that ContactID also exists (as <strong>ETNContactID</strong>) in <strong>dbo.ContactFacility</strong>. → <strong>See Screenshot above </strong>:arrow_up: </p></li><li><p>Make the (n<em>ew customer search api call on the new platform</em>) call on the <strong>Integrations API</strong> (using the same SponsorID as step 1) and see if it returns the golfer/Contact record in the results.</p><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-124358.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-124511.png could not be embedded.</div></div><div class=\"description-media-group\"><div class=\"description-media-missing\">image-20260512-124525.png could not be embedded.</div></div><p><br><strong>REGRESSION ON BOTH EZRTS QA AND STAGE WERE PERFORMED </strong><br></p></li></ol>"
+          "bodyHtml": "<p><strong>VALIDATED AGAINST THE EZL QA ENVIRONMENT : </strong><br></p><ol><li><p>Use <strong>EZ Legacy API</strong> <code>AddMember</code> call to create a new customer in the <strong>ETNv4.dbo_Contact</strong>.<br>Make a Reservation on EZL QA : via API 2.1 : <br><a href=\"mailto:SensibleWeather-User@1778095149426user.com\" target=\"_blank\" rel=\"noopener\">SensibleWeather-User@1778095149426user.com</a><br>Confirmation #:345984500<br>Reservation #:419817979<br></p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14342/comments/1168422/725827-image-(28).png\" alt=\"image (28).png\" loading=\"lazy\"><figcaption>image (28).png</figcaption></figure></div></li><li><p>See if that ContactID also exists (as <strong>ETNContactID</strong>) in <strong>dbo.ContactFacility</strong>. → <strong>See Screenshot above </strong>:arrow_up: </p></li><li><p>Make the (n<em>ew customer search api call on the new platform</em>) call on the <strong>Integrations API</strong> (using the same SponsorID as step 1) and see if it returns the golfer/Contact record in the results.</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14342/comments/1168422/725829-image-20260512-124358.png\" alt=\"image-20260512-124358.png\" loading=\"lazy\"><figcaption>image-20260512-124358.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14342/comments/1168422/725830-image-20260512-124511.png\" alt=\"image-20260512-124511.png\" loading=\"lazy\"><figcaption>image-20260512-124511.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14342/comments/1168422/725828-image-20260512-124525.png\" alt=\"image-20260512-124525.png\" loading=\"lazy\"><figcaption>image-20260512-124525.png</figcaption></figure></div><p><br><strong>REGRESSION ON BOTH EZRTS QA AND STAGE WERE PERFORMED </strong><br></p></li></ol>"
         }
       ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14342?focusedCommentId=1168422",
+      "lastCommentDisplay": "May 12, 2026, 8:47 AM",
+      "lastCommentAuthor": "Dewan Kabir",
       "testChecklist": null,
       "type": "Task",
       "isSubtask": false,
@@ -2768,10 +3002,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-05-24T20:43:42.199Z",
-    "previousPulledAtDisplay": "May 24, 2026, 4:43 PM",
-    "currentPulledAt": "2026-05-24T20:48:44.492Z",
-    "currentPulledAtDisplay": "May 24, 2026, 4:48 PM",
+    "previousPulledAt": "2026-05-24T20:48:44.492Z",
+    "previousPulledAtDisplay": "May 24, 2026, 4:48 PM",
+    "currentPulledAt": "2026-05-24T20:49:46.291Z",
+    "currentPulledAtDisplay": "May 24, 2026, 4:49 PM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -2779,6 +3013,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-05-24T20:48:44.492Z",
+      "previousPulledAtDisplay": "May 24, 2026, 4:48 PM",
+      "currentPulledAt": "2026-05-24T20:49:46.291Z",
+      "currentPulledAtDisplay": "May 24, 2026, 4:49 PM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-05-24T20:43:42.199Z",
       "previousPulledAtDisplay": "May 24, 2026, 4:43 PM",
@@ -4610,17 +4855,6 @@
       "previousPulledAtDisplay": "May 24, 2026, 3:10 AM",
       "currentPulledAt": "2026-05-24T07:15:25.100Z",
       "currentPulledAtDisplay": "May 24, 2026, 3:15 AM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-05-24T07:05:19.023Z",
-      "previousPulledAtDisplay": "May 24, 2026, 3:05 AM",
-      "currentPulledAt": "2026-05-24T07:10:22.147Z",
-      "currentPulledAtDisplay": "May 24, 2026, 3:10 AM",
       "isBaseline": false,
       "added": [],
       "removed": [],
