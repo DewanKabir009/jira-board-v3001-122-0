@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-05-26T13:41:02.435Z",
-  "pulledAtDisplay": "May 26, 2026, 9:41 AM",
+  "pulledAt": "2026-05-26T14:06:05.872Z",
+  "pulledAtDisplay": "May 26, 2026, 10:06 AM",
   "total": 35,
   "issues": [
     {
@@ -3002,45 +3002,28 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-05-26T13:16:02.789Z",
-    "previousPulledAtDisplay": "May 26, 2026, 9:16 AM",
-    "currentPulledAt": "2026-05-26T13:41:02.435Z",
-    "currentPulledAtDisplay": "May 26, 2026, 9:41 AM",
+    "previousPulledAt": "2026-05-26T13:41:02.435Z",
+    "previousPulledAtDisplay": "May 26, 2026, 9:41 AM",
+    "currentPulledAt": "2026-05-26T14:06:05.872Z",
+    "currentPulledAtDisplay": "May 26, 2026, 10:06 AM",
     "isBaseline": false,
     "added": [],
     "removed": [],
-    "updated": [
-      {
-        "key": "CORE-14117",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14117",
-        "summary": "Move Fee-Messaging to Post-Fee-Calculation & Use FeeConfiguration (API 2.1)",
-        "changes": [
-          {
-            "field": "updatedDisplay",
-            "label": "Jira updated",
-            "before": "May 14, 2026, 9:56 AM",
-            "after": "May 26, 2026, 9:28 AM"
-          }
-        ],
-        "type": "Story",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Luis Vallejo Mursuli",
-        "status": "Closed",
-        "parent": {
-          "key": "CORE-13901",
-          "url": "https://golfnow.atlassian.net/browse/CORE-13901",
-          "summary": "Customizable transaction fees",
-          "description": "",
-          "type": "Epic",
-          "status": "Planning",
-          "priority": "P1"
-        }
-      }
-    ],
+    "updated": [],
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-05-26T13:41:02.435Z",
+      "previousPulledAtDisplay": "May 26, 2026, 9:41 AM",
+      "currentPulledAt": "2026-05-26T14:06:05.872Z",
+      "currentPulledAtDisplay": "May 26, 2026, 10:06 AM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-05-26T13:16:02.789Z",
       "previousPulledAtDisplay": "May 26, 2026, 9:16 AM",
@@ -5181,17 +5164,6 @@
       "previousPulledAtDisplay": "May 25, 2026, 3:13 PM",
       "currentPulledAt": "2026-05-25T19:18:32.057Z",
       "currentPulledAtDisplay": "May 25, 2026, 3:18 PM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-05-25T19:08:27.044Z",
-      "previousPulledAtDisplay": "May 25, 2026, 3:08 PM",
-      "currentPulledAt": "2026-05-25T19:13:29.589Z",
-      "currentPulledAtDisplay": "May 25, 2026, 3:13 PM",
       "isBaseline": false,
       "added": [],
       "removed": [],
