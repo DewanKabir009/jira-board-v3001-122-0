@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-05-26T06:51:22.197Z",
-  "pulledAtDisplay": "May 26, 2026, 2:51 AM",
+  "pulledAt": "2026-05-26T06:56:26.151Z",
+  "pulledAtDisplay": "May 26, 2026, 2:56 AM",
   "total": 35,
   "issues": [
     {
@@ -3002,45 +3002,28 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-05-26T06:46:18.829Z",
-    "previousPulledAtDisplay": "May 26, 2026, 2:46 AM",
-    "currentPulledAt": "2026-05-26T06:51:22.197Z",
-    "currentPulledAtDisplay": "May 26, 2026, 2:51 AM",
+    "previousPulledAt": "2026-05-26T06:51:22.197Z",
+    "previousPulledAtDisplay": "May 26, 2026, 2:51 AM",
+    "currentPulledAt": "2026-05-26T06:56:26.151Z",
+    "currentPulledAtDisplay": "May 26, 2026, 2:56 AM",
     "isBaseline": false,
     "added": [],
     "removed": [],
-    "updated": [
-      {
-        "key": "CORE-14331",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14331",
-        "summary": "Timelyst - QA testing",
-        "changes": [
-          {
-            "field": "updatedDisplay",
-            "label": "Jira updated",
-            "before": "May 14, 2026, 9:42 AM",
-            "after": "May 26, 2026, 2:49 AM"
-          }
-        ],
-        "type": "Task",
-        "isSubtask": false,
-        "assignee": "Yu-Sheng Tu",
-        "assignedDeveloper": "Unassigned",
-        "status": "Pre Planning",
-        "parent": {
-          "key": "CORE-13741",
-          "url": "https://golfnow.atlassian.net/browse/CORE-13741",
-          "summary": "Timelyst - Duration Based Inventory API",
-          "description": "",
-          "type": "Epic",
-          "status": "Analysis",
-          "priority": "P0"
-        }
-      }
-    ],
+    "updated": [],
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-05-26T06:51:22.197Z",
+      "previousPulledAtDisplay": "May 26, 2026, 2:51 AM",
+      "currentPulledAt": "2026-05-26T06:56:26.151Z",
+      "currentPulledAtDisplay": "May 26, 2026, 2:56 AM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-05-26T06:46:18.829Z",
       "previousPulledAtDisplay": "May 26, 2026, 2:46 AM",
@@ -4900,17 +4883,6 @@
       "previousPulledAtDisplay": "May 25, 2026, 11:51 AM",
       "currentPulledAt": "2026-05-25T15:56:32.798Z",
       "currentPulledAtDisplay": "May 25, 2026, 11:56 AM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-05-25T15:46:26.002Z",
-      "previousPulledAtDisplay": "May 25, 2026, 11:46 AM",
-      "currentPulledAt": "2026-05-25T15:51:29.519Z",
-      "currentPulledAtDisplay": "May 25, 2026, 11:51 AM",
       "isBaseline": false,
       "added": [],
       "removed": [],
