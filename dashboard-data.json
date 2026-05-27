@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-05-27T21:05:46.582Z",
-  "pulledAtDisplay": "May 27, 2026, 5:05 PM",
+  "pulledAt": "2026-05-27T21:10:49.936Z",
+  "pulledAtDisplay": "May 27, 2026, 5:10 PM",
   "total": 35,
   "issues": [
     {
@@ -3002,45 +3002,28 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-05-27T21:00:43.984Z",
-    "previousPulledAtDisplay": "May 27, 2026, 5:00 PM",
-    "currentPulledAt": "2026-05-27T21:05:46.582Z",
-    "currentPulledAtDisplay": "May 27, 2026, 5:05 PM",
+    "previousPulledAt": "2026-05-27T21:05:46.582Z",
+    "previousPulledAtDisplay": "May 27, 2026, 5:05 PM",
+    "currentPulledAt": "2026-05-27T21:10:49.936Z",
+    "currentPulledAtDisplay": "May 27, 2026, 5:10 PM",
     "isBaseline": false,
     "added": [],
     "removed": [],
-    "updated": [
-      {
-        "key": "CORE-14272",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14272",
-        "summary": "Create endpoint to validate cancellation eligibility for Products",
-        "changes": [
-          {
-            "field": "updatedDisplay",
-            "label": "Jira updated",
-            "before": "May 14, 2026, 12:22 PM",
-            "after": "May 27, 2026, 5:02 PM"
-          }
-        ],
-        "type": "Story",
-        "isSubtask": false,
-        "assignee": "Dewan Kabir",
-        "assignedDeveloper": "Raghav Kancherla",
-        "status": "PO Review",
-        "parent": {
-          "key": "B2C-70",
-          "url": "https://golfnow.atlassian.net/browse/B2C-70",
-          "summary": "NY Cancellation Validation",
-          "description": "",
-          "type": "Epic",
-          "status": "Backlog",
-          "priority": "None"
-        }
-      }
-    ],
+    "updated": [],
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-05-27T21:05:46.582Z",
+      "previousPulledAtDisplay": "May 27, 2026, 5:05 PM",
+      "currentPulledAt": "2026-05-27T21:10:49.936Z",
+      "currentPulledAtDisplay": "May 27, 2026, 5:10 PM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-05-27T21:00:43.984Z",
       "previousPulledAtDisplay": "May 27, 2026, 5:00 PM",
@@ -4900,17 +4883,6 @@
       "previousPulledAtDisplay": "May 26, 2026, 10:16 PM",
       "currentPulledAt": "2026-05-27T02:21:09.865Z",
       "currentPulledAtDisplay": "May 26, 2026, 10:21 PM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-05-27T02:11:04.077Z",
-      "previousPulledAtDisplay": "May 26, 2026, 10:11 PM",
-      "currentPulledAt": "2026-05-27T02:16:06.905Z",
-      "currentPulledAtDisplay": "May 26, 2026, 10:16 PM",
       "isBaseline": false,
       "added": [],
       "removed": [],
