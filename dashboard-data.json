@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-05-27T04:22:14.949Z",
-  "pulledAtDisplay": "May 27, 2026, 12:22 AM",
+  "pulledAt": "2026-05-27T04:27:17.557Z",
+  "pulledAtDisplay": "May 27, 2026, 12:27 AM",
   "total": 35,
   "issues": [
     {
@@ -3002,10 +3002,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-05-27T04:17:12.138Z",
-    "previousPulledAtDisplay": "May 27, 2026, 12:17 AM",
-    "currentPulledAt": "2026-05-27T04:22:14.949Z",
-    "currentPulledAtDisplay": "May 27, 2026, 12:22 AM",
+    "previousPulledAt": "2026-05-27T04:22:14.949Z",
+    "previousPulledAtDisplay": "May 27, 2026, 12:22 AM",
+    "currentPulledAt": "2026-05-27T04:27:17.557Z",
+    "currentPulledAtDisplay": "May 27, 2026, 12:27 AM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -3013,6 +3013,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-05-27T04:22:14.949Z",
+      "previousPulledAtDisplay": "May 27, 2026, 12:22 AM",
+      "currentPulledAt": "2026-05-27T04:27:17.557Z",
+      "currentPulledAtDisplay": "May 27, 2026, 12:27 AM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-05-27T04:17:12.138Z",
       "previousPulledAtDisplay": "May 27, 2026, 12:17 AM",
@@ -4848,45 +4859,6 @@
       "added": [],
       "removed": [],
       "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-05-26T13:16:02.789Z",
-      "previousPulledAtDisplay": "May 26, 2026, 9:16 AM",
-      "currentPulledAt": "2026-05-26T13:41:02.435Z",
-      "currentPulledAtDisplay": "May 26, 2026, 9:41 AM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [
-        {
-          "key": "CORE-14117",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14117",
-          "summary": "Move Fee-Messaging to Post-Fee-Calculation & Use FeeConfiguration (API 2.1)",
-          "changes": [
-            {
-              "field": "updatedDisplay",
-              "label": "Jira updated",
-              "before": "May 14, 2026, 9:56 AM",
-              "after": "May 26, 2026, 9:28 AM"
-            }
-          ],
-          "type": "Story",
-          "isSubtask": false,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Luis Vallejo Mursuli",
-          "status": "Closed",
-          "parent": {
-            "key": "CORE-13901",
-            "url": "https://golfnow.atlassian.net/browse/CORE-13901",
-            "summary": "Customizable transaction fees",
-            "description": "",
-            "type": "Epic",
-            "status": "Planning",
-            "priority": "P1"
-          }
-        }
-      ],
       "statusChanges": []
     }
   ],
