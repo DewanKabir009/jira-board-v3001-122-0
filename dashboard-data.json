@@ -4,10 +4,88 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-05-27T21:00:43.984Z",
-  "pulledAtDisplay": "May 27, 2026, 5:00 PM",
+  "pulledAt": "2026-05-27T21:05:46.582Z",
+  "pulledAtDisplay": "May 27, 2026, 5:05 PM",
   "total": 35,
   "issues": [
+    {
+      "key": "CORE-14272",
+      "url": "https://golfnow.atlassian.net/browse/CORE-14272",
+      "summary": "Create endpoint to validate cancellation eligibility for Products",
+      "description": "There is a new law that states when the price increases of a renewing product, we must give the customer 15 days post-renewal to fully cancel and refund their subscription. This ticket is to allow the front end clients to know when to display the button.\n\n- Probably best to add a field to the response of this endpoint:\n\n-  https://api.gnsvc.com/GolfNowAPI.svc/rest/channel/331/customers/{{EmailAddress}}/subscriptions?productTypeId=9\n\nRequirements\n\n- Create a boolean flag for something like “IsEligibleForCancellation”\n\n- Eligibility for Cancellation/Refund\n\n- Active subscriptions\n\n- ProductTypeId=9\n\n- RenewedInto ProductId IN (71)\n\n- This should be configurable because new ProductIds may be added later\n\n- The subscription was created as part of a renewal - Automatic renewal through the processor or manual through GNC\n\n- Manually renewing through GNC is not eligible for cancellations\n\n- Billing State/Prov is in a configured state\n\n- New York will be the only one for now but this could expand to multiple state or multiple countries\n\n- Today’s date is <= 15 days since the purchase/transaction date of the subscription\n\n- This day limit should be configurable\n\nTest Cases\n\n- Happy Path for Eligibility\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 3/1/26\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=True\n\n- Not a valid State or date\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25\n\n- My Billing Address State for the subscription is in Florida\n\n- IsEligibleForCancellation=False\n\n- Not within 15 day range\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=False\n\n- Not an applicable renewal PPID\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 36 on purchase/transaction date 3/1/26\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=False\n\n- Not an applicable transaction - Not a renewal\n\n- Today’s Date = 3/6/26\n\n- I did a standalone purchase of a PPID under ProductId 71 on purchase/transaction date 3/6/26\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=False\n\n- Subscription already cancelled or expired\n\n- IsEligibleForCancellation=False",
+      "descriptionHtml": "<p>There is a new law that states when the price increases of a renewing product, we must give the customer 15 days post-renewal to fully cancel and refund their subscription. This ticket is to allow the front end clients to know when to display the button. </p><ul><li><p>Probably best to add a field to the response of this endpoint:</p><ul><li><p><code> https://api.gnsvc.com/GolfNowAPI.svc/rest/channel/331/customers/{{EmailAddress}}/subscriptions?productTypeId=9</code></p></li></ul></li></ul><p><strong>Requirements</strong></p><ul><li><p>Create a boolean flag for something like “IsEligibleForCancellation”</p></li><li><p>Eligibility for Cancellation/Refund</p><ul><li><p>Active subscriptions</p></li><li><p>ProductTypeId=9</p></li><li><p>RenewedInto ProductId IN (71)</p><ul><li><p>This should be configurable because new ProductIds may be added later</p></li></ul></li><li><p>The subscription was created as part of a renewal - Automatic renewal through the processor <s>or manual through GNC</s></p><ul><li><p>Manually renewing through GNC is not eligible for cancellations</p></li></ul></li><li><p>Billing State/Prov is in a configured state</p><ul><li><p>New York will be the only one for now but this could expand to multiple state or multiple countries</p></li></ul></li><li><p>Today’s date is &lt;= 15 days since the purchase/transaction date of the subscription</p><ul><li><p>This day limit should be configurable </p></li></ul></li></ul></li></ul><p><strong>Test Cases</strong></p><ul><li><p>Happy Path for Eligibility</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 3/1/26</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=True</p></li></ul></li><li><p>Not a valid State or date </p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25</p></li><li><p>My Billing Address State for the subscription is in Florida</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Not within 15 day range</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Not an applicable renewal PPID</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 36 on purchase/transaction date 3/1/26</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Not an applicable transaction - Not a renewal</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I did a standalone purchase of a PPID under ProductId 71 on purchase/transaction date 3/6/26</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Subscription already cancelled or expired</p><ul><li><p>IsEligibleForCancellation=False</p></li></ul></li></ul>",
+      "descriptionImageCount": 0,
+      "descriptionVideoCount": 0,
+      "descriptionMediaCount": 0,
+      "commentCount": 2,
+      "comments": [
+        {
+          "id": "1158568",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1158568",
+          "author": "Raghav Kancherla",
+          "authorAccountId": "557058:24f78684-6276-42b4-9860-f81502d6d45e",
+          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RK-4.png",
+          "created": "2026-05-01T00:06:44.578-0400",
+          "createdDisplay": "May 1, 2026, 12:06 AM",
+          "updated": "2026-05-01T00:06:44.578-0400",
+          "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 1,
+          "body": "Testing steps:\n\n- Create a new customer and subscribe to any product under productTypeId 9 using a New york address and zip code.\n\n- Update the product pricing table RenewalProductPrice for the productPriceId selected in step 1 to any productPriceId under ProductId 71, if that's not available, use any other ProductPriceId under a different ProductId\n\n- Insert this record only if productId 71 is not avialble:\n\nINSERT INTO [Product].[CancellationEligibilityConfig]\n(ProductID, ProductTypeId, StateProvinceCode, CountryCode, DayLimit, IsActive)\nVALUES\n(<ProductId used in step 2>, 9, 'NY', 'US', 15, 1)\n\n- Back date the subscription in step 1 and run the product renewal app, this should renew the product tot he ProductPriceId selected in step 2\n\n- Run the {{api21_url}}/GolfNowAPI.svc/rest/channel/331/customers/{{apiEmailaddyoc}}/subscriptions end point and you will see 2 subscriptions with only the 2ns subscription having  \"IsEligibleForCancellation\": true",
+          "bodyHtml": "<p>Testing steps:</p><ol><li><p>Create a new customer and subscribe to any product under productTypeId 9 using a New york address and zip code.</p></li><li><p>Update the product pricing table RenewalProductPrice for the productPriceId selected in step 1 to any productPriceId under ProductId 71, if that's not available, use any other ProductPriceId under a different ProductId</p></li><li><p>Insert this record only if productId 71 is not avialble:</p></li></ol><p> INSERT INTO [Product].[CancellationEligibilityConfig]<br>        (ProductID, ProductTypeId, StateProvinceCode, CountryCode, DayLimit, IsActive)<br>    VALUES<br>        (&lt;ProductId used in step 2&gt;, 9, 'NY', 'US', 15, 1)</p><ol><li><p>Back date the subscription in step 1 and run the product renewal app, this should renew the product tot he ProductPriceId selected in step 2</p></li><li><p>Run the {{api21_url}}/GolfNowAPI.svc/rest/channel/331/customers/{{apiEmailaddyoc}}/subscriptions end point and you will see 2 subscriptions with only the 2ns subscription having  &quot;IsEligibleForCancellation&quot;: true</p></li></ol><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1158568/719251-image-20260501-040632.png\" alt=\"image-20260501-040632.png\" loading=\"lazy\"><figcaption>image-20260501-040632.png</figcaption></figure></div>"
+        },
+        {
+          "id": "1168834",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1168834",
+          "author": "Dewan Kabir",
+          "authorAccountId": "630fb06bb433b060db559bdb",
+          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
+          "created": "2026-05-12T18:34:17.774-0400",
+          "createdDisplay": "May 12, 2026, 6:34 PM",
+          "updated": "2026-05-12T19:08:05.303-0400",
+          "updatedDisplay": "May 12, 2026, 7:08 PM",
+          "hasMedia": true,
+          "mediaCount": 8,
+          "body": "VALIDATED IN AWS STG :\n\nUpdate PPID 64 → Renewal PPID to 1048\n\nNow we will purchase PPID 64 using a NY Zip Code and Billing Address Credit Card , and Customer :\n\nNow we will Back date the subscription and run the product renewal app, this should renew the product into the ProductPriceId we configured earlier :\n\nExecute the new endpoint :",
+          "bodyHtml": "<p><strong>VALIDATED IN AWS STG : </strong></p><p>Update PPID 64 → Renewal PPID to 1048</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726210-image-20260512-222451.png\" alt=\"image-20260512-222451.png\" loading=\"lazy\"><figcaption>image-20260512-222451.png</figcaption></figure></div><p>Now we will purchase PPID 64 using a NY Zip Code and Billing Address Credit Card , and Customer : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726211-image-20260512-223229.png\" alt=\"image-20260512-223229.png\" loading=\"lazy\"><figcaption>image-20260512-223229.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726208-image-20260512-223247.png\" alt=\"image-20260512-223247.png\" loading=\"lazy\"><figcaption>image-20260512-223247.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726209-image-20260512-223322.png\" alt=\"image-20260512-223322.png\" loading=\"lazy\"><figcaption>image-20260512-223322.png</figcaption></figure></div><p>Now we will Back date the subscription and run the product renewal app, this should renew the product into the ProductPriceId we configured earlier : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726221-image-20260512-230115.png\" alt=\"image-20260512-230115.png\" loading=\"lazy\"><figcaption>image-20260512-230115.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726222-image-20260512-230124.png\" alt=\"image-20260512-230124.png\" loading=\"lazy\"><figcaption>image-20260512-230124.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726219-image-20260512-230158.png\" alt=\"image-20260512-230158.png\" loading=\"lazy\"><figcaption>image-20260512-230158.png</figcaption></figure></div><p>Execute the new endpoint : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726220-image-20260512-230545.png\" alt=\"image-20260512-230545.png\" loading=\"lazy\"><figcaption>image-20260512-230545.png</figcaption></figure></div>"
+        }
+      ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1168834",
+      "lastCommentDisplay": "May 12, 2026, 6:34 PM",
+      "lastCommentAuthor": "Dewan Kabir",
+      "testChecklist": null,
+      "type": "Story",
+      "isSubtask": false,
+      "status": "PO Review",
+      "priority": "P1",
+      "assignee": "Dewan Kabir",
+      "assigneeAccountId": "630fb06bb433b060db559bdb",
+      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
+      "assignedDeveloper": "Raghav Kancherla",
+      "assignedDeveloperAccountId": "557058:24f78684-6276-42b4-9860-f81502d6d45e",
+      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RK-4.png",
+      "updated": "2026-05-27T17:02:13.464-0400",
+      "updatedDisplay": "May 27, 2026, 5:02 PM",
+      "created": "2026-03-06T10:21:50.055-0500",
+      "createdDisplay": "Mar 6, 2026, 10:21 AM",
+      "components": [
+        "GolfNow.Services.Product",
+        "GolfNowAPI"
+      ],
+      "fixVersions": [
+        "v3001.122.0"
+      ],
+      "resolution": "",
+      "parent": {
+        "key": "B2C-70",
+        "url": "https://golfnow.atlassian.net/browse/B2C-70",
+        "summary": "NY Cancellation Validation",
+        "description": "",
+        "type": "Epic",
+        "status": "Backlog",
+        "priority": "None"
+      }
+    },
     {
       "key": "CORE-14117",
       "url": "https://golfnow.atlassian.net/browse/CORE-14117",
@@ -944,84 +1022,6 @@
       "created": "2026-03-06T10:11:37.546-0500",
       "createdDisplay": "Mar 6, 2026, 10:11 AM",
       "components": [
-        "GolfNowAPI"
-      ],
-      "fixVersions": [
-        "v3001.122.0"
-      ],
-      "resolution": "",
-      "parent": {
-        "key": "B2C-70",
-        "url": "https://golfnow.atlassian.net/browse/B2C-70",
-        "summary": "NY Cancellation Validation",
-        "description": "",
-        "type": "Epic",
-        "status": "Backlog",
-        "priority": "None"
-      }
-    },
-    {
-      "key": "CORE-14272",
-      "url": "https://golfnow.atlassian.net/browse/CORE-14272",
-      "summary": "Create endpoint to validate cancellation eligibility for Products",
-      "description": "There is a new law that states when the price increases of a renewing product, we must give the customer 15 days post-renewal to fully cancel and refund their subscription. This ticket is to allow the front end clients to know when to display the button.\n\n- Probably best to add a field to the response of this endpoint:\n\n-  https://api.gnsvc.com/GolfNowAPI.svc/rest/channel/331/customers/{{EmailAddress}}/subscriptions?productTypeId=9\n\nRequirements\n\n- Create a boolean flag for something like “IsEligibleForCancellation”\n\n- Eligibility for Cancellation/Refund\n\n- Active subscriptions\n\n- ProductTypeId=9\n\n- RenewedInto ProductId IN (71)\n\n- This should be configurable because new ProductIds may be added later\n\n- The subscription was created as part of a renewal - Automatic renewal through the processor or manual through GNC\n\n- Manually renewing through GNC is not eligible for cancellations\n\n- Billing State/Prov is in a configured state\n\n- New York will be the only one for now but this could expand to multiple state or multiple countries\n\n- Today’s date is <= 15 days since the purchase/transaction date of the subscription\n\n- This day limit should be configurable\n\nTest Cases\n\n- Happy Path for Eligibility\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 3/1/26\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=True\n\n- Not a valid State or date\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25\n\n- My Billing Address State for the subscription is in Florida\n\n- IsEligibleForCancellation=False\n\n- Not within 15 day range\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=False\n\n- Not an applicable renewal PPID\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 36 on purchase/transaction date 3/1/26\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=False\n\n- Not an applicable transaction - Not a renewal\n\n- Today’s Date = 3/6/26\n\n- I did a standalone purchase of a PPID under ProductId 71 on purchase/transaction date 3/6/26\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=False\n\n- Subscription already cancelled or expired\n\n- IsEligibleForCancellation=False",
-      "descriptionHtml": "<p>There is a new law that states when the price increases of a renewing product, we must give the customer 15 days post-renewal to fully cancel and refund their subscription. This ticket is to allow the front end clients to know when to display the button. </p><ul><li><p>Probably best to add a field to the response of this endpoint:</p><ul><li><p><code> https://api.gnsvc.com/GolfNowAPI.svc/rest/channel/331/customers/{{EmailAddress}}/subscriptions?productTypeId=9</code></p></li></ul></li></ul><p><strong>Requirements</strong></p><ul><li><p>Create a boolean flag for something like “IsEligibleForCancellation”</p></li><li><p>Eligibility for Cancellation/Refund</p><ul><li><p>Active subscriptions</p></li><li><p>ProductTypeId=9</p></li><li><p>RenewedInto ProductId IN (71)</p><ul><li><p>This should be configurable because new ProductIds may be added later</p></li></ul></li><li><p>The subscription was created as part of a renewal - Automatic renewal through the processor <s>or manual through GNC</s></p><ul><li><p>Manually renewing through GNC is not eligible for cancellations</p></li></ul></li><li><p>Billing State/Prov is in a configured state</p><ul><li><p>New York will be the only one for now but this could expand to multiple state or multiple countries</p></li></ul></li><li><p>Today’s date is &lt;= 15 days since the purchase/transaction date of the subscription</p><ul><li><p>This day limit should be configurable </p></li></ul></li></ul></li></ul><p><strong>Test Cases</strong></p><ul><li><p>Happy Path for Eligibility</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 3/1/26</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=True</p></li></ul></li><li><p>Not a valid State or date </p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25</p></li><li><p>My Billing Address State for the subscription is in Florida</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Not within 15 day range</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Not an applicable renewal PPID</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 36 on purchase/transaction date 3/1/26</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Not an applicable transaction - Not a renewal</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I did a standalone purchase of a PPID under ProductId 71 on purchase/transaction date 3/6/26</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Subscription already cancelled or expired</p><ul><li><p>IsEligibleForCancellation=False</p></li></ul></li></ul>",
-      "descriptionImageCount": 0,
-      "descriptionVideoCount": 0,
-      "descriptionMediaCount": 0,
-      "commentCount": 2,
-      "comments": [
-        {
-          "id": "1158568",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1158568",
-          "author": "Raghav Kancherla",
-          "authorAccountId": "557058:24f78684-6276-42b4-9860-f81502d6d45e",
-          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RK-4.png",
-          "created": "2026-05-01T00:06:44.578-0400",
-          "createdDisplay": "May 1, 2026, 12:06 AM",
-          "updated": "2026-05-01T00:06:44.578-0400",
-          "updatedDisplay": "",
-          "hasMedia": true,
-          "mediaCount": 1,
-          "body": "Testing steps:\n\n- Create a new customer and subscribe to any product under productTypeId 9 using a New york address and zip code.\n\n- Update the product pricing table RenewalProductPrice for the productPriceId selected in step 1 to any productPriceId under ProductId 71, if that's not available, use any other ProductPriceId under a different ProductId\n\n- Insert this record only if productId 71 is not avialble:\n\nINSERT INTO [Product].[CancellationEligibilityConfig]\n(ProductID, ProductTypeId, StateProvinceCode, CountryCode, DayLimit, IsActive)\nVALUES\n(<ProductId used in step 2>, 9, 'NY', 'US', 15, 1)\n\n- Back date the subscription in step 1 and run the product renewal app, this should renew the product tot he ProductPriceId selected in step 2\n\n- Run the {{api21_url}}/GolfNowAPI.svc/rest/channel/331/customers/{{apiEmailaddyoc}}/subscriptions end point and you will see 2 subscriptions with only the 2ns subscription having  \"IsEligibleForCancellation\": true",
-          "bodyHtml": "<p>Testing steps:</p><ol><li><p>Create a new customer and subscribe to any product under productTypeId 9 using a New york address and zip code.</p></li><li><p>Update the product pricing table RenewalProductPrice for the productPriceId selected in step 1 to any productPriceId under ProductId 71, if that's not available, use any other ProductPriceId under a different ProductId</p></li><li><p>Insert this record only if productId 71 is not avialble:</p></li></ol><p> INSERT INTO [Product].[CancellationEligibilityConfig]<br>        (ProductID, ProductTypeId, StateProvinceCode, CountryCode, DayLimit, IsActive)<br>    VALUES<br>        (&lt;ProductId used in step 2&gt;, 9, 'NY', 'US', 15, 1)</p><ol><li><p>Back date the subscription in step 1 and run the product renewal app, this should renew the product tot he ProductPriceId selected in step 2</p></li><li><p>Run the {{api21_url}}/GolfNowAPI.svc/rest/channel/331/customers/{{apiEmailaddyoc}}/subscriptions end point and you will see 2 subscriptions with only the 2ns subscription having  &quot;IsEligibleForCancellation&quot;: true</p></li></ol><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1158568/719251-image-20260501-040632.png\" alt=\"image-20260501-040632.png\" loading=\"lazy\"><figcaption>image-20260501-040632.png</figcaption></figure></div>"
-        },
-        {
-          "id": "1168834",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1168834",
-          "author": "Dewan Kabir",
-          "authorAccountId": "630fb06bb433b060db559bdb",
-          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-          "created": "2026-05-12T18:34:17.774-0400",
-          "createdDisplay": "May 12, 2026, 6:34 PM",
-          "updated": "2026-05-12T19:08:05.303-0400",
-          "updatedDisplay": "May 12, 2026, 7:08 PM",
-          "hasMedia": true,
-          "mediaCount": 8,
-          "body": "VALIDATED IN AWS STG :\n\nUpdate PPID 64 → Renewal PPID to 1048\n\nNow we will purchase PPID 64 using a NY Zip Code and Billing Address Credit Card , and Customer :\n\nNow we will Back date the subscription and run the product renewal app, this should renew the product into the ProductPriceId we configured earlier :\n\nExecute the new endpoint :",
-          "bodyHtml": "<p><strong>VALIDATED IN AWS STG : </strong></p><p>Update PPID 64 → Renewal PPID to 1048</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726210-image-20260512-222451.png\" alt=\"image-20260512-222451.png\" loading=\"lazy\"><figcaption>image-20260512-222451.png</figcaption></figure></div><p>Now we will purchase PPID 64 using a NY Zip Code and Billing Address Credit Card , and Customer : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726211-image-20260512-223229.png\" alt=\"image-20260512-223229.png\" loading=\"lazy\"><figcaption>image-20260512-223229.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726208-image-20260512-223247.png\" alt=\"image-20260512-223247.png\" loading=\"lazy\"><figcaption>image-20260512-223247.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726209-image-20260512-223322.png\" alt=\"image-20260512-223322.png\" loading=\"lazy\"><figcaption>image-20260512-223322.png</figcaption></figure></div><p>Now we will Back date the subscription and run the product renewal app, this should renew the product into the ProductPriceId we configured earlier : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726221-image-20260512-230115.png\" alt=\"image-20260512-230115.png\" loading=\"lazy\"><figcaption>image-20260512-230115.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726222-image-20260512-230124.png\" alt=\"image-20260512-230124.png\" loading=\"lazy\"><figcaption>image-20260512-230124.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726219-image-20260512-230158.png\" alt=\"image-20260512-230158.png\" loading=\"lazy\"><figcaption>image-20260512-230158.png</figcaption></figure></div><p>Execute the new endpoint : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726220-image-20260512-230545.png\" alt=\"image-20260512-230545.png\" loading=\"lazy\"><figcaption>image-20260512-230545.png</figcaption></figure></div>"
-        }
-      ],
-      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1168834",
-      "lastCommentDisplay": "May 12, 2026, 6:34 PM",
-      "lastCommentAuthor": "Dewan Kabir",
-      "testChecklist": null,
-      "type": "Story",
-      "isSubtask": false,
-      "status": "PO Review",
-      "priority": "P1",
-      "assignee": "Dewan Kabir",
-      "assigneeAccountId": "630fb06bb433b060db559bdb",
-      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-      "assignedDeveloper": "Raghav Kancherla",
-      "assignedDeveloperAccountId": "557058:24f78684-6276-42b4-9860-f81502d6d45e",
-      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RK-4.png",
-      "updated": "2026-05-14T12:22:24.475-0400",
-      "updatedDisplay": "May 14, 2026, 12:22 PM",
-      "created": "2026-03-06T10:21:50.055-0500",
-      "createdDisplay": "Mar 6, 2026, 10:21 AM",
-      "components": [
-        "GolfNow.Services.Product",
         "GolfNowAPI"
       ],
       "fixVersions": [
@@ -3002,17 +3002,84 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-05-27T20:55:41.442Z",
-    "previousPulledAtDisplay": "May 27, 2026, 4:55 PM",
-    "currentPulledAt": "2026-05-27T21:00:43.984Z",
-    "currentPulledAtDisplay": "May 27, 2026, 5:00 PM",
+    "previousPulledAt": "2026-05-27T21:00:43.984Z",
+    "previousPulledAtDisplay": "May 27, 2026, 5:00 PM",
+    "currentPulledAt": "2026-05-27T21:05:46.582Z",
+    "currentPulledAtDisplay": "May 27, 2026, 5:05 PM",
     "isBaseline": false,
     "added": [],
     "removed": [],
-    "updated": [],
+    "updated": [
+      {
+        "key": "CORE-14272",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14272",
+        "summary": "Create endpoint to validate cancellation eligibility for Products",
+        "changes": [
+          {
+            "field": "updatedDisplay",
+            "label": "Jira updated",
+            "before": "May 14, 2026, 12:22 PM",
+            "after": "May 27, 2026, 5:02 PM"
+          }
+        ],
+        "type": "Story",
+        "isSubtask": false,
+        "assignee": "Dewan Kabir",
+        "assignedDeveloper": "Raghav Kancherla",
+        "status": "PO Review",
+        "parent": {
+          "key": "B2C-70",
+          "url": "https://golfnow.atlassian.net/browse/B2C-70",
+          "summary": "NY Cancellation Validation",
+          "description": "",
+          "type": "Epic",
+          "status": "Backlog",
+          "priority": "None"
+        }
+      }
+    ],
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-05-27T21:00:43.984Z",
+      "previousPulledAtDisplay": "May 27, 2026, 5:00 PM",
+      "currentPulledAt": "2026-05-27T21:05:46.582Z",
+      "currentPulledAtDisplay": "May 27, 2026, 5:05 PM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [
+        {
+          "key": "CORE-14272",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14272",
+          "summary": "Create endpoint to validate cancellation eligibility for Products",
+          "changes": [
+            {
+              "field": "updatedDisplay",
+              "label": "Jira updated",
+              "before": "May 14, 2026, 12:22 PM",
+              "after": "May 27, 2026, 5:02 PM"
+            }
+          ],
+          "type": "Story",
+          "isSubtask": false,
+          "assignee": "Dewan Kabir",
+          "assignedDeveloper": "Raghav Kancherla",
+          "status": "PO Review",
+          "parent": {
+            "key": "B2C-70",
+            "url": "https://golfnow.atlassian.net/browse/B2C-70",
+            "summary": "NY Cancellation Validation",
+            "description": "",
+            "type": "Epic",
+            "status": "Backlog",
+            "priority": "None"
+          }
+        }
+      ],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-05-27T20:55:41.442Z",
       "previousPulledAtDisplay": "May 27, 2026, 4:55 PM",
@@ -4844,17 +4911,6 @@
       "previousPulledAtDisplay": "May 26, 2026, 10:11 PM",
       "currentPulledAt": "2026-05-27T02:16:06.905Z",
       "currentPulledAtDisplay": "May 26, 2026, 10:16 PM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-05-27T02:06:01.405Z",
-      "previousPulledAtDisplay": "May 26, 2026, 10:06 PM",
-      "currentPulledAt": "2026-05-27T02:11:04.077Z",
-      "currentPulledAtDisplay": "May 26, 2026, 10:11 PM",
       "isBaseline": false,
       "added": [],
       "removed": [],
