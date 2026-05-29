@@ -10,6 +10,22 @@ const DEFAULT_REPOSITORIES = [
 ];
 
 const VERSION_REPOSITORIES = {};
+const PLAYWRIGHT_REPOSITORY = "DewanKabir009/jira-board-v3001-123-0";
+const PLAYWRIGHT_WORKFLOW = "run-playwright-job.yml";
+const PLAYWRIGHT_SCRIPT_REGISTRY = {
+  "open-ticket-and-capture": {
+    allowedEnvironments: ["dev", "stg"],
+    requiredParameters: ["ticketUrl"],
+  },
+  "golfnow-central-smoke": {
+    allowedEnvironments: ["dev"],
+    requiredParameters: ["startUrl"],
+  },
+  "dashboard-regression-smoke": {
+    allowedEnvironments: ["dev", "stg"],
+    requiredParameters: ["dashboardUrl"],
+  },
+};
 
 const JIRA_FIELDS = [
   "summary",
@@ -710,6 +726,173 @@ async function handleProjects(request, env) {
   return json(request, env, 200, { ok: true, projects });
 }
 
+function playwrightJobUrls(jobId) {
+  const base = `https://dewankabir009.github.io/jira-board-v3001-123-0/playwright-jobs/${encodeURIComponent(jobId)}`;
+  return {
+    statusUrl: `${base}/summary.json`,
+    jobUrl: `${base}/`,
+  };
+}
+
+function makePlaywrightJobId(ticketKey) {
+  const suffix = crypto.randomUUID().slice(0, 8).toLowerCase();
+  return `${ticketKey.toLowerCase()}-${Date.now().toString(36)}-${suffix}`;
+}
+
+function assertPlaywrightJobId(jobId) {
+  if (!/^[a-z0-9][a-z0-9._-]{5,120}$/.test(jobId)) {
+    throw new Error("A valid Playwright job id is required.");
+  }
+}
+
+function validatePlaywrightPayload(payload) {
+  const scriptId = String(payload.scriptId || "").trim();
+  const ticketKey = String(payload.ticketKey || "").trim().toUpperCase();
+  const environment = String(payload.environment || "").trim();
+  const script = PLAYWRIGHT_SCRIPT_REGISTRY[scriptId];
+
+  if (payload.schemaVersion !== "playwright-job/v1") {
+    throw new Error("Unsupported Playwright job schema version.");
+  }
+  if (!script) {
+    throw new Error("That Playwright script is not approved for this board.");
+  }
+  if (!/^[A-Z][A-Z0-9]+-\d+$/.test(ticketKey)) {
+    throw new Error("A valid Jira ticket key is required.");
+  }
+  if (!script.allowedEnvironments.includes(environment)) {
+    throw new Error("Selected environment is not allowed for this Playwright script.");
+  }
+
+  const repositorySlug = payload.repositorySlug || PLAYWRIGHT_REPOSITORY;
+  if (repositorySlug !== PLAYWRIGHT_REPOSITORY) {
+    throw new Error("Playwright automation is enabled only for the v3001.123.0 board.");
+  }
+
+  return {
+    ...payload,
+    scriptId,
+    ticketKey,
+    environment,
+    repositorySlug,
+    jobId: String(payload.jobId || makePlaywrightJobId(ticketKey)).trim().toLowerCase(),
+  };
+}
+
+async function handlePlaywrightJobCreate(request, env) {
+  const auth = await authorizeMutation(request, env);
+  if (!auth.ok) {
+    return json(request, env, auth.status, { ok: false, message: auth.message });
+  }
+
+  const payload = validatePlaywrightPayload(await readJson(request));
+  assertPlaywrightJobId(payload.jobId);
+  const repositorySlug = resolveRepositorySlug(payload, env);
+  if (repositorySlug !== PLAYWRIGHT_REPOSITORY) {
+    return json(request, env, 400, {
+      ok: false,
+      message: "Playwright automation is enabled only for the v3001.123.0 board.",
+    });
+  }
+
+  const workflowFile = env.PLAYWRIGHT_WORKFLOW || PLAYWRIGHT_WORKFLOW;
+  await dispatchWorkflow(env, repositorySlug, workflowFile, {
+    job_payload: JSON.stringify(payload),
+  });
+
+  const urls = playwrightJobUrls(payload.jobId);
+  return json(request, env, 202, {
+    ok: true,
+    bridge: "hosted",
+    repositorySlug,
+    workflowFile,
+    jobId: payload.jobId,
+    actionsUrl: `https://github.com/${repositorySlug}/actions/workflows/${workflowFile}`,
+    ...urls,
+    message: "Playwright job queued. Evidence will publish to the job URL when the runner completes.",
+  });
+}
+
+async function handlePlaywrightJobRead(request, env, jobId) {
+  const auth = await authorizeMutation(request, env);
+  if (!auth.ok) {
+    return json(request, env, auth.status, { ok: false, message: auth.message });
+  }
+
+  assertPlaywrightJobId(jobId);
+  const urls = playwrightJobUrls(jobId);
+  const response = await fetch(urls.statusUrl, {
+    headers: { Accept: "application/json" },
+    cf: { cacheTtl: 0 },
+  });
+  if (response.status === 404) {
+    return json(request, env, 202, {
+      ok: true,
+      jobId,
+      status: "queued",
+      currentStep: "Waiting for the runner to publish summary.json",
+      ...urls,
+      message: "The Playwright job has been queued; summary evidence is not published yet.",
+    });
+  }
+  if (!response.ok) {
+    return json(request, env, response.status, {
+      ok: false,
+      jobId,
+      ...urls,
+      message: `Could not load Playwright job summary (${response.status}).`,
+    });
+  }
+
+  const summary = await response.json();
+  return json(request, env, 200, { ok: true, ...summary, ...urls });
+}
+
+async function handlePlaywrightJobEvents(request, env, jobId) {
+  const auth = await authorizeMutation(request, env);
+  if (!auth.ok) {
+    return json(request, env, auth.status, { ok: false, message: auth.message });
+  }
+
+  assertPlaywrightJobId(jobId);
+  const response = await fetch(`https://dewankabir009.github.io/jira-board-v3001-123-0/playwright-jobs/${encodeURIComponent(jobId)}/events.ndjson`, {
+    headers: { Accept: "text/plain" },
+    cf: { cacheTtl: 0 },
+  });
+  if (response.status === 404) {
+    return json(request, env, 202, {
+      ok: true,
+      jobId,
+      events: [],
+      message: "No Playwright events have been published yet.",
+    });
+  }
+  const eventsText = await response.text();
+  const events = eventsText.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map((line) => {
+    try {
+      return JSON.parse(line);
+    } catch {
+      return { type: "log", detail: line };
+    }
+  });
+  return json(request, env, 200, { ok: true, jobId, events });
+}
+
+async function handlePlaywrightJobCancel(request, env, jobId) {
+  const auth = await authorizeMutation(request, env);
+  if (!auth.ok) {
+    return json(request, env, auth.status, { ok: false, message: auth.message });
+  }
+
+  assertPlaywrightJobId(jobId);
+  return json(request, env, 202, {
+    ok: true,
+    jobId,
+    status: "cancel-requested",
+    message: "Cancel request recorded. Open the linked GitHub Actions run to stop an in-progress browser job.",
+  });
+}
+
 async function handleStatus(request, env) {
   const ready = bridgeReady(env);
   return json(request, env, ready ? 200 : 503, {
@@ -902,6 +1085,19 @@ export default {
       }
       if (request.method === "POST" && url.pathname.endsWith("/refresh")) {
         return handleRefresh(request, env);
+      }
+      if (request.method === "POST" && url.pathname === "/playwright/jobs") {
+        return handlePlaywrightJobCreate(request, env);
+      }
+      const playwrightJobMatch = url.pathname.match(/^\/playwright\/jobs\/([^/]+)(?:\/(events|cancel))?$/);
+      if (playwrightJobMatch && request.method === "GET" && playwrightJobMatch[2] === "events") {
+        return handlePlaywrightJobEvents(request, env, playwrightJobMatch[1]);
+      }
+      if (playwrightJobMatch && request.method === "POST" && playwrightJobMatch[2] === "cancel") {
+        return handlePlaywrightJobCancel(request, env, playwrightJobMatch[1]);
+      }
+      if (playwrightJobMatch && request.method === "GET" && !playwrightJobMatch[2]) {
+        return handlePlaywrightJobRead(request, env, playwrightJobMatch[1]);
       }
       if (request.method === "POST" && url.pathname.endsWith("/assign")) {
         return handleAssign(request, env);
