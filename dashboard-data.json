@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-05-31T16:19:52.888Z",
-  "pulledAtDisplay": "May 31, 2026, 12:19 PM",
+  "pulledAt": "2026-05-31T16:24:55.316Z",
+  "pulledAtDisplay": "May 31, 2026, 12:24 PM",
   "total": 35,
   "issues": [
     {
@@ -3002,10 +3002,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-05-31T16:19:06.843Z",
+    "previousPulledAt": "2026-05-31T16:19:52.888Z",
     "previousPulledAtDisplay": "May 31, 2026, 12:19 PM",
-    "currentPulledAt": "2026-05-31T16:19:52.888Z",
-    "currentPulledAtDisplay": "May 31, 2026, 12:19 PM",
+    "currentPulledAt": "2026-05-31T16:24:55.316Z",
+    "currentPulledAtDisplay": "May 31, 2026, 12:24 PM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -3013,6 +3013,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-05-31T16:19:52.888Z",
+      "previousPulledAtDisplay": "May 31, 2026, 12:19 PM",
+      "currentPulledAt": "2026-05-31T16:24:55.316Z",
+      "currentPulledAtDisplay": "May 31, 2026, 12:24 PM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-05-31T16:19:06.843Z",
       "previousPulledAtDisplay": "May 31, 2026, 12:19 PM",
@@ -4844,17 +4855,6 @@
       "previousPulledAtDisplay": "May 30, 2026, 9:10 PM",
       "currentPulledAt": "2026-05-31T01:15:50.505Z",
       "currentPulledAtDisplay": "May 30, 2026, 9:15 PM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-05-31T01:05:43.814Z",
-      "previousPulledAtDisplay": "May 30, 2026, 9:05 PM",
-      "currentPulledAt": "2026-05-31T01:10:47.145Z",
-      "currentPulledAtDisplay": "May 30, 2026, 9:10 PM",
       "isBaseline": false,
       "added": [],
       "removed": [],
