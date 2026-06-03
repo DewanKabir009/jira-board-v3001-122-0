@@ -4,10 +4,566 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-06-03T15:36:33.526Z",
-  "pulledAtDisplay": "Jun 3, 2026, 11:36 AM",
+  "pulledAt": "2026-06-03T15:41:37.153Z",
+  "pulledAtDisplay": "Jun 3, 2026, 11:41 AM",
   "total": 35,
   "issues": [
+    {
+      "key": "CORE-14272",
+      "url": "https://golfnow.atlassian.net/browse/CORE-14272",
+      "summary": "Create endpoint to validate cancellation eligibility for Products",
+      "description": "There is a new law that states when the price increases of a renewing product, we must give the customer 15 days post-renewal to fully cancel and refund their subscription. This ticket is to allow the front end clients to know when to display the button.\n\n- Probably best to add a field to the response of this endpoint:\n\n-  https://api.gnsvc.com/GolfNowAPI.svc/rest/channel/331/customers/{{EmailAddress}}/subscriptions?productTypeId=9\n\nRequirements\n\n- Create a boolean flag for something like “IsEligibleForCancellation”\n\n- Eligibility for Cancellation/Refund\n\n- Active subscriptions\n\n- ProductTypeId=9\n\n- RenewedInto ProductId IN (71)\n\n- This should be configurable because new ProductIds may be added later\n\n- The subscription was created as part of a renewal - Automatic renewal through the processor or manual through GNC\n\n- Manually renewing through GNC is not eligible for cancellations\n\n- Billing State/Prov is in a configured state\n\n- New York will be the only one for now but this could expand to multiple state or multiple countries\n\n- Today’s date is <= 15 days since the purchase/transaction date of the subscription\n\n- This day limit should be configurable\n\nTest Cases\n\n- Happy Path for Eligibility\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 3/1/26\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=True\n\n- Not a valid State or date\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25\n\n- My Billing Address State for the subscription is in Florida\n\n- IsEligibleForCancellation=False\n\n- Not within 15 day range\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=False\n\n- Not an applicable renewal PPID\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 36 on purchase/transaction date 3/1/26\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=False\n\n- Not an applicable transaction - Not a renewal\n\n- Today’s Date = 3/6/26\n\n- I did a standalone purchase of a PPID under ProductId 71 on purchase/transaction date 3/6/26\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=False\n\n- Subscription already cancelled or expired\n\n- IsEligibleForCancellation=False",
+      "descriptionHtml": "<p>There is a new law that states when the price increases of a renewing product, we must give the customer 15 days post-renewal to fully cancel and refund their subscription. This ticket is to allow the front end clients to know when to display the button. </p><ul><li><p>Probably best to add a field to the response of this endpoint:</p><ul><li><p><code> https://api.gnsvc.com/GolfNowAPI.svc/rest/channel/331/customers/{{EmailAddress}}/subscriptions?productTypeId=9</code></p></li></ul></li></ul><p><strong>Requirements</strong></p><ul><li><p>Create a boolean flag for something like “IsEligibleForCancellation”</p></li><li><p>Eligibility for Cancellation/Refund</p><ul><li><p>Active subscriptions</p></li><li><p>ProductTypeId=9</p></li><li><p>RenewedInto ProductId IN (71)</p><ul><li><p>This should be configurable because new ProductIds may be added later</p></li></ul></li><li><p>The subscription was created as part of a renewal - Automatic renewal through the processor <s>or manual through GNC</s></p><ul><li><p>Manually renewing through GNC is not eligible for cancellations</p></li></ul></li><li><p>Billing State/Prov is in a configured state</p><ul><li><p>New York will be the only one for now but this could expand to multiple state or multiple countries</p></li></ul></li><li><p>Today’s date is &lt;= 15 days since the purchase/transaction date of the subscription</p><ul><li><p>This day limit should be configurable </p></li></ul></li></ul></li></ul><p><strong>Test Cases</strong></p><ul><li><p>Happy Path for Eligibility</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 3/1/26</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=True</p></li></ul></li><li><p>Not a valid State or date </p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25</p></li><li><p>My Billing Address State for the subscription is in Florida</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Not within 15 day range</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Not an applicable renewal PPID</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 36 on purchase/transaction date 3/1/26</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Not an applicable transaction - Not a renewal</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I did a standalone purchase of a PPID under ProductId 71 on purchase/transaction date 3/6/26</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Subscription already cancelled or expired</p><ul><li><p>IsEligibleForCancellation=False</p></li></ul></li></ul>",
+      "descriptionImageCount": 0,
+      "descriptionVideoCount": 0,
+      "descriptionMediaCount": 0,
+      "commentCount": 2,
+      "comments": [
+        {
+          "id": "1158568",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1158568",
+          "author": "Raghav Kancherla",
+          "authorAccountId": "557058:24f78684-6276-42b4-9860-f81502d6d45e",
+          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RK-4.png",
+          "created": "2026-05-01T00:06:44.578-0400",
+          "createdDisplay": "May 1, 2026, 12:06 AM",
+          "updated": "2026-05-01T00:06:44.578-0400",
+          "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 1,
+          "body": "Testing steps:\n\n- Create a new customer and subscribe to any product under productTypeId 9 using a New york address and zip code.\n\n- Update the product pricing table RenewalProductPrice for the productPriceId selected in step 1 to any productPriceId under ProductId 71, if that's not available, use any other ProductPriceId under a different ProductId\n\n- Insert this record only if productId 71 is not avialble:\n\nINSERT INTO [Product].[CancellationEligibilityConfig]\n(ProductID, ProductTypeId, StateProvinceCode, CountryCode, DayLimit, IsActive)\nVALUES\n(<ProductId used in step 2>, 9, 'NY', 'US', 15, 1)\n\n- Back date the subscription in step 1 and run the product renewal app, this should renew the product tot he ProductPriceId selected in step 2\n\n- Run the {{api21_url}}/GolfNowAPI.svc/rest/channel/331/customers/{{apiEmailaddyoc}}/subscriptions end point and you will see 2 subscriptions with only the 2ns subscription having  \"IsEligibleForCancellation\": true",
+          "bodyHtml": "<p>Testing steps:</p><ol><li><p>Create a new customer and subscribe to any product under productTypeId 9 using a New york address and zip code.</p></li><li><p>Update the product pricing table RenewalProductPrice for the productPriceId selected in step 1 to any productPriceId under ProductId 71, if that's not available, use any other ProductPriceId under a different ProductId</p></li><li><p>Insert this record only if productId 71 is not avialble:</p></li></ol><p> INSERT INTO [Product].[CancellationEligibilityConfig]<br>        (ProductID, ProductTypeId, StateProvinceCode, CountryCode, DayLimit, IsActive)<br>    VALUES<br>        (&lt;ProductId used in step 2&gt;, 9, 'NY', 'US', 15, 1)</p><ol><li><p>Back date the subscription in step 1 and run the product renewal app, this should renew the product tot he ProductPriceId selected in step 2</p></li><li><p>Run the {{api21_url}}/GolfNowAPI.svc/rest/channel/331/customers/{{apiEmailaddyoc}}/subscriptions end point and you will see 2 subscriptions with only the 2ns subscription having  &quot;IsEligibleForCancellation&quot;: true</p></li></ol><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1158568/719251-image-20260501-040632.png\" alt=\"image-20260501-040632.png\" loading=\"lazy\"><figcaption>image-20260501-040632.png</figcaption></figure></div>"
+        },
+        {
+          "id": "1168834",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1168834",
+          "author": "Dewan Kabir",
+          "authorAccountId": "630fb06bb433b060db559bdb",
+          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
+          "created": "2026-05-12T18:34:17.774-0400",
+          "createdDisplay": "May 12, 2026, 6:34 PM",
+          "updated": "2026-05-12T19:08:05.303-0400",
+          "updatedDisplay": "May 12, 2026, 7:08 PM",
+          "hasMedia": true,
+          "mediaCount": 8,
+          "body": "VALIDATED IN AWS STG :\n\nUpdate PPID 64 → Renewal PPID to 1048\n\nNow we will purchase PPID 64 using a NY Zip Code and Billing Address Credit Card , and Customer :\n\nNow we will Back date the subscription and run the product renewal app, this should renew the product into the ProductPriceId we configured earlier :\n\nExecute the new endpoint :",
+          "bodyHtml": "<p><strong>VALIDATED IN AWS STG : </strong></p><p>Update PPID 64 → Renewal PPID to 1048</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726210-image-20260512-222451.png\" alt=\"image-20260512-222451.png\" loading=\"lazy\"><figcaption>image-20260512-222451.png</figcaption></figure></div><p>Now we will purchase PPID 64 using a NY Zip Code and Billing Address Credit Card , and Customer : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726211-image-20260512-223229.png\" alt=\"image-20260512-223229.png\" loading=\"lazy\"><figcaption>image-20260512-223229.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726208-image-20260512-223247.png\" alt=\"image-20260512-223247.png\" loading=\"lazy\"><figcaption>image-20260512-223247.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726209-image-20260512-223322.png\" alt=\"image-20260512-223322.png\" loading=\"lazy\"><figcaption>image-20260512-223322.png</figcaption></figure></div><p>Now we will Back date the subscription and run the product renewal app, this should renew the product into the ProductPriceId we configured earlier : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726221-image-20260512-230115.png\" alt=\"image-20260512-230115.png\" loading=\"lazy\"><figcaption>image-20260512-230115.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726222-image-20260512-230124.png\" alt=\"image-20260512-230124.png\" loading=\"lazy\"><figcaption>image-20260512-230124.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726219-image-20260512-230158.png\" alt=\"image-20260512-230158.png\" loading=\"lazy\"><figcaption>image-20260512-230158.png</figcaption></figure></div><p>Execute the new endpoint : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726220-image-20260512-230545.png\" alt=\"image-20260512-230545.png\" loading=\"lazy\"><figcaption>image-20260512-230545.png</figcaption></figure></div>"
+        }
+      ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1168834",
+      "lastCommentDisplay": "May 12, 2026, 6:34 PM",
+      "lastCommentAuthor": "Dewan Kabir",
+      "testChecklist": null,
+      "type": "Story",
+      "isSubtask": false,
+      "status": "PO Review",
+      "priority": "P1",
+      "assignee": "Dewan Kabir",
+      "assigneeAccountId": "630fb06bb433b060db559bdb",
+      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
+      "assignedDeveloper": "Raghav Kancherla",
+      "assignedDeveloperAccountId": "557058:24f78684-6276-42b4-9860-f81502d6d45e",
+      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RK-4.png",
+      "updated": "2026-06-03T11:40:27.378-0400",
+      "updatedDisplay": "Jun 3, 2026, 11:40 AM",
+      "created": "2026-03-06T10:21:50.055-0500",
+      "createdDisplay": "Mar 6, 2026, 10:21 AM",
+      "components": [
+        "GolfNow.Services.Product",
+        "GolfNowAPI"
+      ],
+      "fixVersions": [
+        "v3001.122.0"
+      ],
+      "resolution": "",
+      "parent": {
+        "key": "B2C-70",
+        "url": "https://golfnow.atlassian.net/browse/B2C-70",
+        "summary": "NY Cancellation Validation",
+        "description": "",
+        "type": "Epic",
+        "status": "Backlog",
+        "priority": "None"
+      }
+    },
+    {
+      "key": "CORE-14271",
+      "url": "https://golfnow.atlassian.net/browse/CORE-14271",
+      "summary": "Support Product Refunds",
+      "description": "We need an API that will allow front end clients to submit refunds with a cancellation of a product. This is to support new laws related to products with price increases. We already have API2.1 endpoint for cancellation and we have internal service APIs for refunding.\n\nRelated APIs\n\n- {{api-base-url}}/GolfNowAPI.svc/rest/channel/331/subscription/2448350/cancel?cancelSubscriptionIfBenefitsHaveBeenUsed=true\n\n- {{ProductServiceURL}}/SubscriptionService.svc/rest/subscription/adjust\n\nRequirements\n\n- Ability to cancel a subscription\n\n- Ability to cancel a subscription even if benefits have been used\n\n- Ability to fully refund a subscription\n\n- Ability to partially refund a subscription\n\n- This is a “nice to have feature” but since its already supported on InternalService, figured we could future proof it\n\n- Cancellation should trigger a cancellation email that includes refund details\n\n- Cancellation and refund should update in database and GNC History widget\n\nRefund Types:\n\nFull refund =0\n\nPartial = 1\n\nFor full refunds RefundAmount is not required",
+      "descriptionHtml": "<p>We need an API that will allow front end clients to submit refunds with a cancellation of a product. This is to support new laws related to products with price increases. We already have API2.1 endpoint for cancellation and we have internal service APIs for refunding. </p><p><strong>Related APIs</strong></p><ul><li><p>{{api-base-url}}/GolfNowAPI.svc/rest/channel/331/subscription/2448350/cancel?cancelSubscriptionIfBenefitsHaveBeenUsed=true</p></li><li><p>{{ProductServiceURL}}/SubscriptionService.svc/rest/subscription/adjust</p></li></ul><p><strong>Requirements</strong></p><ul><li><p>Ability to cancel a subscription </p></li><li><p>Ability to cancel a subscription even if benefits have been used</p></li><li><p>Ability to fully refund a subscription </p></li><li><p>Ability to partially refund a subscription</p><ul><li><p>This is a “nice to have feature” but since its already supported on InternalService, figured we could future proof it</p></li></ul></li><li><p>Cancellation should trigger a cancellation email that includes refund details</p></li><li><p>Cancellation and refund should update in database and GNC History widget</p></li></ul><p><strong>Refund Types:</strong></p><p>Full refund =0</p><p>Partial = 1</p><p>For full refunds RefundAmount is not required</p>",
+      "descriptionImageCount": 0,
+      "descriptionVideoCount": 0,
+      "descriptionMediaCount": 0,
+      "commentCount": 3,
+      "comments": [
+        {
+          "id": "1158538",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14271?focusedCommentId=1158538",
+          "author": "Raghav Kancherla",
+          "authorAccountId": "557058:24f78684-6276-42b4-9860-f81502d6d45e",
+          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RK-4.png",
+          "created": "2026-04-30T18:19:47.919-0400",
+          "createdDisplay": "Apr 30, 2026, 6:19 PM",
+          "updated": "2026-04-30T18:19:47.919-0400",
+          "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 1,
+          "body": "URL:{{api21_url}}/GolfNowAPI.svc/rest/channel/{{channelId}}/customers/{{apiEmailaddyoc}}/subscriptions/2950605/cancelWithRefund\n\nBody:{\n\"CancellationReasonId\": 1,\n\"CancelEvenIfBenefitsUsed\": true,\n\"RefundType\": 0,\n\"RefundAmount\": 0,\n\"SystemUserId\": 1\n}",
+          "bodyHtml": "<div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1158538/719240-image-20260430-221844.png\" alt=\"image-20260430-221844.png\" loading=\"lazy\"><figcaption>image-20260430-221844.png</figcaption></figure></div><pre><code>URL:{{api21_url}}/GolfNowAPI.svc/rest/channel/{{channelId}}/customers/{{apiEmailaddyoc}}/subscriptions/2950605/cancelWithRefund\n\nBody:{\n    &quot;CancellationReasonId&quot;: 1,\n    &quot;CancelEvenIfBenefitsUsed&quot;: true,\n    &quot;RefundType&quot;: 0,\n    &quot;RefundAmount&quot;: 0,\n    &quot;SystemUserId&quot;: 1\n}</code></pre>"
+        },
+        {
+          "id": "1168847",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14271?focusedCommentId=1168847",
+          "author": "Dewan Kabir",
+          "authorAccountId": "630fb06bb433b060db559bdb",
+          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
+          "created": "2026-05-12T19:41:29.092-0400",
+          "createdDisplay": "May 12, 2026, 7:41 PM",
+          "updated": "2026-05-12T19:41:29.092-0400",
+          "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 2,
+          "body": "VALIDATED IN AWS STG",
+          "bodyHtml": "<p><strong>VALIDATED IN AWS STG </strong></p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1168847/726228-image-20260512-233941.png\" alt=\"image-20260512-233941.png\" loading=\"lazy\"><figcaption>image-20260512-233941.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1168847/726227-image-20260512-234118.png\" alt=\"image-20260512-234118.png\" loading=\"lazy\"><figcaption>image-20260512-234118.png</figcaption></figure></div>"
+        },
+        {
+          "id": "1169639",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14271?focusedCommentId=1169639",
+          "author": "Dewan Kabir",
+          "authorAccountId": "630fb06bb433b060db559bdb",
+          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
+          "created": "2026-05-13T06:44:53.199-0400",
+          "createdDisplay": "May 13, 2026, 6:44 AM",
+          "updated": "2026-05-13T06:44:53.199-0400",
+          "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 2,
+          "body": "PRODUCTION VALIDATION :",
+          "bodyHtml": "<p><strong>PRODUCTION VALIDATION : </strong></p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1169639/726721-image-20260513-104432.png\" alt=\"image-20260513-104432.png\" loading=\"lazy\"><figcaption>image-20260513-104432.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1169639/726720-image-20260513-104448.png\" alt=\"image-20260513-104448.png\" loading=\"lazy\"><figcaption>image-20260513-104448.png</figcaption></figure></div>"
+        }
+      ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14271?focusedCommentId=1169639",
+      "lastCommentDisplay": "May 13, 2026, 6:44 AM",
+      "lastCommentAuthor": "Dewan Kabir",
+      "testChecklist": null,
+      "type": "Story",
+      "isSubtask": false,
+      "status": "PO Review",
+      "priority": "P1",
+      "assignee": "Dewan Kabir",
+      "assigneeAccountId": "630fb06bb433b060db559bdb",
+      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
+      "assignedDeveloper": "Unassigned",
+      "assignedDeveloperAccountId": "",
+      "assignedDeveloperAvatarUrl": "",
+      "updated": "2026-06-03T11:40:27.003-0400",
+      "updatedDisplay": "Jun 3, 2026, 11:40 AM",
+      "created": "2026-03-06T10:11:37.546-0500",
+      "createdDisplay": "Mar 6, 2026, 10:11 AM",
+      "components": [
+        "GolfNowAPI"
+      ],
+      "fixVersions": [
+        "v3001.122.0"
+      ],
+      "resolution": "",
+      "parent": {
+        "key": "B2C-70",
+        "url": "https://golfnow.atlassian.net/browse/B2C-70",
+        "summary": "NY Cancellation Validation",
+        "description": "",
+        "type": "Epic",
+        "status": "Backlog",
+        "priority": "None"
+      }
+    },
+    {
+      "key": "CORE-14409",
+      "url": "https://golfnow.atlassian.net/browse/CORE-14409",
+      "summary": "Add secrets",
+      "description": "",
+      "descriptionHtml": "",
+      "descriptionImageCount": 0,
+      "descriptionVideoCount": 0,
+      "descriptionMediaCount": 0,
+      "commentCount": 0,
+      "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
+      "testChecklist": null,
+      "type": "Developer Task (sub task)",
+      "isSubtask": true,
+      "status": "Closed",
+      "priority": "P1",
+      "assignee": "Unassigned",
+      "assigneeAccountId": "",
+      "assigneeAvatarUrl": "",
+      "assignedDeveloper": "Luis Vallejo Mursuli",
+      "assignedDeveloperAccountId": "712020:2e637bb4-c610-467b-839d-9a5b84f75f01",
+      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:2e637bb4-c610-467b-839d-9a5b84f75f01/4dca1d1b-3faa-4d03-90b8-2b3e0cc02887/32",
+      "updated": "2026-06-03T11:39:13.058-0400",
+      "updatedDisplay": "Jun 3, 2026, 11:39 AM",
+      "created": "2026-04-27T12:07:20.016-0400",
+      "createdDisplay": "Apr 27, 2026, 12:07 PM",
+      "components": [
+        "Secrets"
+      ],
+      "fixVersions": [
+        "v3001.122.0"
+      ],
+      "resolution": "Force Closed",
+      "parent": {
+        "key": "CORE-14332",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14332",
+        "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
+        "description": "",
+        "type": "Story",
+        "status": "Closed",
+        "priority": "P1"
+      }
+    },
+    {
+      "key": "CORE-14366",
+      "url": "https://golfnow.atlassian.net/browse/CORE-14366",
+      "summary": "Code changes for [CORE - 14332]",
+      "description": "",
+      "descriptionHtml": "",
+      "descriptionImageCount": 0,
+      "descriptionVideoCount": 0,
+      "descriptionMediaCount": 0,
+      "commentCount": 0,
+      "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
+      "testChecklist": null,
+      "type": "Developer Task (sub task)",
+      "isSubtask": true,
+      "status": "Closed",
+      "priority": "None",
+      "assignee": "Unassigned",
+      "assigneeAccountId": "",
+      "assigneeAvatarUrl": "",
+      "assignedDeveloper": "Luis Vallejo Mursuli",
+      "assignedDeveloperAccountId": "712020:2e637bb4-c610-467b-839d-9a5b84f75f01",
+      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:2e637bb4-c610-467b-839d-9a5b84f75f01/4dca1d1b-3faa-4d03-90b8-2b3e0cc02887/32",
+      "updated": "2026-06-03T11:38:56.995-0400",
+      "updatedDisplay": "Jun 3, 2026, 11:38 AM",
+      "created": "2026-04-07T11:00:10.265-0400",
+      "createdDisplay": "Apr 7, 2026, 11:00 AM",
+      "components": [
+        "GolfNow.API.TR",
+        "GolfNowAPI"
+      ],
+      "fixVersions": [
+        "v3001.122.0"
+      ],
+      "resolution": "Force Closed",
+      "parent": {
+        "key": "CORE-14332",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14332",
+        "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
+        "description": "",
+        "type": "Story",
+        "status": "Closed",
+        "priority": "P1"
+      }
+    },
+    {
+      "key": "CORE-14434",
+      "url": "https://golfnow.atlassian.net/browse/CORE-14434",
+      "summary": "Database changes.",
+      "description": "",
+      "descriptionHtml": "",
+      "descriptionImageCount": 0,
+      "descriptionVideoCount": 0,
+      "descriptionMediaCount": 0,
+      "commentCount": 0,
+      "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
+      "testChecklist": null,
+      "type": "Developer Task (sub task)",
+      "isSubtask": true,
+      "status": "Closed",
+      "priority": "None",
+      "assignee": "Unassigned",
+      "assigneeAccountId": "",
+      "assigneeAvatarUrl": "",
+      "assignedDeveloper": "Yoel Martin Pardo",
+      "assignedDeveloperAccountId": "625571809e7380006fb29599",
+      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
+      "updated": "2026-06-03T11:38:32.478-0400",
+      "updatedDisplay": "Jun 3, 2026, 11:38 AM",
+      "created": "2026-04-30T16:43:09.912-0400",
+      "createdDisplay": "Apr 30, 2026, 4:43 PM",
+      "components": [
+        "Database"
+      ],
+      "fixVersions": [
+        "v3001.122.0"
+      ],
+      "resolution": "Force Closed",
+      "parent": {
+        "key": "CORE-14431",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14431",
+        "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
+        "description": "",
+        "type": "Bug",
+        "status": "Closed",
+        "priority": "P0"
+      }
+    },
+    {
+      "key": "CORE-14433",
+      "url": "https://golfnow.atlassian.net/browse/CORE-14433",
+      "summary": "Code changes.",
+      "description": "",
+      "descriptionHtml": "",
+      "descriptionImageCount": 0,
+      "descriptionVideoCount": 0,
+      "descriptionMediaCount": 0,
+      "commentCount": 0,
+      "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
+      "testChecklist": null,
+      "type": "Developer Task (sub task)",
+      "isSubtask": true,
+      "status": "Closed",
+      "priority": "None",
+      "assignee": "Unassigned",
+      "assigneeAccountId": "",
+      "assigneeAvatarUrl": "",
+      "assignedDeveloper": "Yoel Martin Pardo",
+      "assignedDeveloperAccountId": "625571809e7380006fb29599",
+      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
+      "updated": "2026-06-03T11:38:18.171-0400",
+      "updatedDisplay": "Jun 3, 2026, 11:38 AM",
+      "created": "2026-04-30T16:42:59.027-0400",
+      "createdDisplay": "Apr 30, 2026, 4:42 PM",
+      "components": [
+        "Cache Manager"
+      ],
+      "fixVersions": [
+        "v3001.122.0"
+      ],
+      "resolution": "Force Closed",
+      "parent": {
+        "key": "CORE-14431",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14431",
+        "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
+        "description": "",
+        "type": "Bug",
+        "status": "Closed",
+        "priority": "P0"
+      }
+    },
+    {
+      "key": "CORE-14401",
+      "url": "https://golfnow.atlassian.net/browse/CORE-14401",
+      "summary": "Database changes.",
+      "description": "",
+      "descriptionHtml": "",
+      "descriptionImageCount": 0,
+      "descriptionVideoCount": 0,
+      "descriptionMediaCount": 0,
+      "commentCount": 0,
+      "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
+      "testChecklist": null,
+      "type": "Developer Task (sub task)",
+      "isSubtask": true,
+      "status": "Closed",
+      "priority": "None",
+      "assignee": "Unassigned",
+      "assigneeAccountId": "",
+      "assigneeAvatarUrl": "",
+      "assignedDeveloper": "Yoel Martin Pardo",
+      "assignedDeveloperAccountId": "625571809e7380006fb29599",
+      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
+      "updated": "2026-06-03T11:37:52.433-0400",
+      "updatedDisplay": "Jun 3, 2026, 11:37 AM",
+      "created": "2026-04-22T11:37:42.785-0400",
+      "createdDisplay": "Apr 22, 2026, 11:37 AM",
+      "components": [
+        "Database"
+      ],
+      "fixVersions": [
+        "v3001.122.0"
+      ],
+      "resolution": "Force Closed",
+      "parent": {
+        "key": "CORE-14342",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14342",
+        "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
+        "description": "",
+        "type": "Task",
+        "status": "Closed",
+        "priority": "P1"
+      }
+    },
+    {
+      "key": "CORE-14400",
+      "url": "https://golfnow.atlassian.net/browse/CORE-14400",
+      "summary": "Code changes.",
+      "description": "",
+      "descriptionHtml": "",
+      "descriptionImageCount": 0,
+      "descriptionVideoCount": 0,
+      "descriptionMediaCount": 0,
+      "commentCount": 1,
+      "comments": [
+        {
+          "id": "1157003",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14400?focusedCommentId=1157003",
+          "author": "Yoel Martin Pardo",
+          "authorAccountId": "625571809e7380006fb29599",
+          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
+          "created": "2026-04-28T08:42:26.986-0400",
+          "createdDisplay": "Apr 28, 2026, 8:42 AM",
+          "updated": "2026-04-28T08:42:26.986-0400",
+          "updatedDisplay": "",
+          "hasMedia": false,
+          "mediaCount": 0,
+          "body": "PR: https://github.com/GolfNowEng/gn-main/pull/2118",
+          "bodyHtml": "<p>PR: <a href=\"https://github.com/GolfNowEng/gn-main/pull/2118\" target=\"_blank\" rel=\"noopener\">https://github.com/GolfNowEng/gn-main/pull/2118</a> </p>"
+        }
+      ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14400?focusedCommentId=1157003",
+      "lastCommentDisplay": "Apr 28, 2026, 8:42 AM",
+      "lastCommentAuthor": "Yoel Martin Pardo",
+      "testChecklist": null,
+      "type": "Developer Task (sub task)",
+      "isSubtask": true,
+      "status": "Closed",
+      "priority": "None",
+      "assignee": "Unassigned",
+      "assigneeAccountId": "",
+      "assigneeAvatarUrl": "",
+      "assignedDeveloper": "Yoel Martin Pardo",
+      "assignedDeveloperAccountId": "625571809e7380006fb29599",
+      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
+      "updated": "2026-06-03T11:37:41.656-0400",
+      "updatedDisplay": "Jun 3, 2026, 11:37 AM",
+      "created": "2026-04-22T11:37:35.069-0400",
+      "createdDisplay": "Apr 22, 2026, 11:37 AM",
+      "components": [
+        "GolfNow.Services.Reservation",
+        "GolfNow.Services.TeeSheet"
+      ],
+      "fixVersions": [
+        "v3001.122.0"
+      ],
+      "resolution": "Force Closed",
+      "parent": {
+        "key": "CORE-14342",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14342",
+        "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
+        "description": "",
+        "type": "Task",
+        "status": "Closed",
+        "priority": "P1"
+      }
+    },
+    {
+      "key": "CORE-14462",
+      "url": "https://golfnow.atlassian.net/browse/CORE-14462",
+      "summary": "Charges collection inside TransactionDetails object missing AmountDistributed and Total data. Checkout Flow.",
+      "description": "Checkout endpoint was missing data on the AmountDistributed and Total for Charges inside TransactionDetails object.",
+      "descriptionHtml": "<p>Checkout endpoint was missing data on the <code>AmountDistributed</code> and <code>Total</code> for Charges inside <code>TransactionDetails</code> object.</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14462/726039-image-20260512-184123.png\" alt=\"image-20260512-184123.png\" loading=\"lazy\"><figcaption>image-20260512-184123.png</figcaption></figure></div>",
+      "descriptionImageCount": 1,
+      "descriptionVideoCount": 0,
+      "descriptionMediaCount": 1,
+      "commentCount": 1,
+      "comments": [
+        {
+          "id": "1168647",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14462?focusedCommentId=1168647",
+          "author": "Yoel Martin Pardo",
+          "authorAccountId": "625571809e7380006fb29599",
+          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
+          "created": "2026-05-12T14:43:35.600-0400",
+          "createdDisplay": "May 12, 2026, 2:43 PM",
+          "updated": "2026-05-12T14:43:35.600-0400",
+          "updatedDisplay": "",
+          "hasMedia": true,
+          "mediaCount": 1,
+          "body": "QA: We have fixed the issue. Please make sure that all checkout flows, API 2.1, TR, you can also test the GetReservationDetails endpoint from API 2.1:\n\n{{api21_url}}/rest/customers/Automation@1778538358422user.com/reservations/416784247",
+          "bodyHtml": "<p>QA: We have fixed the issue. Please make sure that all checkout flows, API 2.1, TR, you can also test the GetReservationDetails endpoint from API 2.1: </p><pre><code>{{api21_url}}/rest/customers/Automation@1778538358422user.com/reservations/416784247</code></pre><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14462/comments/1168647/726040-image-20260512-184218.png\" alt=\"image-20260512-184218.png\" loading=\"lazy\"><figcaption>image-20260512-184218.png</figcaption></figure></div>"
+        }
+      ],
+      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14462?focusedCommentId=1168647",
+      "lastCommentDisplay": "May 12, 2026, 2:43 PM",
+      "lastCommentAuthor": "Yoel Martin Pardo",
+      "testChecklist": null,
+      "type": "Bug",
+      "isSubtask": false,
+      "status": "Closed",
+      "priority": "None",
+      "assignee": "Unassigned",
+      "assigneeAccountId": "",
+      "assigneeAvatarUrl": "",
+      "assignedDeveloper": "Yoel Martin Pardo",
+      "assignedDeveloperAccountId": "625571809e7380006fb29599",
+      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
+      "updated": "2026-06-03T11:36:49.317-0400",
+      "updatedDisplay": "Jun 3, 2026, 11:36 AM",
+      "created": "2026-05-12T14:01:38.279-0400",
+      "createdDisplay": "May 12, 2026, 2:01 PM",
+      "components": [
+        "GolfNowAPI"
+      ],
+      "fixVersions": [
+        "v3001.122.0"
+      ],
+      "resolution": "Force Closed",
+      "parent": null
+    },
+    {
+      "key": "CORE-14450",
+      "url": "https://golfnow.atlassian.net/browse/CORE-14450",
+      "summary": "CRMCustomerAudit Table Scan Timing Out",
+      "description": "We are seeing an issue on AWS DEV and STG , loading the subscription on the customer profile page in GNC , and we saw this stored procedure is timing out on DataDog :\n\ndeclare @p2 datetime\nset @p2=NULL\nexec RmsGetGuestToCustomerConvertDate @CustomerID ='8A383AB1-21E7-409C-9732-9D1D9BE343D3',@GuestToCustomerConvertDate=@p2 output\nselect @p2\n\nWe went into the stored procedure , and the section that is slow is this :\n\nIF ( @ctype = 'Cust' )\nBEGIN\nSELECT  MIN(audit.CreateDate)\nFROM    CRMCustomerAudit audit\nWHERE   audit.Details = 'Guest account converted to customer'\nAND ( audit.CustomerID = @CustomerIdWithCurlies\nOR audit.CustomerID = @CustomerIdWithOutCurlies\n)\nEND",
+      "descriptionHtml": "<p>We are seeing an issue on AWS DEV and STG , loading the subscription on the customer profile page in GNC , and we saw this stored procedure is timing out on DataDog :<br></p><pre><code>declare @p2 datetime\nset @p2=NULL\nexec RmsGetGuestToCustomerConvertDate @CustomerID ='8A383AB1-21E7-409C-9732-9D1D9BE343D3',@GuestToCustomerConvertDate=@p2 output\nselect @p2</code></pre><p>We went into the stored procedure , and the section that is slow is this :<br></p><pre><code>\n        IF ( @ctype = 'Cust' )\n            BEGIN\n                SELECT  MIN(audit.CreateDate)\n                FROM    CRMCustomerAudit audit\n                WHERE   audit.Details = 'Guest account converted to customer'\n                        AND ( audit.CustomerID = @CustomerIdWithCurlies\n                              OR audit.CustomerID = @CustomerIdWithOutCurlies\n                            )\n            END</code></pre>",
+      "descriptionImageCount": 0,
+      "descriptionVideoCount": 0,
+      "descriptionMediaCount": 0,
+      "commentCount": 0,
+      "comments": [],
+      "lastCommentUrl": "",
+      "lastCommentDisplay": "",
+      "lastCommentAuthor": "",
+      "testChecklist": null,
+      "type": "Bug",
+      "isSubtask": false,
+      "status": "Closed",
+      "priority": "None",
+      "assignee": "Unassigned",
+      "assigneeAccountId": "",
+      "assigneeAvatarUrl": "",
+      "assignedDeveloper": "Unassigned",
+      "assignedDeveloperAccountId": "",
+      "assignedDeveloperAvatarUrl": "",
+      "updated": "2026-06-03T11:36:38.758-0400",
+      "updatedDisplay": "Jun 3, 2026, 11:36 AM",
+      "created": "2026-05-07T19:19:30.672-0400",
+      "createdDisplay": "May 7, 2026, 7:19 PM",
+      "components": [
+        "Database"
+      ],
+      "fixVersions": [
+        "v3001.122.0"
+      ],
+      "resolution": "Force Closed",
+      "parent": null
+    },
     {
       "key": "CORE-14448",
       "url": "https://golfnow.atlassian.net/browse/CORE-14448",
@@ -1185,84 +1741,6 @@
       }
     },
     {
-      "key": "CORE-14272",
-      "url": "https://golfnow.atlassian.net/browse/CORE-14272",
-      "summary": "Create endpoint to validate cancellation eligibility for Products",
-      "description": "There is a new law that states when the price increases of a renewing product, we must give the customer 15 days post-renewal to fully cancel and refund their subscription. This ticket is to allow the front end clients to know when to display the button.\n\n- Probably best to add a field to the response of this endpoint:\n\n-  https://api.gnsvc.com/GolfNowAPI.svc/rest/channel/331/customers/{{EmailAddress}}/subscriptions?productTypeId=9\n\nRequirements\n\n- Create a boolean flag for something like “IsEligibleForCancellation”\n\n- Eligibility for Cancellation/Refund\n\n- Active subscriptions\n\n- ProductTypeId=9\n\n- RenewedInto ProductId IN (71)\n\n- This should be configurable because new ProductIds may be added later\n\n- The subscription was created as part of a renewal - Automatic renewal through the processor or manual through GNC\n\n- Manually renewing through GNC is not eligible for cancellations\n\n- Billing State/Prov is in a configured state\n\n- New York will be the only one for now but this could expand to multiple state or multiple countries\n\n- Today’s date is <= 15 days since the purchase/transaction date of the subscription\n\n- This day limit should be configurable\n\nTest Cases\n\n- Happy Path for Eligibility\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 3/1/26\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=True\n\n- Not a valid State or date\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25\n\n- My Billing Address State for the subscription is in Florida\n\n- IsEligibleForCancellation=False\n\n- Not within 15 day range\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=False\n\n- Not an applicable renewal PPID\n\n- Today’s Date = 3/6/26\n\n- I previously had PPID 64 and i renewed into a PPID under ProductId 36 on purchase/transaction date 3/1/26\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=False\n\n- Not an applicable transaction - Not a renewal\n\n- Today’s Date = 3/6/26\n\n- I did a standalone purchase of a PPID under ProductId 71 on purchase/transaction date 3/6/26\n\n- My Billing Address State for the subscription is in New York\n\n- IsEligibleForCancellation=False\n\n- Subscription already cancelled or expired\n\n- IsEligibleForCancellation=False",
-      "descriptionHtml": "<p>There is a new law that states when the price increases of a renewing product, we must give the customer 15 days post-renewal to fully cancel and refund their subscription. This ticket is to allow the front end clients to know when to display the button. </p><ul><li><p>Probably best to add a field to the response of this endpoint:</p><ul><li><p><code> https://api.gnsvc.com/GolfNowAPI.svc/rest/channel/331/customers/{{EmailAddress}}/subscriptions?productTypeId=9</code></p></li></ul></li></ul><p><strong>Requirements</strong></p><ul><li><p>Create a boolean flag for something like “IsEligibleForCancellation”</p></li><li><p>Eligibility for Cancellation/Refund</p><ul><li><p>Active subscriptions</p></li><li><p>ProductTypeId=9</p></li><li><p>RenewedInto ProductId IN (71)</p><ul><li><p>This should be configurable because new ProductIds may be added later</p></li></ul></li><li><p>The subscription was created as part of a renewal - Automatic renewal through the processor <s>or manual through GNC</s></p><ul><li><p>Manually renewing through GNC is not eligible for cancellations</p></li></ul></li><li><p>Billing State/Prov is in a configured state</p><ul><li><p>New York will be the only one for now but this could expand to multiple state or multiple countries</p></li></ul></li><li><p>Today’s date is &lt;= 15 days since the purchase/transaction date of the subscription</p><ul><li><p>This day limit should be configurable </p></li></ul></li></ul></li></ul><p><strong>Test Cases</strong></p><ul><li><p>Happy Path for Eligibility</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 3/1/26</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=True</p></li></ul></li><li><p>Not a valid State or date </p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25</p></li><li><p>My Billing Address State for the subscription is in Florida</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Not within 15 day range</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 71 on purchase/transaction date 12/31/25</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Not an applicable renewal PPID</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I previously had PPID 64 and i renewed into a PPID under ProductId 36 on purchase/transaction date 3/1/26</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Not an applicable transaction - Not a renewal</p><ul><li><p>Today’s Date = 3/6/26</p></li><li><p>I did a standalone purchase of a PPID under ProductId 71 on purchase/transaction date 3/6/26</p></li><li><p>My Billing Address State for the subscription is in New York</p></li><li><p>IsEligibleForCancellation=False</p></li></ul></li><li><p>Subscription already cancelled or expired</p><ul><li><p>IsEligibleForCancellation=False</p></li></ul></li></ul>",
-      "descriptionImageCount": 0,
-      "descriptionVideoCount": 0,
-      "descriptionMediaCount": 0,
-      "commentCount": 2,
-      "comments": [
-        {
-          "id": "1158568",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1158568",
-          "author": "Raghav Kancherla",
-          "authorAccountId": "557058:24f78684-6276-42b4-9860-f81502d6d45e",
-          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RK-4.png",
-          "created": "2026-05-01T00:06:44.578-0400",
-          "createdDisplay": "May 1, 2026, 12:06 AM",
-          "updated": "2026-05-01T00:06:44.578-0400",
-          "updatedDisplay": "",
-          "hasMedia": true,
-          "mediaCount": 1,
-          "body": "Testing steps:\n\n- Create a new customer and subscribe to any product under productTypeId 9 using a New york address and zip code.\n\n- Update the product pricing table RenewalProductPrice for the productPriceId selected in step 1 to any productPriceId under ProductId 71, if that's not available, use any other ProductPriceId under a different ProductId\n\n- Insert this record only if productId 71 is not avialble:\n\nINSERT INTO [Product].[CancellationEligibilityConfig]\n(ProductID, ProductTypeId, StateProvinceCode, CountryCode, DayLimit, IsActive)\nVALUES\n(<ProductId used in step 2>, 9, 'NY', 'US', 15, 1)\n\n- Back date the subscription in step 1 and run the product renewal app, this should renew the product tot he ProductPriceId selected in step 2\n\n- Run the {{api21_url}}/GolfNowAPI.svc/rest/channel/331/customers/{{apiEmailaddyoc}}/subscriptions end point and you will see 2 subscriptions with only the 2ns subscription having  \"IsEligibleForCancellation\": true",
-          "bodyHtml": "<p>Testing steps:</p><ol><li><p>Create a new customer and subscribe to any product under productTypeId 9 using a New york address and zip code.</p></li><li><p>Update the product pricing table RenewalProductPrice for the productPriceId selected in step 1 to any productPriceId under ProductId 71, if that's not available, use any other ProductPriceId under a different ProductId</p></li><li><p>Insert this record only if productId 71 is not avialble:</p></li></ol><p> INSERT INTO [Product].[CancellationEligibilityConfig]<br>        (ProductID, ProductTypeId, StateProvinceCode, CountryCode, DayLimit, IsActive)<br>    VALUES<br>        (&lt;ProductId used in step 2&gt;, 9, 'NY', 'US', 15, 1)</p><ol><li><p>Back date the subscription in step 1 and run the product renewal app, this should renew the product tot he ProductPriceId selected in step 2</p></li><li><p>Run the {{api21_url}}/GolfNowAPI.svc/rest/channel/331/customers/{{apiEmailaddyoc}}/subscriptions end point and you will see 2 subscriptions with only the 2ns subscription having  &quot;IsEligibleForCancellation&quot;: true</p></li></ol><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1158568/719251-image-20260501-040632.png\" alt=\"image-20260501-040632.png\" loading=\"lazy\"><figcaption>image-20260501-040632.png</figcaption></figure></div>"
-        },
-        {
-          "id": "1168834",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1168834",
-          "author": "Dewan Kabir",
-          "authorAccountId": "630fb06bb433b060db559bdb",
-          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-          "created": "2026-05-12T18:34:17.774-0400",
-          "createdDisplay": "May 12, 2026, 6:34 PM",
-          "updated": "2026-05-12T19:08:05.303-0400",
-          "updatedDisplay": "May 12, 2026, 7:08 PM",
-          "hasMedia": true,
-          "mediaCount": 8,
-          "body": "VALIDATED IN AWS STG :\n\nUpdate PPID 64 → Renewal PPID to 1048\n\nNow we will purchase PPID 64 using a NY Zip Code and Billing Address Credit Card , and Customer :\n\nNow we will Back date the subscription and run the product renewal app, this should renew the product into the ProductPriceId we configured earlier :\n\nExecute the new endpoint :",
-          "bodyHtml": "<p><strong>VALIDATED IN AWS STG : </strong></p><p>Update PPID 64 → Renewal PPID to 1048</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726210-image-20260512-222451.png\" alt=\"image-20260512-222451.png\" loading=\"lazy\"><figcaption>image-20260512-222451.png</figcaption></figure></div><p>Now we will purchase PPID 64 using a NY Zip Code and Billing Address Credit Card , and Customer : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726211-image-20260512-223229.png\" alt=\"image-20260512-223229.png\" loading=\"lazy\"><figcaption>image-20260512-223229.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726208-image-20260512-223247.png\" alt=\"image-20260512-223247.png\" loading=\"lazy\"><figcaption>image-20260512-223247.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726209-image-20260512-223322.png\" alt=\"image-20260512-223322.png\" loading=\"lazy\"><figcaption>image-20260512-223322.png</figcaption></figure></div><p>Now we will Back date the subscription and run the product renewal app, this should renew the product into the ProductPriceId we configured earlier : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726221-image-20260512-230115.png\" alt=\"image-20260512-230115.png\" loading=\"lazy\"><figcaption>image-20260512-230115.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726222-image-20260512-230124.png\" alt=\"image-20260512-230124.png\" loading=\"lazy\"><figcaption>image-20260512-230124.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726219-image-20260512-230158.png\" alt=\"image-20260512-230158.png\" loading=\"lazy\"><figcaption>image-20260512-230158.png</figcaption></figure></div><p>Execute the new endpoint : </p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14272/comments/1168834/726220-image-20260512-230545.png\" alt=\"image-20260512-230545.png\" loading=\"lazy\"><figcaption>image-20260512-230545.png</figcaption></figure></div>"
-        }
-      ],
-      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14272?focusedCommentId=1168834",
-      "lastCommentDisplay": "May 12, 2026, 6:34 PM",
-      "lastCommentAuthor": "Dewan Kabir",
-      "testChecklist": null,
-      "type": "Story",
-      "isSubtask": false,
-      "status": "PO Review",
-      "priority": "P1",
-      "assignee": "Dewan Kabir",
-      "assigneeAccountId": "630fb06bb433b060db559bdb",
-      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-      "assignedDeveloper": "Raghav Kancherla",
-      "assignedDeveloperAccountId": "557058:24f78684-6276-42b4-9860-f81502d6d45e",
-      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RK-4.png",
-      "updated": "2026-05-27T17:02:13.464-0400",
-      "updatedDisplay": "May 27, 2026, 5:02 PM",
-      "created": "2026-03-06T10:21:50.055-0500",
-      "createdDisplay": "Mar 6, 2026, 10:21 AM",
-      "components": [
-        "GolfNow.Services.Product",
-        "GolfNowAPI"
-      ],
-      "fixVersions": [
-        "v3001.122.0"
-      ],
-      "resolution": "",
-      "parent": {
-        "key": "B2C-70",
-        "url": "https://golfnow.atlassian.net/browse/B2C-70",
-        "summary": "NY Cancellation Validation",
-        "description": "",
-        "type": "Epic",
-        "status": "Backlog",
-        "priority": "None"
-      }
-    },
-    {
       "key": "CORE-14117",
       "url": "https://golfnow.atlassian.net/browse/CORE-14117",
       "summary": "Move Fee-Messaging to Post-Fee-Calculation & Use FeeConfiguration (API 2.1)",
@@ -2123,98 +2601,6 @@
       "parent": null
     },
     {
-      "key": "CORE-14271",
-      "url": "https://golfnow.atlassian.net/browse/CORE-14271",
-      "summary": "Support Product Refunds",
-      "description": "We need an API that will allow front end clients to submit refunds with a cancellation of a product. This is to support new laws related to products with price increases. We already have API2.1 endpoint for cancellation and we have internal service APIs for refunding.\n\nRelated APIs\n\n- {{api-base-url}}/GolfNowAPI.svc/rest/channel/331/subscription/2448350/cancel?cancelSubscriptionIfBenefitsHaveBeenUsed=true\n\n- {{ProductServiceURL}}/SubscriptionService.svc/rest/subscription/adjust\n\nRequirements\n\n- Ability to cancel a subscription\n\n- Ability to cancel a subscription even if benefits have been used\n\n- Ability to fully refund a subscription\n\n- Ability to partially refund a subscription\n\n- This is a “nice to have feature” but since its already supported on InternalService, figured we could future proof it\n\n- Cancellation should trigger a cancellation email that includes refund details\n\n- Cancellation and refund should update in database and GNC History widget\n\nRefund Types:\n\nFull refund =0\n\nPartial = 1\n\nFor full refunds RefundAmount is not required",
-      "descriptionHtml": "<p>We need an API that will allow front end clients to submit refunds with a cancellation of a product. This is to support new laws related to products with price increases. We already have API2.1 endpoint for cancellation and we have internal service APIs for refunding. </p><p><strong>Related APIs</strong></p><ul><li><p>{{api-base-url}}/GolfNowAPI.svc/rest/channel/331/subscription/2448350/cancel?cancelSubscriptionIfBenefitsHaveBeenUsed=true</p></li><li><p>{{ProductServiceURL}}/SubscriptionService.svc/rest/subscription/adjust</p></li></ul><p><strong>Requirements</strong></p><ul><li><p>Ability to cancel a subscription </p></li><li><p>Ability to cancel a subscription even if benefits have been used</p></li><li><p>Ability to fully refund a subscription </p></li><li><p>Ability to partially refund a subscription</p><ul><li><p>This is a “nice to have feature” but since its already supported on InternalService, figured we could future proof it</p></li></ul></li><li><p>Cancellation should trigger a cancellation email that includes refund details</p></li><li><p>Cancellation and refund should update in database and GNC History widget</p></li></ul><p><strong>Refund Types:</strong></p><p>Full refund =0</p><p>Partial = 1</p><p>For full refunds RefundAmount is not required</p>",
-      "descriptionImageCount": 0,
-      "descriptionVideoCount": 0,
-      "descriptionMediaCount": 0,
-      "commentCount": 3,
-      "comments": [
-        {
-          "id": "1158538",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14271?focusedCommentId=1158538",
-          "author": "Raghav Kancherla",
-          "authorAccountId": "557058:24f78684-6276-42b4-9860-f81502d6d45e",
-          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RK-4.png",
-          "created": "2026-04-30T18:19:47.919-0400",
-          "createdDisplay": "Apr 30, 2026, 6:19 PM",
-          "updated": "2026-04-30T18:19:47.919-0400",
-          "updatedDisplay": "",
-          "hasMedia": true,
-          "mediaCount": 1,
-          "body": "URL:{{api21_url}}/GolfNowAPI.svc/rest/channel/{{channelId}}/customers/{{apiEmailaddyoc}}/subscriptions/2950605/cancelWithRefund\n\nBody:{\n\"CancellationReasonId\": 1,\n\"CancelEvenIfBenefitsUsed\": true,\n\"RefundType\": 0,\n\"RefundAmount\": 0,\n\"SystemUserId\": 1\n}",
-          "bodyHtml": "<div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1158538/719240-image-20260430-221844.png\" alt=\"image-20260430-221844.png\" loading=\"lazy\"><figcaption>image-20260430-221844.png</figcaption></figure></div><pre><code>URL:{{api21_url}}/GolfNowAPI.svc/rest/channel/{{channelId}}/customers/{{apiEmailaddyoc}}/subscriptions/2950605/cancelWithRefund\n\nBody:{\n    &quot;CancellationReasonId&quot;: 1,\n    &quot;CancelEvenIfBenefitsUsed&quot;: true,\n    &quot;RefundType&quot;: 0,\n    &quot;RefundAmount&quot;: 0,\n    &quot;SystemUserId&quot;: 1\n}</code></pre>"
-        },
-        {
-          "id": "1168847",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14271?focusedCommentId=1168847",
-          "author": "Dewan Kabir",
-          "authorAccountId": "630fb06bb433b060db559bdb",
-          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-          "created": "2026-05-12T19:41:29.092-0400",
-          "createdDisplay": "May 12, 2026, 7:41 PM",
-          "updated": "2026-05-12T19:41:29.092-0400",
-          "updatedDisplay": "",
-          "hasMedia": true,
-          "mediaCount": 2,
-          "body": "VALIDATED IN AWS STG",
-          "bodyHtml": "<p><strong>VALIDATED IN AWS STG </strong></p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1168847/726228-image-20260512-233941.png\" alt=\"image-20260512-233941.png\" loading=\"lazy\"><figcaption>image-20260512-233941.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1168847/726227-image-20260512-234118.png\" alt=\"image-20260512-234118.png\" loading=\"lazy\"><figcaption>image-20260512-234118.png</figcaption></figure></div>"
-        },
-        {
-          "id": "1169639",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14271?focusedCommentId=1169639",
-          "author": "Dewan Kabir",
-          "authorAccountId": "630fb06bb433b060db559bdb",
-          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-          "created": "2026-05-13T06:44:53.199-0400",
-          "createdDisplay": "May 13, 2026, 6:44 AM",
-          "updated": "2026-05-13T06:44:53.199-0400",
-          "updatedDisplay": "",
-          "hasMedia": true,
-          "mediaCount": 2,
-          "body": "PRODUCTION VALIDATION :",
-          "bodyHtml": "<p><strong>PRODUCTION VALIDATION : </strong></p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1169639/726721-image-20260513-104432.png\" alt=\"image-20260513-104432.png\" loading=\"lazy\"><figcaption>image-20260513-104432.png</figcaption></figure></div><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14271/comments/1169639/726720-image-20260513-104448.png\" alt=\"image-20260513-104448.png\" loading=\"lazy\"><figcaption>image-20260513-104448.png</figcaption></figure></div>"
-        }
-      ],
-      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14271?focusedCommentId=1169639",
-      "lastCommentDisplay": "May 13, 2026, 6:44 AM",
-      "lastCommentAuthor": "Dewan Kabir",
-      "testChecklist": null,
-      "type": "Story",
-      "isSubtask": false,
-      "status": "PO Review",
-      "priority": "P1",
-      "assignee": "Dewan Kabir",
-      "assigneeAccountId": "630fb06bb433b060db559bdb",
-      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-      "assignedDeveloper": "Unassigned",
-      "assignedDeveloperAccountId": "",
-      "assignedDeveloperAvatarUrl": "",
-      "updated": "2026-05-14T12:22:52.940-0400",
-      "updatedDisplay": "May 14, 2026, 12:22 PM",
-      "created": "2026-03-06T10:11:37.546-0500",
-      "createdDisplay": "Mar 6, 2026, 10:11 AM",
-      "components": [
-        "GolfNowAPI"
-      ],
-      "fixVersions": [
-        "v3001.122.0"
-      ],
-      "resolution": "",
-      "parent": {
-        "key": "B2C-70",
-        "url": "https://golfnow.atlassian.net/browse/B2C-70",
-        "summary": "NY Cancellation Validation",
-        "description": "",
-        "type": "Epic",
-        "status": "Backlog",
-        "priority": "None"
-      }
-    },
-    {
       "key": "CORE-14210",
       "url": "https://golfnow.atlassian.net/browse/CORE-14210",
       "summary": "CLONE - [Commerce] Convenience fee shown lower for Hot Deals on Checkout compared to GNC settings",
@@ -2275,98 +2661,6 @@
         "status": "Planning",
         "priority": "None"
       }
-    },
-    {
-      "key": "CORE-14462",
-      "url": "https://golfnow.atlassian.net/browse/CORE-14462",
-      "summary": "Charges collection inside TransactionDetails object missing AmountDistributed and Total data. Checkout Flow.",
-      "description": "Checkout endpoint was missing data on the AmountDistributed and Total for Charges inside TransactionDetails object.",
-      "descriptionHtml": "<p>Checkout endpoint was missing data on the <code>AmountDistributed</code> and <code>Total</code> for Charges inside <code>TransactionDetails</code> object.</p><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14462/726039-image-20260512-184123.png\" alt=\"image-20260512-184123.png\" loading=\"lazy\"><figcaption>image-20260512-184123.png</figcaption></figure></div>",
-      "descriptionImageCount": 1,
-      "descriptionVideoCount": 0,
-      "descriptionMediaCount": 1,
-      "commentCount": 1,
-      "comments": [
-        {
-          "id": "1168647",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14462?focusedCommentId=1168647",
-          "author": "Yoel Martin Pardo",
-          "authorAccountId": "625571809e7380006fb29599",
-          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
-          "created": "2026-05-12T14:43:35.600-0400",
-          "createdDisplay": "May 12, 2026, 2:43 PM",
-          "updated": "2026-05-12T14:43:35.600-0400",
-          "updatedDisplay": "",
-          "hasMedia": true,
-          "mediaCount": 1,
-          "body": "QA: We have fixed the issue. Please make sure that all checkout flows, API 2.1, TR, you can also test the GetReservationDetails endpoint from API 2.1:\n\n{{api21_url}}/rest/customers/Automation@1778538358422user.com/reservations/416784247",
-          "bodyHtml": "<p>QA: We have fixed the issue. Please make sure that all checkout flows, API 2.1, TR, you can also test the GetReservationDetails endpoint from API 2.1: </p><pre><code>{{api21_url}}/rest/customers/Automation@1778538358422user.com/reservations/416784247</code></pre><div class=\"description-media-group\"><figure class=\"description-media\"><img src=\"assets/jira-media/CORE-14462/comments/1168647/726040-image-20260512-184218.png\" alt=\"image-20260512-184218.png\" loading=\"lazy\"><figcaption>image-20260512-184218.png</figcaption></figure></div>"
-        }
-      ],
-      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14462?focusedCommentId=1168647",
-      "lastCommentDisplay": "May 12, 2026, 2:43 PM",
-      "lastCommentAuthor": "Yoel Martin Pardo",
-      "testChecklist": null,
-      "type": "Bug",
-      "isSubtask": false,
-      "status": "PO Review",
-      "priority": "None",
-      "assignee": "Dewan Kabir",
-      "assigneeAccountId": "630fb06bb433b060db559bdb",
-      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-      "assignedDeveloper": "Yoel Martin Pardo",
-      "assignedDeveloperAccountId": "625571809e7380006fb29599",
-      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
-      "updated": "2026-05-14T09:55:08.577-0400",
-      "updatedDisplay": "May 14, 2026, 9:55 AM",
-      "created": "2026-05-12T14:01:38.279-0400",
-      "createdDisplay": "May 12, 2026, 2:01 PM",
-      "components": [
-        "GolfNowAPI"
-      ],
-      "fixVersions": [
-        "v3001.122.0"
-      ],
-      "resolution": "",
-      "parent": null
-    },
-    {
-      "key": "CORE-14450",
-      "url": "https://golfnow.atlassian.net/browse/CORE-14450",
-      "summary": "CRMCustomerAudit Table Scan Timing Out",
-      "description": "We are seeing an issue on AWS DEV and STG , loading the subscription on the customer profile page in GNC , and we saw this stored procedure is timing out on DataDog :\n\ndeclare @p2 datetime\nset @p2=NULL\nexec RmsGetGuestToCustomerConvertDate @CustomerID ='8A383AB1-21E7-409C-9732-9D1D9BE343D3',@GuestToCustomerConvertDate=@p2 output\nselect @p2\n\nWe went into the stored procedure , and the section that is slow is this :\n\nIF ( @ctype = 'Cust' )\nBEGIN\nSELECT  MIN(audit.CreateDate)\nFROM    CRMCustomerAudit audit\nWHERE   audit.Details = 'Guest account converted to customer'\nAND ( audit.CustomerID = @CustomerIdWithCurlies\nOR audit.CustomerID = @CustomerIdWithOutCurlies\n)\nEND",
-      "descriptionHtml": "<p>We are seeing an issue on AWS DEV and STG , loading the subscription on the customer profile page in GNC , and we saw this stored procedure is timing out on DataDog :<br></p><pre><code>declare @p2 datetime\nset @p2=NULL\nexec RmsGetGuestToCustomerConvertDate @CustomerID ='8A383AB1-21E7-409C-9732-9D1D9BE343D3',@GuestToCustomerConvertDate=@p2 output\nselect @p2</code></pre><p>We went into the stored procedure , and the section that is slow is this :<br></p><pre><code>\n        IF ( @ctype = 'Cust' )\n            BEGIN\n                SELECT  MIN(audit.CreateDate)\n                FROM    CRMCustomerAudit audit\n                WHERE   audit.Details = 'Guest account converted to customer'\n                        AND ( audit.CustomerID = @CustomerIdWithCurlies\n                              OR audit.CustomerID = @CustomerIdWithOutCurlies\n                            )\n            END</code></pre>",
-      "descriptionImageCount": 0,
-      "descriptionVideoCount": 0,
-      "descriptionMediaCount": 0,
-      "commentCount": 0,
-      "comments": [],
-      "lastCommentUrl": "",
-      "lastCommentDisplay": "",
-      "lastCommentAuthor": "",
-      "testChecklist": null,
-      "type": "Bug",
-      "isSubtask": false,
-      "status": "PO Review",
-      "priority": "None",
-      "assignee": "Dewan Kabir",
-      "assigneeAccountId": "630fb06bb433b060db559bdb",
-      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-      "assignedDeveloper": "Unassigned",
-      "assignedDeveloperAccountId": "",
-      "assignedDeveloperAvatarUrl": "",
-      "updated": "2026-05-14T09:55:00.723-0400",
-      "updatedDisplay": "May 14, 2026, 9:55 AM",
-      "created": "2026-05-07T19:19:30.672-0400",
-      "createdDisplay": "May 7, 2026, 7:19 PM",
-      "components": [
-        "Database"
-      ],
-      "fixVersions": [
-        "v3001.122.0"
-      ],
-      "resolution": "",
-      "parent": null
     },
     {
       "key": "CORE-14441",
@@ -2450,98 +2744,6 @@
         "type": "Story",
         "status": "PO Review",
         "priority": "P1"
-      }
-    },
-    {
-      "key": "CORE-14434",
-      "url": "https://golfnow.atlassian.net/browse/CORE-14434",
-      "summary": "Database changes.",
-      "description": "",
-      "descriptionHtml": "",
-      "descriptionImageCount": 0,
-      "descriptionVideoCount": 0,
-      "descriptionMediaCount": 0,
-      "commentCount": 0,
-      "comments": [],
-      "lastCommentUrl": "",
-      "lastCommentDisplay": "",
-      "lastCommentAuthor": "",
-      "testChecklist": null,
-      "type": "Developer Task (sub task)",
-      "isSubtask": true,
-      "status": "PO Review",
-      "priority": "None",
-      "assignee": "Dewan Kabir",
-      "assigneeAccountId": "630fb06bb433b060db559bdb",
-      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-      "assignedDeveloper": "Yoel Martin Pardo",
-      "assignedDeveloperAccountId": "625571809e7380006fb29599",
-      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
-      "updated": "2026-05-14T09:54:13.266-0400",
-      "updatedDisplay": "May 14, 2026, 9:54 AM",
-      "created": "2026-04-30T16:43:09.912-0400",
-      "createdDisplay": "Apr 30, 2026, 4:43 PM",
-      "components": [
-        "Database"
-      ],
-      "fixVersions": [
-        "v3001.122.0"
-      ],
-      "resolution": "",
-      "parent": {
-        "key": "CORE-14431",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14431",
-        "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
-        "description": "",
-        "type": "Bug",
-        "status": "Closed",
-        "priority": "P0"
-      }
-    },
-    {
-      "key": "CORE-14433",
-      "url": "https://golfnow.atlassian.net/browse/CORE-14433",
-      "summary": "Code changes.",
-      "description": "",
-      "descriptionHtml": "",
-      "descriptionImageCount": 0,
-      "descriptionVideoCount": 0,
-      "descriptionMediaCount": 0,
-      "commentCount": 0,
-      "comments": [],
-      "lastCommentUrl": "",
-      "lastCommentDisplay": "",
-      "lastCommentAuthor": "",
-      "testChecklist": null,
-      "type": "Developer Task (sub task)",
-      "isSubtask": true,
-      "status": "PO Review",
-      "priority": "None",
-      "assignee": "Dewan Kabir",
-      "assigneeAccountId": "630fb06bb433b060db559bdb",
-      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-      "assignedDeveloper": "Yoel Martin Pardo",
-      "assignedDeveloperAccountId": "625571809e7380006fb29599",
-      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
-      "updated": "2026-05-14T09:54:04.701-0400",
-      "updatedDisplay": "May 14, 2026, 9:54 AM",
-      "created": "2026-04-30T16:42:59.027-0400",
-      "createdDisplay": "Apr 30, 2026, 4:42 PM",
-      "components": [
-        "Cache Manager"
-      ],
-      "fixVersions": [
-        "v3001.122.0"
-      ],
-      "resolution": "",
-      "parent": {
-        "key": "CORE-14431",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14431",
-        "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
-        "description": "",
-        "type": "Bug",
-        "status": "Closed",
-        "priority": "P0"
       }
     },
     {
@@ -2685,98 +2887,6 @@
       }
     },
     {
-      "key": "CORE-14409",
-      "url": "https://golfnow.atlassian.net/browse/CORE-14409",
-      "summary": "Add secrets",
-      "description": "",
-      "descriptionHtml": "",
-      "descriptionImageCount": 0,
-      "descriptionVideoCount": 0,
-      "descriptionMediaCount": 0,
-      "commentCount": 0,
-      "comments": [],
-      "lastCommentUrl": "",
-      "lastCommentDisplay": "",
-      "lastCommentAuthor": "",
-      "testChecklist": null,
-      "type": "Developer Task (sub task)",
-      "isSubtask": true,
-      "status": "PO Review",
-      "priority": "P1",
-      "assignee": "Dewan Kabir",
-      "assigneeAccountId": "630fb06bb433b060db559bdb",
-      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-      "assignedDeveloper": "Luis Vallejo Mursuli",
-      "assignedDeveloperAccountId": "712020:2e637bb4-c610-467b-839d-9a5b84f75f01",
-      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:2e637bb4-c610-467b-839d-9a5b84f75f01/4dca1d1b-3faa-4d03-90b8-2b3e0cc02887/32",
-      "updated": "2026-05-14T09:50:41.302-0400",
-      "updatedDisplay": "May 14, 2026, 9:50 AM",
-      "created": "2026-04-27T12:07:20.016-0400",
-      "createdDisplay": "Apr 27, 2026, 12:07 PM",
-      "components": [
-        "Secrets"
-      ],
-      "fixVersions": [
-        "v3001.122.0"
-      ],
-      "resolution": "",
-      "parent": {
-        "key": "CORE-14332",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14332",
-        "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
-        "description": "",
-        "type": "Story",
-        "status": "Closed",
-        "priority": "P1"
-      }
-    },
-    {
-      "key": "CORE-14401",
-      "url": "https://golfnow.atlassian.net/browse/CORE-14401",
-      "summary": "Database changes.",
-      "description": "",
-      "descriptionHtml": "",
-      "descriptionImageCount": 0,
-      "descriptionVideoCount": 0,
-      "descriptionMediaCount": 0,
-      "commentCount": 0,
-      "comments": [],
-      "lastCommentUrl": "",
-      "lastCommentDisplay": "",
-      "lastCommentAuthor": "",
-      "testChecklist": null,
-      "type": "Developer Task (sub task)",
-      "isSubtask": true,
-      "status": "PO Review",
-      "priority": "None",
-      "assignee": "Dewan Kabir",
-      "assigneeAccountId": "630fb06bb433b060db559bdb",
-      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-      "assignedDeveloper": "Yoel Martin Pardo",
-      "assignedDeveloperAccountId": "625571809e7380006fb29599",
-      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
-      "updated": "2026-05-14T09:49:56.654-0400",
-      "updatedDisplay": "May 14, 2026, 9:49 AM",
-      "created": "2026-04-22T11:37:42.785-0400",
-      "createdDisplay": "Apr 22, 2026, 11:37 AM",
-      "components": [
-        "Database"
-      ],
-      "fixVersions": [
-        "v3001.122.0"
-      ],
-      "resolution": "",
-      "parent": {
-        "key": "CORE-14342",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14342",
-        "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
-        "description": "",
-        "type": "Task",
-        "status": "Closed",
-        "priority": "P1"
-      }
-    },
-    {
       "key": "CORE-14385",
       "url": "https://golfnow.atlassian.net/browse/CORE-14385",
       "summary": "Sufficient query parameter is not returning relevant result on the top where expected",
@@ -2889,131 +2999,159 @@
       ],
       "resolution": "Done",
       "parent": null
-    },
-    {
-      "key": "CORE-14366",
-      "url": "https://golfnow.atlassian.net/browse/CORE-14366",
-      "summary": "Code changes for [CORE - 14332]",
-      "description": "",
-      "descriptionHtml": "",
-      "descriptionImageCount": 0,
-      "descriptionVideoCount": 0,
-      "descriptionMediaCount": 0,
-      "commentCount": 0,
-      "comments": [],
-      "lastCommentUrl": "",
-      "lastCommentDisplay": "",
-      "lastCommentAuthor": "",
-      "testChecklist": null,
-      "type": "Developer Task (sub task)",
-      "isSubtask": true,
-      "status": "PO Review",
-      "priority": "None",
-      "assignee": "Unassigned",
-      "assigneeAccountId": "",
-      "assigneeAvatarUrl": "",
-      "assignedDeveloper": "Luis Vallejo Mursuli",
-      "assignedDeveloperAccountId": "712020:2e637bb4-c610-467b-839d-9a5b84f75f01",
-      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:2e637bb4-c610-467b-839d-9a5b84f75f01/4dca1d1b-3faa-4d03-90b8-2b3e0cc02887/32",
-      "updated": "2026-05-14T09:45:17.032-0400",
-      "updatedDisplay": "May 14, 2026, 9:45 AM",
-      "created": "2026-04-07T11:00:10.265-0400",
-      "createdDisplay": "Apr 7, 2026, 11:00 AM",
-      "components": [
-        "GolfNow.API.TR",
-        "GolfNowAPI"
-      ],
-      "fixVersions": [
-        "v3001.122.0"
-      ],
-      "resolution": "",
-      "parent": {
-        "key": "CORE-14332",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14332",
-        "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
-        "description": "",
-        "type": "Story",
-        "status": "Closed",
-        "priority": "P1"
-      }
-    },
-    {
-      "key": "CORE-14400",
-      "url": "https://golfnow.atlassian.net/browse/CORE-14400",
-      "summary": "Code changes.",
-      "description": "",
-      "descriptionHtml": "",
-      "descriptionImageCount": 0,
-      "descriptionVideoCount": 0,
-      "descriptionMediaCount": 0,
-      "commentCount": 1,
-      "comments": [
-        {
-          "id": "1157003",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14400?focusedCommentId=1157003",
-          "author": "Yoel Martin Pardo",
-          "authorAccountId": "625571809e7380006fb29599",
-          "authorAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
-          "created": "2026-04-28T08:42:26.986-0400",
-          "createdDisplay": "Apr 28, 2026, 8:42 AM",
-          "updated": "2026-04-28T08:42:26.986-0400",
-          "updatedDisplay": "",
-          "hasMedia": false,
-          "mediaCount": 0,
-          "body": "PR: https://github.com/GolfNowEng/gn-main/pull/2118",
-          "bodyHtml": "<p>PR: <a href=\"https://github.com/GolfNowEng/gn-main/pull/2118\" target=\"_blank\" rel=\"noopener\">https://github.com/GolfNowEng/gn-main/pull/2118</a> </p>"
-        }
-      ],
-      "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14400?focusedCommentId=1157003",
-      "lastCommentDisplay": "Apr 28, 2026, 8:42 AM",
-      "lastCommentAuthor": "Yoel Martin Pardo",
-      "testChecklist": null,
-      "type": "Developer Task (sub task)",
-      "isSubtask": true,
-      "status": "PO Review",
-      "priority": "None",
-      "assignee": "Dewan Kabir",
-      "assigneeAccountId": "630fb06bb433b060db559bdb",
-      "assigneeAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/630fb06bb433b060db559bdb/32ec0eb9-63e5-4027-9641-1dd0e01b4d01/32",
-      "assignedDeveloper": "Yoel Martin Pardo",
-      "assignedDeveloperAccountId": "625571809e7380006fb29599",
-      "assignedDeveloperAvatarUrl": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/625571809e7380006fb29599/0884fec7-a707-4919-8f07-c6d0e05dcc62/32",
-      "updated": "2026-05-13T18:05:24.865-0400",
-      "updatedDisplay": "May 13, 2026, 6:05 PM",
-      "created": "2026-04-22T11:37:35.069-0400",
-      "createdDisplay": "Apr 22, 2026, 11:37 AM",
-      "components": [
-        "GolfNow.Services.Reservation",
-        "GolfNow.Services.TeeSheet"
-      ],
-      "fixVersions": [
-        "v3001.122.0"
-      ],
-      "resolution": "",
-      "parent": {
-        "key": "CORE-14342",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14342",
-        "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
-        "description": "",
-        "type": "Task",
-        "status": "Closed",
-        "priority": "P1"
-      }
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-06-03T15:31:29.761Z",
-    "previousPulledAtDisplay": "Jun 3, 2026, 11:31 AM",
-    "currentPulledAt": "2026-06-03T15:36:33.526Z",
-    "currentPulledAtDisplay": "Jun 3, 2026, 11:36 AM",
+    "previousPulledAt": "2026-06-03T15:36:33.526Z",
+    "previousPulledAtDisplay": "Jun 3, 2026, 11:36 AM",
+    "currentPulledAt": "2026-06-03T15:41:37.153Z",
+    "currentPulledAtDisplay": "Jun 3, 2026, 11:41 AM",
     "isBaseline": false,
     "added": [],
     "removed": [],
     "updated": [
       {
-        "key": "CORE-14448",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14448",
-        "summary": "Apple Pay Follow Up Bugs",
+        "key": "CORE-14272",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14272",
+        "summary": "Create endpoint to validate cancellation eligibility for Products",
+        "changes": [
+          {
+            "field": "updatedDisplay",
+            "label": "Jira updated",
+            "before": "May 27, 2026, 5:02 PM",
+            "after": "Jun 3, 2026, 11:40 AM"
+          }
+        ],
+        "type": "Story",
+        "isSubtask": false,
+        "assignee": "Dewan Kabir",
+        "assignedDeveloper": "Raghav Kancherla",
+        "status": "PO Review",
+        "parent": {
+          "key": "B2C-70",
+          "url": "https://golfnow.atlassian.net/browse/B2C-70",
+          "summary": "NY Cancellation Validation",
+          "description": "",
+          "type": "Epic",
+          "status": "Backlog",
+          "priority": "None"
+        }
+      },
+      {
+        "key": "CORE-14271",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14271",
+        "summary": "Support Product Refunds",
+        "changes": [
+          {
+            "field": "updatedDisplay",
+            "label": "Jira updated",
+            "before": "May 14, 2026, 12:22 PM",
+            "after": "Jun 3, 2026, 11:40 AM"
+          }
+        ],
+        "type": "Story",
+        "isSubtask": false,
+        "assignee": "Dewan Kabir",
+        "assignedDeveloper": "Unassigned",
+        "status": "PO Review",
+        "parent": {
+          "key": "B2C-70",
+          "url": "https://golfnow.atlassian.net/browse/B2C-70",
+          "summary": "NY Cancellation Validation",
+          "description": "",
+          "type": "Epic",
+          "status": "Backlog",
+          "priority": "None"
+        }
+      },
+      {
+        "key": "CORE-14409",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14409",
+        "summary": "Add secrets",
+        "changes": [
+          {
+            "field": "status",
+            "label": "Status",
+            "before": "PO Review",
+            "after": "Closed"
+          },
+          {
+            "field": "assignee",
+            "label": "Assignee",
+            "before": "Dewan Kabir",
+            "after": "Unassigned"
+          },
+          {
+            "field": "resolution",
+            "label": "Resolution",
+            "before": "None",
+            "after": "Force Closed"
+          },
+          {
+            "field": "updatedDisplay",
+            "label": "Jira updated",
+            "before": "May 14, 2026, 9:50 AM",
+            "after": "Jun 3, 2026, 11:39 AM"
+          }
+        ],
+        "type": "Developer Task (sub task)",
+        "isSubtask": true,
+        "assignee": "Unassigned",
+        "assignedDeveloper": "Luis Vallejo Mursuli",
+        "status": "Closed",
+        "parent": {
+          "key": "CORE-14332",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14332",
+          "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
+          "description": "",
+          "type": "Story",
+          "status": "Closed",
+          "priority": "P1"
+        }
+      },
+      {
+        "key": "CORE-14366",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14366",
+        "summary": "Code changes for [CORE - 14332]",
+        "changes": [
+          {
+            "field": "status",
+            "label": "Status",
+            "before": "PO Review",
+            "after": "Closed"
+          },
+          {
+            "field": "resolution",
+            "label": "Resolution",
+            "before": "None",
+            "after": "Force Closed"
+          },
+          {
+            "field": "updatedDisplay",
+            "label": "Jira updated",
+            "before": "May 14, 2026, 9:45 AM",
+            "after": "Jun 3, 2026, 11:38 AM"
+          }
+        ],
+        "type": "Developer Task (sub task)",
+        "isSubtask": true,
+        "assignee": "Unassigned",
+        "assignedDeveloper": "Luis Vallejo Mursuli",
+        "status": "Closed",
+        "parent": {
+          "key": "CORE-14332",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14332",
+          "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
+          "description": "",
+          "type": "Story",
+          "status": "Closed",
+          "priority": "P1"
+        }
+      },
+      {
+        "key": "CORE-14434",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14434",
+        "summary": "Database changes.",
         "changes": [
           {
             "field": "status",
@@ -3037,28 +3175,28 @@
             "field": "updatedDisplay",
             "label": "Jira updated",
             "before": "May 14, 2026, 9:54 AM",
-            "after": "Jun 3, 2026, 11:36 AM"
+            "after": "Jun 3, 2026, 11:38 AM"
           }
         ],
-        "type": "Bug",
-        "isSubtask": false,
+        "type": "Developer Task (sub task)",
+        "isSubtask": true,
         "assignee": "Unassigned",
         "assignedDeveloper": "Yoel Martin Pardo",
         "status": "Closed",
         "parent": {
-          "key": "B2C-68",
-          "url": "https://golfnow.atlassian.net/browse/B2C-68",
-          "summary": "Apple Pay 2026",
+          "key": "CORE-14431",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14431",
+          "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
           "description": "",
-          "type": "Epic",
-          "status": "Backlog",
-          "priority": "None"
+          "type": "Bug",
+          "status": "Closed",
+          "priority": "P0"
         }
       },
       {
-        "key": "CORE-14431",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14431",
-        "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
+        "key": "CORE-14433",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14433",
+        "summary": "Code changes.",
         "changes": [
           {
             "field": "status",
@@ -3081,21 +3219,29 @@
           {
             "field": "updatedDisplay",
             "label": "Jira updated",
-            "before": "May 14, 2026, 9:53 AM",
-            "after": "Jun 3, 2026, 11:36 AM"
+            "before": "May 14, 2026, 9:54 AM",
+            "after": "Jun 3, 2026, 11:38 AM"
           }
         ],
-        "type": "Bug",
-        "isSubtask": false,
+        "type": "Developer Task (sub task)",
+        "isSubtask": true,
         "assignee": "Unassigned",
         "assignedDeveloper": "Yoel Martin Pardo",
         "status": "Closed",
-        "parent": null
+        "parent": {
+          "key": "CORE-14431",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14431",
+          "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
+          "description": "",
+          "type": "Bug",
+          "status": "Closed",
+          "priority": "P0"
+        }
       },
       {
-        "key": "CORE-14420",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14420",
-        "summary": "CRMCustomerPhone missing index on CustomerNumber causes timeouts in STG (phx-api-be-internal)",
+        "key": "CORE-14401",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14401",
+        "summary": "Database changes.",
         "changes": [
           {
             "field": "status",
@@ -3107,117 +3253,6 @@
             "field": "assignee",
             "label": "Assignee",
             "before": "Dewan Kabir",
-            "after": "Unassigned"
-          },
-          {
-            "field": "resolution",
-            "label": "Resolution",
-            "before": "None",
-            "after": "Force Closed"
-          },
-          {
-            "field": "updatedDisplay",
-            "label": "Jira updated",
-            "before": "May 14, 2026, 9:51 AM",
-            "after": "Jun 3, 2026, 11:36 AM"
-          }
-        ],
-        "type": "Bug",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Daniel McNaughton",
-        "status": "Closed",
-        "parent": null
-      },
-      {
-        "key": "CORE-14412",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14412",
-        "summary": "CAKE Affiliate Tracking - API Response Validation Failure",
-        "changes": [
-          {
-            "field": "status",
-            "label": "Status",
-            "before": "PO Review",
-            "after": "Closed"
-          },
-          {
-            "field": "assignee",
-            "label": "Assignee",
-            "before": "Dewan Kabir",
-            "after": "Unassigned"
-          },
-          {
-            "field": "resolution",
-            "label": "Resolution",
-            "before": "None",
-            "after": "Force Closed"
-          },
-          {
-            "field": "updatedDisplay",
-            "label": "Jira updated",
-            "before": "May 14, 2026, 9:50 AM",
-            "after": "Jun 3, 2026, 11:36 AM"
-          }
-        ],
-        "type": "Bug",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Luis Vallejo Mursuli",
-        "status": "Closed",
-        "parent": null
-      },
-      {
-        "key": "CORE-14403",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14403",
-        "summary": "Loyalty PFA 2nd Booking Bonus - Previous Reservation Dates No Longer Being Validated",
-        "changes": [
-          {
-            "field": "status",
-            "label": "Status",
-            "before": "PO Review",
-            "after": "Closed"
-          },
-          {
-            "field": "assignee",
-            "label": "Assignee",
-            "before": "Dewan Kabir",
-            "after": "Unassigned"
-          },
-          {
-            "field": "resolution",
-            "label": "Resolution",
-            "before": "None",
-            "after": "Force Closed"
-          },
-          {
-            "field": "updatedDisplay",
-            "label": "Jira updated",
-            "before": "May 14, 2026, 9:50 AM",
-            "after": "Jun 3, 2026, 11:35 AM"
-          }
-        ],
-        "type": "Bug",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Raghav Kancherla",
-        "status": "Closed",
-        "parent": null
-      },
-      {
-        "key": "CORE-14398",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14398",
-        "summary": "Update Stored Procedure to Resolve Timeout Error When Purchasing Product w/ Promo Code",
-        "changes": [
-          {
-            "field": "status",
-            "label": "Status",
-            "before": "PO Review",
-            "after": "Closed"
-          },
-          {
-            "field": "assignee",
-            "label": "Assignee",
-            "before": "Nicole Greer",
             "after": "Unassigned"
           },
           {
@@ -3230,57 +3265,28 @@
             "field": "updatedDisplay",
             "label": "Jira updated",
             "before": "May 14, 2026, 9:49 AM",
-            "after": "Jun 3, 2026, 11:35 AM"
+            "after": "Jun 3, 2026, 11:37 AM"
           }
         ],
-        "type": "Bug",
-        "isSubtask": false,
+        "type": "Developer Task (sub task)",
+        "isSubtask": true,
         "assignee": "Unassigned",
         "assignedDeveloper": "Yoel Martin Pardo",
         "status": "Closed",
-        "parent": null
+        "parent": {
+          "key": "CORE-14342",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14342",
+          "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
+          "description": "",
+          "type": "Task",
+          "status": "Closed",
+          "priority": "P1"
+        }
       },
       {
-        "key": "CORE-14329",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14329",
-        "summary": "True-Up Not Switching to TSP Upon AL Deactivation",
-        "changes": [
-          {
-            "field": "status",
-            "label": "Status",
-            "before": "PO Review",
-            "after": "Closed"
-          },
-          {
-            "field": "assignee",
-            "label": "Assignee",
-            "before": "Dewan Kabir",
-            "after": "Unassigned"
-          },
-          {
-            "field": "resolution",
-            "label": "Resolution",
-            "before": "None",
-            "after": "Force Closed"
-          },
-          {
-            "field": "updatedDisplay",
-            "label": "Jira updated",
-            "before": "May 14, 2026, 9:42 AM",
-            "after": "Jun 3, 2026, 11:34 AM"
-          }
-        ],
-        "type": "Story",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Yoel Martin Pardo",
-        "status": "Closed",
-        "parent": null
-      },
-      {
-        "key": "CORE-14342",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14342",
-        "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
+        "key": "CORE-14400",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14400",
+        "summary": "Code changes.",
         "changes": [
           {
             "field": "status",
@@ -3304,20 +3310,28 @@
             "field": "updatedDisplay",
             "label": "Jira updated",
             "before": "May 13, 2026, 6:05 PM",
-            "after": "Jun 3, 2026, 11:34 AM"
+            "after": "Jun 3, 2026, 11:37 AM"
           }
         ],
-        "type": "Task",
-        "isSubtask": false,
+        "type": "Developer Task (sub task)",
+        "isSubtask": true,
         "assignee": "Unassigned",
-        "assignedDeveloper": "Sebastian Calzadilla Gonzalez",
+        "assignedDeveloper": "Yoel Martin Pardo",
         "status": "Closed",
-        "parent": null
+        "parent": {
+          "key": "CORE-14342",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14342",
+          "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
+          "description": "",
+          "type": "Task",
+          "status": "Closed",
+          "priority": "P1"
+        }
       },
       {
-        "key": "CORE-14332",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14332",
-        "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
+        "key": "CORE-14462",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14462",
+        "summary": "Charges collection inside TransactionDetails object missing AmountDistributed and Total data. Checkout Flow.",
         "changes": [
           {
             "field": "status",
@@ -3340,163 +3354,768 @@
           {
             "field": "updatedDisplay",
             "label": "Jira updated",
-            "before": "May 13, 2026, 9:26 PM",
-            "after": "Jun 3, 2026, 11:33 AM"
+            "before": "May 14, 2026, 9:55 AM",
+            "after": "Jun 3, 2026, 11:36 AM"
           }
         ],
-        "type": "Story",
+        "type": "Bug",
         "isSubtask": false,
         "assignee": "Unassigned",
-        "assignedDeveloper": "Luis Vallejo Mursuli",
+        "assignedDeveloper": "Yoel Martin Pardo",
         "status": "Closed",
-        "parent": {
-          "key": "CORE-13901",
-          "url": "https://golfnow.atlassian.net/browse/CORE-13901",
-          "summary": "Customizable transaction fees",
-          "description": "",
-          "type": "Epic",
-          "status": "Planning",
-          "priority": "P1"
-        }
+        "parent": null
+      },
+      {
+        "key": "CORE-14450",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14450",
+        "summary": "CRMCustomerAudit Table Scan Timing Out",
+        "changes": [
+          {
+            "field": "status",
+            "label": "Status",
+            "before": "PO Review",
+            "after": "Closed"
+          },
+          {
+            "field": "assignee",
+            "label": "Assignee",
+            "before": "Dewan Kabir",
+            "after": "Unassigned"
+          },
+          {
+            "field": "resolution",
+            "label": "Resolution",
+            "before": "None",
+            "after": "Force Closed"
+          },
+          {
+            "field": "updatedDisplay",
+            "label": "Jira updated",
+            "before": "May 14, 2026, 9:55 AM",
+            "after": "Jun 3, 2026, 11:36 AM"
+          }
+        ],
+        "type": "Bug",
+        "isSubtask": false,
+        "assignee": "Unassigned",
+        "assignedDeveloper": "Unassigned",
+        "status": "Closed",
+        "parent": null
       }
     ],
     "statusChanges": [
       {
-        "key": "CORE-14448",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14448",
-        "summary": "Apple Pay Follow Up Bugs",
+        "key": "CORE-14409",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14409",
+        "summary": "Add secrets",
         "before": "PO Review",
         "after": "Closed",
-        "type": "Bug",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Yoel Martin Pardo",
-        "status": "Closed",
-        "parent": {
-          "key": "B2C-68",
-          "url": "https://golfnow.atlassian.net/browse/B2C-68",
-          "summary": "Apple Pay 2026",
-          "description": "",
-          "type": "Epic",
-          "status": "Backlog",
-          "priority": "None"
-        }
-      },
-      {
-        "key": "CORE-14431",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14431",
-        "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
-        "before": "PO Review",
-        "after": "Closed",
-        "type": "Bug",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Yoel Martin Pardo",
-        "status": "Closed",
-        "parent": null
-      },
-      {
-        "key": "CORE-14420",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14420",
-        "summary": "CRMCustomerPhone missing index on CustomerNumber causes timeouts in STG (phx-api-be-internal)",
-        "before": "PO Review",
-        "after": "Closed",
-        "type": "Bug",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Daniel McNaughton",
-        "status": "Closed",
-        "parent": null
-      },
-      {
-        "key": "CORE-14412",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14412",
-        "summary": "CAKE Affiliate Tracking - API Response Validation Failure",
-        "before": "PO Review",
-        "after": "Closed",
-        "type": "Bug",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Luis Vallejo Mursuli",
-        "status": "Closed",
-        "parent": null
-      },
-      {
-        "key": "CORE-14403",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14403",
-        "summary": "Loyalty PFA 2nd Booking Bonus - Previous Reservation Dates No Longer Being Validated",
-        "before": "PO Review",
-        "after": "Closed",
-        "type": "Bug",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Raghav Kancherla",
-        "status": "Closed",
-        "parent": null
-      },
-      {
-        "key": "CORE-14398",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14398",
-        "summary": "Update Stored Procedure to Resolve Timeout Error When Purchasing Product w/ Promo Code",
-        "before": "PO Review",
-        "after": "Closed",
-        "type": "Bug",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Yoel Martin Pardo",
-        "status": "Closed",
-        "parent": null
-      },
-      {
-        "key": "CORE-14329",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14329",
-        "summary": "True-Up Not Switching to TSP Upon AL Deactivation",
-        "before": "PO Review",
-        "after": "Closed",
-        "type": "Story",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Yoel Martin Pardo",
-        "status": "Closed",
-        "parent": null
-      },
-      {
-        "key": "CORE-14342",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14342",
-        "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
-        "before": "PO Review",
-        "after": "Closed",
-        "type": "Task",
-        "isSubtask": false,
-        "assignee": "Unassigned",
-        "assignedDeveloper": "Sebastian Calzadilla Gonzalez",
-        "status": "Closed",
-        "parent": null
-      },
-      {
-        "key": "CORE-14332",
-        "url": "https://golfnow.atlassian.net/browse/CORE-14332",
-        "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
-        "before": "PO Review",
-        "after": "Closed",
-        "type": "Story",
-        "isSubtask": false,
+        "type": "Developer Task (sub task)",
+        "isSubtask": true,
         "assignee": "Unassigned",
         "assignedDeveloper": "Luis Vallejo Mursuli",
         "status": "Closed",
         "parent": {
-          "key": "CORE-13901",
-          "url": "https://golfnow.atlassian.net/browse/CORE-13901",
-          "summary": "Customizable transaction fees",
+          "key": "CORE-14332",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14332",
+          "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
           "description": "",
-          "type": "Epic",
-          "status": "Planning",
+          "type": "Story",
+          "status": "Closed",
           "priority": "P1"
         }
+      },
+      {
+        "key": "CORE-14366",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14366",
+        "summary": "Code changes for [CORE - 14332]",
+        "before": "PO Review",
+        "after": "Closed",
+        "type": "Developer Task (sub task)",
+        "isSubtask": true,
+        "assignee": "Unassigned",
+        "assignedDeveloper": "Luis Vallejo Mursuli",
+        "status": "Closed",
+        "parent": {
+          "key": "CORE-14332",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14332",
+          "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
+          "description": "",
+          "type": "Story",
+          "status": "Closed",
+          "priority": "P1"
+        }
+      },
+      {
+        "key": "CORE-14434",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14434",
+        "summary": "Database changes.",
+        "before": "PO Review",
+        "after": "Closed",
+        "type": "Developer Task (sub task)",
+        "isSubtask": true,
+        "assignee": "Unassigned",
+        "assignedDeveloper": "Yoel Martin Pardo",
+        "status": "Closed",
+        "parent": {
+          "key": "CORE-14431",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14431",
+          "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
+          "description": "",
+          "type": "Bug",
+          "status": "Closed",
+          "priority": "P0"
+        }
+      },
+      {
+        "key": "CORE-14433",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14433",
+        "summary": "Code changes.",
+        "before": "PO Review",
+        "after": "Closed",
+        "type": "Developer Task (sub task)",
+        "isSubtask": true,
+        "assignee": "Unassigned",
+        "assignedDeveloper": "Yoel Martin Pardo",
+        "status": "Closed",
+        "parent": {
+          "key": "CORE-14431",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14431",
+          "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
+          "description": "",
+          "type": "Bug",
+          "status": "Closed",
+          "priority": "P0"
+        }
+      },
+      {
+        "key": "CORE-14401",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14401",
+        "summary": "Database changes.",
+        "before": "PO Review",
+        "after": "Closed",
+        "type": "Developer Task (sub task)",
+        "isSubtask": true,
+        "assignee": "Unassigned",
+        "assignedDeveloper": "Yoel Martin Pardo",
+        "status": "Closed",
+        "parent": {
+          "key": "CORE-14342",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14342",
+          "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
+          "description": "",
+          "type": "Task",
+          "status": "Closed",
+          "priority": "P1"
+        }
+      },
+      {
+        "key": "CORE-14400",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14400",
+        "summary": "Code changes.",
+        "before": "PO Review",
+        "after": "Closed",
+        "type": "Developer Task (sub task)",
+        "isSubtask": true,
+        "assignee": "Unassigned",
+        "assignedDeveloper": "Yoel Martin Pardo",
+        "status": "Closed",
+        "parent": {
+          "key": "CORE-14342",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14342",
+          "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
+          "description": "",
+          "type": "Task",
+          "status": "Closed",
+          "priority": "P1"
+        }
+      },
+      {
+        "key": "CORE-14462",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14462",
+        "summary": "Charges collection inside TransactionDetails object missing AmountDistributed and Total data. Checkout Flow.",
+        "before": "PO Review",
+        "after": "Closed",
+        "type": "Bug",
+        "isSubtask": false,
+        "assignee": "Unassigned",
+        "assignedDeveloper": "Yoel Martin Pardo",
+        "status": "Closed",
+        "parent": null
+      },
+      {
+        "key": "CORE-14450",
+        "url": "https://golfnow.atlassian.net/browse/CORE-14450",
+        "summary": "CRMCustomerAudit Table Scan Timing Out",
+        "before": "PO Review",
+        "after": "Closed",
+        "type": "Bug",
+        "isSubtask": false,
+        "assignee": "Unassigned",
+        "assignedDeveloper": "Unassigned",
+        "status": "Closed",
+        "parent": null
       }
     ]
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-06-03T15:36:33.526Z",
+      "previousPulledAtDisplay": "Jun 3, 2026, 11:36 AM",
+      "currentPulledAt": "2026-06-03T15:41:37.153Z",
+      "currentPulledAtDisplay": "Jun 3, 2026, 11:41 AM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [
+        {
+          "key": "CORE-14272",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14272",
+          "summary": "Create endpoint to validate cancellation eligibility for Products",
+          "changes": [
+            {
+              "field": "updatedDisplay",
+              "label": "Jira updated",
+              "before": "May 27, 2026, 5:02 PM",
+              "after": "Jun 3, 2026, 11:40 AM"
+            }
+          ],
+          "type": "Story",
+          "isSubtask": false,
+          "assignee": "Dewan Kabir",
+          "assignedDeveloper": "Raghav Kancherla",
+          "status": "PO Review",
+          "parent": {
+            "key": "B2C-70",
+            "url": "https://golfnow.atlassian.net/browse/B2C-70",
+            "summary": "NY Cancellation Validation",
+            "description": "",
+            "type": "Epic",
+            "status": "Backlog",
+            "priority": "None"
+          }
+        },
+        {
+          "key": "CORE-14271",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14271",
+          "summary": "Support Product Refunds",
+          "changes": [
+            {
+              "field": "updatedDisplay",
+              "label": "Jira updated",
+              "before": "May 14, 2026, 12:22 PM",
+              "after": "Jun 3, 2026, 11:40 AM"
+            }
+          ],
+          "type": "Story",
+          "isSubtask": false,
+          "assignee": "Dewan Kabir",
+          "assignedDeveloper": "Unassigned",
+          "status": "PO Review",
+          "parent": {
+            "key": "B2C-70",
+            "url": "https://golfnow.atlassian.net/browse/B2C-70",
+            "summary": "NY Cancellation Validation",
+            "description": "",
+            "type": "Epic",
+            "status": "Backlog",
+            "priority": "None"
+          }
+        },
+        {
+          "key": "CORE-14409",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14409",
+          "summary": "Add secrets",
+          "changes": [
+            {
+              "field": "status",
+              "label": "Status",
+              "before": "PO Review",
+              "after": "Closed"
+            },
+            {
+              "field": "assignee",
+              "label": "Assignee",
+              "before": "Dewan Kabir",
+              "after": "Unassigned"
+            },
+            {
+              "field": "resolution",
+              "label": "Resolution",
+              "before": "None",
+              "after": "Force Closed"
+            },
+            {
+              "field": "updatedDisplay",
+              "label": "Jira updated",
+              "before": "May 14, 2026, 9:50 AM",
+              "after": "Jun 3, 2026, 11:39 AM"
+            }
+          ],
+          "type": "Developer Task (sub task)",
+          "isSubtask": true,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Luis Vallejo Mursuli",
+          "status": "Closed",
+          "parent": {
+            "key": "CORE-14332",
+            "url": "https://golfnow.atlassian.net/browse/CORE-14332",
+            "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
+            "description": "",
+            "type": "Story",
+            "status": "Closed",
+            "priority": "P1"
+          }
+        },
+        {
+          "key": "CORE-14366",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14366",
+          "summary": "Code changes for [CORE - 14332]",
+          "changes": [
+            {
+              "field": "status",
+              "label": "Status",
+              "before": "PO Review",
+              "after": "Closed"
+            },
+            {
+              "field": "resolution",
+              "label": "Resolution",
+              "before": "None",
+              "after": "Force Closed"
+            },
+            {
+              "field": "updatedDisplay",
+              "label": "Jira updated",
+              "before": "May 14, 2026, 9:45 AM",
+              "after": "Jun 3, 2026, 11:38 AM"
+            }
+          ],
+          "type": "Developer Task (sub task)",
+          "isSubtask": true,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Luis Vallejo Mursuli",
+          "status": "Closed",
+          "parent": {
+            "key": "CORE-14332",
+            "url": "https://golfnow.atlassian.net/browse/CORE-14332",
+            "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
+            "description": "",
+            "type": "Story",
+            "status": "Closed",
+            "priority": "P1"
+          }
+        },
+        {
+          "key": "CORE-14434",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14434",
+          "summary": "Database changes.",
+          "changes": [
+            {
+              "field": "status",
+              "label": "Status",
+              "before": "PO Review",
+              "after": "Closed"
+            },
+            {
+              "field": "assignee",
+              "label": "Assignee",
+              "before": "Dewan Kabir",
+              "after": "Unassigned"
+            },
+            {
+              "field": "resolution",
+              "label": "Resolution",
+              "before": "None",
+              "after": "Force Closed"
+            },
+            {
+              "field": "updatedDisplay",
+              "label": "Jira updated",
+              "before": "May 14, 2026, 9:54 AM",
+              "after": "Jun 3, 2026, 11:38 AM"
+            }
+          ],
+          "type": "Developer Task (sub task)",
+          "isSubtask": true,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Yoel Martin Pardo",
+          "status": "Closed",
+          "parent": {
+            "key": "CORE-14431",
+            "url": "https://golfnow.atlassian.net/browse/CORE-14431",
+            "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
+            "description": "",
+            "type": "Bug",
+            "status": "Closed",
+            "priority": "P0"
+          }
+        },
+        {
+          "key": "CORE-14433",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14433",
+          "summary": "Code changes.",
+          "changes": [
+            {
+              "field": "status",
+              "label": "Status",
+              "before": "PO Review",
+              "after": "Closed"
+            },
+            {
+              "field": "assignee",
+              "label": "Assignee",
+              "before": "Dewan Kabir",
+              "after": "Unassigned"
+            },
+            {
+              "field": "resolution",
+              "label": "Resolution",
+              "before": "None",
+              "after": "Force Closed"
+            },
+            {
+              "field": "updatedDisplay",
+              "label": "Jira updated",
+              "before": "May 14, 2026, 9:54 AM",
+              "after": "Jun 3, 2026, 11:38 AM"
+            }
+          ],
+          "type": "Developer Task (sub task)",
+          "isSubtask": true,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Yoel Martin Pardo",
+          "status": "Closed",
+          "parent": {
+            "key": "CORE-14431",
+            "url": "https://golfnow.atlassian.net/browse/CORE-14431",
+            "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
+            "description": "",
+            "type": "Bug",
+            "status": "Closed",
+            "priority": "P0"
+          }
+        },
+        {
+          "key": "CORE-14401",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14401",
+          "summary": "Database changes.",
+          "changes": [
+            {
+              "field": "status",
+              "label": "Status",
+              "before": "PO Review",
+              "after": "Closed"
+            },
+            {
+              "field": "assignee",
+              "label": "Assignee",
+              "before": "Dewan Kabir",
+              "after": "Unassigned"
+            },
+            {
+              "field": "resolution",
+              "label": "Resolution",
+              "before": "None",
+              "after": "Force Closed"
+            },
+            {
+              "field": "updatedDisplay",
+              "label": "Jira updated",
+              "before": "May 14, 2026, 9:49 AM",
+              "after": "Jun 3, 2026, 11:37 AM"
+            }
+          ],
+          "type": "Developer Task (sub task)",
+          "isSubtask": true,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Yoel Martin Pardo",
+          "status": "Closed",
+          "parent": {
+            "key": "CORE-14342",
+            "url": "https://golfnow.atlassian.net/browse/CORE-14342",
+            "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
+            "description": "",
+            "type": "Task",
+            "status": "Closed",
+            "priority": "P1"
+          }
+        },
+        {
+          "key": "CORE-14400",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14400",
+          "summary": "Code changes.",
+          "changes": [
+            {
+              "field": "status",
+              "label": "Status",
+              "before": "PO Review",
+              "after": "Closed"
+            },
+            {
+              "field": "assignee",
+              "label": "Assignee",
+              "before": "Dewan Kabir",
+              "after": "Unassigned"
+            },
+            {
+              "field": "resolution",
+              "label": "Resolution",
+              "before": "None",
+              "after": "Force Closed"
+            },
+            {
+              "field": "updatedDisplay",
+              "label": "Jira updated",
+              "before": "May 13, 2026, 6:05 PM",
+              "after": "Jun 3, 2026, 11:37 AM"
+            }
+          ],
+          "type": "Developer Task (sub task)",
+          "isSubtask": true,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Yoel Martin Pardo",
+          "status": "Closed",
+          "parent": {
+            "key": "CORE-14342",
+            "url": "https://golfnow.atlassian.net/browse/CORE-14342",
+            "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
+            "description": "",
+            "type": "Task",
+            "status": "Closed",
+            "priority": "P1"
+          }
+        },
+        {
+          "key": "CORE-14462",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14462",
+          "summary": "Charges collection inside TransactionDetails object missing AmountDistributed and Total data. Checkout Flow.",
+          "changes": [
+            {
+              "field": "status",
+              "label": "Status",
+              "before": "PO Review",
+              "after": "Closed"
+            },
+            {
+              "field": "assignee",
+              "label": "Assignee",
+              "before": "Dewan Kabir",
+              "after": "Unassigned"
+            },
+            {
+              "field": "resolution",
+              "label": "Resolution",
+              "before": "None",
+              "after": "Force Closed"
+            },
+            {
+              "field": "updatedDisplay",
+              "label": "Jira updated",
+              "before": "May 14, 2026, 9:55 AM",
+              "after": "Jun 3, 2026, 11:36 AM"
+            }
+          ],
+          "type": "Bug",
+          "isSubtask": false,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Yoel Martin Pardo",
+          "status": "Closed",
+          "parent": null
+        },
+        {
+          "key": "CORE-14450",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14450",
+          "summary": "CRMCustomerAudit Table Scan Timing Out",
+          "changes": [
+            {
+              "field": "status",
+              "label": "Status",
+              "before": "PO Review",
+              "after": "Closed"
+            },
+            {
+              "field": "assignee",
+              "label": "Assignee",
+              "before": "Dewan Kabir",
+              "after": "Unassigned"
+            },
+            {
+              "field": "resolution",
+              "label": "Resolution",
+              "before": "None",
+              "after": "Force Closed"
+            },
+            {
+              "field": "updatedDisplay",
+              "label": "Jira updated",
+              "before": "May 14, 2026, 9:55 AM",
+              "after": "Jun 3, 2026, 11:36 AM"
+            }
+          ],
+          "type": "Bug",
+          "isSubtask": false,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Unassigned",
+          "status": "Closed",
+          "parent": null
+        }
+      ],
+      "statusChanges": [
+        {
+          "key": "CORE-14409",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14409",
+          "summary": "Add secrets",
+          "before": "PO Review",
+          "after": "Closed",
+          "type": "Developer Task (sub task)",
+          "isSubtask": true,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Luis Vallejo Mursuli",
+          "status": "Closed",
+          "parent": {
+            "key": "CORE-14332",
+            "url": "https://golfnow.atlassian.net/browse/CORE-14332",
+            "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
+            "description": "",
+            "type": "Story",
+            "status": "Closed",
+            "priority": "P1"
+          }
+        },
+        {
+          "key": "CORE-14366",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14366",
+          "summary": "Code changes for [CORE - 14332]",
+          "before": "PO Review",
+          "after": "Closed",
+          "type": "Developer Task (sub task)",
+          "isSubtask": true,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Luis Vallejo Mursuli",
+          "status": "Closed",
+          "parent": {
+            "key": "CORE-14332",
+            "url": "https://golfnow.atlassian.net/browse/CORE-14332",
+            "summary": "Use LaunchDarkly for configuration + accept FacilityId and ChannelId inputs",
+            "description": "",
+            "type": "Story",
+            "status": "Closed",
+            "priority": "P1"
+          }
+        },
+        {
+          "key": "CORE-14434",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14434",
+          "summary": "Database changes.",
+          "before": "PO Review",
+          "after": "Closed",
+          "type": "Developer Task (sub task)",
+          "isSubtask": true,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Yoel Martin Pardo",
+          "status": "Closed",
+          "parent": {
+            "key": "CORE-14431",
+            "url": "https://golfnow.atlassian.net/browse/CORE-14431",
+            "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
+            "description": "",
+            "type": "Bug",
+            "status": "Closed",
+            "priority": "P0"
+          }
+        },
+        {
+          "key": "CORE-14433",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14433",
+          "summary": "Code changes.",
+          "before": "PO Review",
+          "after": "Closed",
+          "type": "Developer Task (sub task)",
+          "isSubtask": true,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Yoel Martin Pardo",
+          "status": "Closed",
+          "parent": {
+            "key": "CORE-14431",
+            "url": "https://golfnow.atlassian.net/browse/CORE-14431",
+            "summary": "Cache Manager BRS/BRSG fails creating tee times when CRMRackRate.Icons is NULL",
+            "description": "",
+            "type": "Bug",
+            "status": "Closed",
+            "priority": "P0"
+          }
+        },
+        {
+          "key": "CORE-14401",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14401",
+          "summary": "Database changes.",
+          "before": "PO Review",
+          "after": "Closed",
+          "type": "Developer Task (sub task)",
+          "isSubtask": true,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Yoel Martin Pardo",
+          "status": "Closed",
+          "parent": {
+            "key": "CORE-14342",
+            "url": "https://golfnow.atlassian.net/browse/CORE-14342",
+            "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
+            "description": "",
+            "type": "Task",
+            "status": "Closed",
+            "priority": "P1"
+          }
+        },
+        {
+          "key": "CORE-14400",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14400",
+          "summary": "Code changes.",
+          "before": "PO Review",
+          "after": "Closed",
+          "type": "Developer Task (sub task)",
+          "isSubtask": true,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Yoel Martin Pardo",
+          "status": "Closed",
+          "parent": {
+            "key": "CORE-14342",
+            "url": "https://golfnow.atlassian.net/browse/CORE-14342",
+            "summary": "Integrate New EZL Contact Endpoint into NEW EZL Booking Flow",
+            "description": "",
+            "type": "Task",
+            "status": "Closed",
+            "priority": "P1"
+          }
+        },
+        {
+          "key": "CORE-14462",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14462",
+          "summary": "Charges collection inside TransactionDetails object missing AmountDistributed and Total data. Checkout Flow.",
+          "before": "PO Review",
+          "after": "Closed",
+          "type": "Bug",
+          "isSubtask": false,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Yoel Martin Pardo",
+          "status": "Closed",
+          "parent": null
+        },
+        {
+          "key": "CORE-14450",
+          "url": "https://golfnow.atlassian.net/browse/CORE-14450",
+          "summary": "CRMCustomerAudit Table Scan Timing Out",
+          "before": "PO Review",
+          "after": "Closed",
+          "type": "Bug",
+          "isSubtask": false,
+          "assignee": "Unassigned",
+          "assignedDeveloper": "Unassigned",
+          "status": "Closed",
+          "parent": null
+        }
+      ]
+    },
     {
       "previousPulledAt": "2026-06-03T15:31:29.761Z",
       "previousPulledAtDisplay": "Jun 3, 2026, 11:31 AM",
@@ -5812,17 +6431,6 @@
       "previousPulledAtDisplay": "Jun 2, 2026, 4:43 PM",
       "currentPulledAt": "2026-06-02T20:48:22.379Z",
       "currentPulledAtDisplay": "Jun 2, 2026, 4:48 PM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-06-02T20:38:15.828Z",
-      "previousPulledAtDisplay": "Jun 2, 2026, 4:38 PM",
-      "currentPulledAt": "2026-06-02T20:43:18.993Z",
-      "currentPulledAtDisplay": "Jun 2, 2026, 4:43 PM",
       "isBaseline": false,
       "added": [],
       "removed": [],
