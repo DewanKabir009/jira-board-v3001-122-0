@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-06-05T04:32:17.548Z",
-  "pulledAtDisplay": "Jun 5, 2026, 12:32 AM",
+  "pulledAt": "2026-06-05T04:37:20.846Z",
+  "pulledAtDisplay": "Jun 5, 2026, 12:37 AM",
   "total": 35,
   "issues": [
     {
@@ -3002,10 +3002,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-06-05T04:27:13.803Z",
-    "previousPulledAtDisplay": "Jun 5, 2026, 12:27 AM",
-    "currentPulledAt": "2026-06-05T04:32:17.548Z",
-    "currentPulledAtDisplay": "Jun 5, 2026, 12:32 AM",
+    "previousPulledAt": "2026-06-05T04:32:17.548Z",
+    "previousPulledAtDisplay": "Jun 5, 2026, 12:32 AM",
+    "currentPulledAt": "2026-06-05T04:37:20.846Z",
+    "currentPulledAtDisplay": "Jun 5, 2026, 12:37 AM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -3013,6 +3013,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-06-05T04:32:17.548Z",
+      "previousPulledAtDisplay": "Jun 5, 2026, 12:32 AM",
+      "currentPulledAt": "2026-06-05T04:37:20.846Z",
+      "currentPulledAtDisplay": "Jun 5, 2026, 12:37 AM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-06-05T04:27:13.803Z",
       "previousPulledAtDisplay": "Jun 5, 2026, 12:27 AM",
@@ -4848,56 +4859,6 @@
       "added": [],
       "removed": [],
       "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-06-04T14:03:15.867Z",
-      "previousPulledAtDisplay": "Jun 4, 2026, 10:03 AM",
-      "currentPulledAt": "2026-06-04T14:08:19.444Z",
-      "currentPulledAtDisplay": "Jun 4, 2026, 10:08 AM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [
-        {
-          "key": "CORE-14386",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14386",
-          "summary": "Premier Card Miami - Subscriptions Being Created Despite Purchase Errors",
-          "changes": [
-            {
-              "field": "updatedDisplay",
-              "label": "Jira updated",
-              "before": "May 26, 2026, 3:09 AM",
-              "after": "Jun 4, 2026, 10:05 AM"
-            }
-          ],
-          "type": "Bug",
-          "isSubtask": false,
-          "assignee": "Daniel McNaughton",
-          "assignedDeveloper": "Luis Vallejo Mursuli",
-          "status": "Analysis",
-          "parent": null
-        },
-        {
-          "key": "CORE-14215",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14215",
-          "summary": "Cannot Add Account Balance Due to 'Missing' Wallet Option",
-          "changes": [
-            {
-              "field": "updatedDisplay",
-              "label": "Jira updated",
-              "before": "May 26, 2026, 3:07 AM",
-              "after": "Jun 4, 2026, 10:05 AM"
-            }
-          ],
-          "type": "Bug",
-          "isSubtask": false,
-          "assignee": "Dewan Kabir",
-          "assignedDeveloper": "Sebastian Calzadilla Gonzalez",
-          "status": "Blocked",
-          "parent": null
-        }
-      ],
       "statusChanges": []
     }
   ],
