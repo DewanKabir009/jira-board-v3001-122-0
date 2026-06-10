@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-06-10T07:08:28.093Z",
-  "pulledAtDisplay": "Jun 10, 2026, 3:08 AM",
+  "pulledAt": "2026-06-10T07:13:30.623Z",
+  "pulledAtDisplay": "Jun 10, 2026, 3:13 AM",
   "total": 35,
   "issues": [
     {
@@ -3002,10 +3002,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-06-10T07:03:25.308Z",
-    "previousPulledAtDisplay": "Jun 10, 2026, 3:03 AM",
-    "currentPulledAt": "2026-06-10T07:08:28.093Z",
-    "currentPulledAtDisplay": "Jun 10, 2026, 3:08 AM",
+    "previousPulledAt": "2026-06-10T07:08:28.093Z",
+    "previousPulledAtDisplay": "Jun 10, 2026, 3:08 AM",
+    "currentPulledAt": "2026-06-10T07:13:30.623Z",
+    "currentPulledAtDisplay": "Jun 10, 2026, 3:13 AM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -3013,6 +3013,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-06-10T07:08:28.093Z",
+      "previousPulledAtDisplay": "Jun 10, 2026, 3:08 AM",
+      "currentPulledAt": "2026-06-10T07:13:30.623Z",
+      "currentPulledAtDisplay": "Jun 10, 2026, 3:13 AM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-06-10T07:03:25.308Z",
       "previousPulledAtDisplay": "Jun 10, 2026, 3:03 AM",
@@ -4849,170 +4860,6 @@
       "removed": [],
       "updated": [],
       "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-06-09T14:17:42.553Z",
-      "previousPulledAtDisplay": "Jun 9, 2026, 10:17 AM",
-      "currentPulledAt": "2026-06-09T14:22:45.881Z",
-      "currentPulledAtDisplay": "Jun 9, 2026, 10:22 AM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [
-        {
-          "key": "CORE-14272",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14272",
-          "summary": "Create endpoint to validate cancellation eligibility for Products",
-          "changes": [
-            {
-              "field": "status",
-              "label": "Status",
-              "before": "PO Review",
-              "after": "Closed"
-            },
-            {
-              "field": "assignee",
-              "label": "Assignee",
-              "before": "Dewan Kabir",
-              "after": "Unassigned"
-            },
-            {
-              "field": "resolution",
-              "label": "Resolution",
-              "before": "None",
-              "after": "Completed"
-            },
-            {
-              "field": "updatedDisplay",
-              "label": "Jira updated",
-              "before": "Jun 3, 2026, 11:40 AM",
-              "after": "Jun 9, 2026, 10:22 AM"
-            }
-          ],
-          "type": "Story",
-          "isSubtask": false,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Raghav Kancherla",
-          "status": "Closed",
-          "parent": {
-            "key": "B2C-70",
-            "url": "https://golfnow.atlassian.net/browse/B2C-70",
-            "summary": "NY Cancellation Validation",
-            "description": "",
-            "type": "Epic",
-            "status": "Backlog",
-            "priority": "None"
-          }
-        },
-        {
-          "key": "CORE-14271",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14271",
-          "summary": "Support Product Refunds",
-          "changes": [
-            {
-              "field": "status",
-              "label": "Status",
-              "before": "PO Review",
-              "after": "Closed"
-            },
-            {
-              "field": "assignee",
-              "label": "Assignee",
-              "before": "Dewan Kabir",
-              "after": "Unassigned"
-            },
-            {
-              "field": "resolution",
-              "label": "Resolution",
-              "before": "None",
-              "after": "Completed"
-            },
-            {
-              "field": "updatedDisplay",
-              "label": "Jira updated",
-              "before": "Jun 3, 2026, 11:40 AM",
-              "after": "Jun 9, 2026, 10:21 AM"
-            }
-          ],
-          "type": "Story",
-          "isSubtask": false,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Unassigned",
-          "status": "Closed",
-          "parent": {
-            "key": "B2C-70",
-            "url": "https://golfnow.atlassian.net/browse/B2C-70",
-            "summary": "NY Cancellation Validation",
-            "description": "",
-            "type": "Epic",
-            "status": "Backlog",
-            "priority": "None"
-          }
-        },
-        {
-          "key": "CORE-14215",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14215",
-          "summary": "Cannot Add Account Balance Due to 'Missing' Wallet Option",
-          "changes": [
-            {
-              "field": "updatedDisplay",
-              "label": "Jira updated",
-              "before": "Jun 4, 2026, 10:05 AM",
-              "after": "Jun 9, 2026, 10:20 AM"
-            }
-          ],
-          "type": "Bug",
-          "isSubtask": false,
-          "assignee": "Dewan Kabir",
-          "assignedDeveloper": "Sebastian Calzadilla Gonzalez",
-          "status": "Blocked",
-          "parent": null
-        }
-      ],
-      "statusChanges": [
-        {
-          "key": "CORE-14272",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14272",
-          "summary": "Create endpoint to validate cancellation eligibility for Products",
-          "before": "PO Review",
-          "after": "Closed",
-          "type": "Story",
-          "isSubtask": false,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Raghav Kancherla",
-          "status": "Closed",
-          "parent": {
-            "key": "B2C-70",
-            "url": "https://golfnow.atlassian.net/browse/B2C-70",
-            "summary": "NY Cancellation Validation",
-            "description": "",
-            "type": "Epic",
-            "status": "Backlog",
-            "priority": "None"
-          }
-        },
-        {
-          "key": "CORE-14271",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14271",
-          "summary": "Support Product Refunds",
-          "before": "PO Review",
-          "after": "Closed",
-          "type": "Story",
-          "isSubtask": false,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Unassigned",
-          "status": "Closed",
-          "parent": {
-            "key": "B2C-70",
-            "url": "https://golfnow.atlassian.net/browse/B2C-70",
-            "summary": "NY Cancellation Validation",
-            "description": "",
-            "type": "Epic",
-            "status": "Backlog",
-            "priority": "None"
-          }
-        }
-      ]
     }
   ],
   "schemaVersionNumber": 1,
