@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-06-12T07:26:31.067Z",
-  "pulledAtDisplay": "Jun 12, 2026, 3:26 AM",
+  "pulledAt": "2026-06-12T07:31:33.722Z",
+  "pulledAtDisplay": "Jun 12, 2026, 3:31 AM",
   "total": 33,
   "issues": [
     {
@@ -2856,10 +2856,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-06-12T07:21:28.348Z",
-    "previousPulledAtDisplay": "Jun 12, 2026, 3:21 AM",
-    "currentPulledAt": "2026-06-12T07:26:31.067Z",
-    "currentPulledAtDisplay": "Jun 12, 2026, 3:26 AM",
+    "previousPulledAt": "2026-06-12T07:26:31.067Z",
+    "previousPulledAtDisplay": "Jun 12, 2026, 3:26 AM",
+    "currentPulledAt": "2026-06-12T07:31:33.722Z",
+    "currentPulledAtDisplay": "Jun 12, 2026, 3:31 AM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -2867,6 +2867,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-06-12T07:26:31.067Z",
+      "previousPulledAtDisplay": "Jun 12, 2026, 3:26 AM",
+      "currentPulledAt": "2026-06-12T07:31:33.722Z",
+      "currentPulledAtDisplay": "Jun 12, 2026, 3:31 AM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-06-12T07:21:28.348Z",
       "previousPulledAtDisplay": "Jun 12, 2026, 3:21 AM",
@@ -4840,321 +4851,6 @@
       "removed": [],
       "updated": [],
       "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-06-11T14:59:40.958Z",
-      "previousPulledAtDisplay": "Jun 11, 2026, 10:59 AM",
-      "currentPulledAt": "2026-06-11T15:04:43.495Z",
-      "currentPulledAtDisplay": "Jun 11, 2026, 11:04 AM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [
-        {
-          "key": "CORE-14435",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14435",
-          "summary": "SQL changes",
-          "changes": [
-            {
-              "field": "status",
-              "label": "Status",
-              "before": "PO Review",
-              "after": "Closed"
-            },
-            {
-              "field": "assignee",
-              "label": "Assignee",
-              "before": "Dewan Kabir",
-              "after": "Unassigned"
-            },
-            {
-              "field": "resolution",
-              "label": "Resolution",
-              "before": "None",
-              "after": "Done"
-            },
-            {
-              "field": "updatedDisplay",
-              "label": "Jira updated",
-              "before": "May 14, 2026, 9:54 AM",
-              "after": "Jun 11, 2026, 11:01 AM"
-            }
-          ],
-          "type": "Developer Task (sub task)",
-          "isSubtask": true,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Raghav Kancherla",
-          "status": "Closed",
-          "parent": {
-            "key": "CORE-14271",
-            "url": "https://golfnow.atlassian.net/browse/CORE-14271",
-            "summary": "Support Product Refunds",
-            "description": "",
-            "type": "Story",
-            "status": "Closed",
-            "priority": "P1"
-          }
-        },
-        {
-          "key": "CORE-14425",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14425",
-          "summary": "SQL changes",
-          "changes": [
-            {
-              "field": "status",
-              "label": "Status",
-              "before": "PO Review",
-              "after": "Closed"
-            },
-            {
-              "field": "resolution",
-              "label": "Resolution",
-              "before": "None",
-              "after": "Done"
-            },
-            {
-              "field": "updatedDisplay",
-              "label": "Jira updated",
-              "before": "May 14, 2026, 9:51 AM",
-              "after": "Jun 11, 2026, 11:01 AM"
-            }
-          ],
-          "type": "Developer Task (sub task)",
-          "isSubtask": true,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Raghav Kancherla",
-          "status": "Closed",
-          "parent": {
-            "key": "CORE-14272",
-            "url": "https://golfnow.atlassian.net/browse/CORE-14272",
-            "summary": "Create endpoint to validate cancellation eligibility for Products",
-            "description": "",
-            "type": "Story",
-            "status": "Closed",
-            "priority": "P1"
-          }
-        },
-        {
-          "key": "CORE-14430",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14430",
-          "summary": "Code changes",
-          "changes": [
-            {
-              "field": "status",
-              "label": "Status",
-              "before": "PO Review",
-              "after": "Closed"
-            },
-            {
-              "field": "assignee",
-              "label": "Assignee",
-              "before": "Dewan Kabir",
-              "after": "Unassigned"
-            },
-            {
-              "field": "resolution",
-              "label": "Resolution",
-              "before": "None",
-              "after": "Done"
-            },
-            {
-              "field": "updatedDisplay",
-              "label": "Jira updated",
-              "before": "May 14, 2026, 9:52 AM",
-              "after": "Jun 11, 2026, 11:01 AM"
-            }
-          ],
-          "type": "Developer Task (sub task)",
-          "isSubtask": true,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Raghav Kancherla",
-          "status": "Closed",
-          "parent": {
-            "key": "CORE-14271",
-            "url": "https://golfnow.atlassian.net/browse/CORE-14271",
-            "summary": "Support Product Refunds",
-            "description": "",
-            "type": "Story",
-            "status": "Closed",
-            "priority": "P1"
-          }
-        },
-        {
-          "key": "CORE-14441",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14441",
-          "summary": "Geosearch API: silent CRM upsert failures and broken Coordinates GeoJSON serialization",
-          "changes": [
-            {
-              "field": "status",
-              "label": "Status",
-              "before": "PO Review",
-              "after": "Closed"
-            },
-            {
-              "field": "assignee",
-              "label": "Assignee",
-              "before": "Yu-Sheng Tu",
-              "after": "Unassigned"
-            },
-            {
-              "field": "resolution",
-              "label": "Resolution",
-              "before": "None",
-              "after": "Done"
-            },
-            {
-              "field": "updatedDisplay",
-              "label": "Jira updated",
-              "before": "May 14, 2026, 9:54 AM",
-              "after": "Jun 11, 2026, 11:01 AM"
-            }
-          ],
-          "type": "Task",
-          "isSubtask": false,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Yu-Sheng Tu",
-          "status": "Closed",
-          "parent": null
-        },
-        {
-          "key": "CORE-14426",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14426",
-          "summary": "Code Changes",
-          "changes": [
-            {
-              "field": "status",
-              "label": "Status",
-              "before": "PO Review",
-              "after": "Closed"
-            },
-            {
-              "field": "resolution",
-              "label": "Resolution",
-              "before": "None",
-              "after": "Done"
-            },
-            {
-              "field": "updatedDisplay",
-              "label": "Jira updated",
-              "before": "May 14, 2026, 9:52 AM",
-              "after": "Jun 11, 2026, 11:01 AM"
-            }
-          ],
-          "type": "Developer Task (sub task)",
-          "isSubtask": true,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Raghav Kancherla",
-          "status": "Closed",
-          "parent": {
-            "key": "CORE-14272",
-            "url": "https://golfnow.atlassian.net/browse/CORE-14272",
-            "summary": "Create endpoint to validate cancellation eligibility for Products",
-            "description": "",
-            "type": "Story",
-            "status": "Closed",
-            "priority": "P1"
-          }
-        }
-      ],
-      "statusChanges": [
-        {
-          "key": "CORE-14435",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14435",
-          "summary": "SQL changes",
-          "before": "PO Review",
-          "after": "Closed",
-          "type": "Developer Task (sub task)",
-          "isSubtask": true,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Raghav Kancherla",
-          "status": "Closed",
-          "parent": {
-            "key": "CORE-14271",
-            "url": "https://golfnow.atlassian.net/browse/CORE-14271",
-            "summary": "Support Product Refunds",
-            "description": "",
-            "type": "Story",
-            "status": "Closed",
-            "priority": "P1"
-          }
-        },
-        {
-          "key": "CORE-14425",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14425",
-          "summary": "SQL changes",
-          "before": "PO Review",
-          "after": "Closed",
-          "type": "Developer Task (sub task)",
-          "isSubtask": true,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Raghav Kancherla",
-          "status": "Closed",
-          "parent": {
-            "key": "CORE-14272",
-            "url": "https://golfnow.atlassian.net/browse/CORE-14272",
-            "summary": "Create endpoint to validate cancellation eligibility for Products",
-            "description": "",
-            "type": "Story",
-            "status": "Closed",
-            "priority": "P1"
-          }
-        },
-        {
-          "key": "CORE-14430",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14430",
-          "summary": "Code changes",
-          "before": "PO Review",
-          "after": "Closed",
-          "type": "Developer Task (sub task)",
-          "isSubtask": true,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Raghav Kancherla",
-          "status": "Closed",
-          "parent": {
-            "key": "CORE-14271",
-            "url": "https://golfnow.atlassian.net/browse/CORE-14271",
-            "summary": "Support Product Refunds",
-            "description": "",
-            "type": "Story",
-            "status": "Closed",
-            "priority": "P1"
-          }
-        },
-        {
-          "key": "CORE-14441",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14441",
-          "summary": "Geosearch API: silent CRM upsert failures and broken Coordinates GeoJSON serialization",
-          "before": "PO Review",
-          "after": "Closed",
-          "type": "Task",
-          "isSubtask": false,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Yu-Sheng Tu",
-          "status": "Closed",
-          "parent": null
-        },
-        {
-          "key": "CORE-14426",
-          "url": "https://golfnow.atlassian.net/browse/CORE-14426",
-          "summary": "Code Changes",
-          "before": "PO Review",
-          "after": "Closed",
-          "type": "Developer Task (sub task)",
-          "isSubtask": true,
-          "assignee": "Unassigned",
-          "assignedDeveloper": "Raghav Kancherla",
-          "status": "Closed",
-          "parent": {
-            "key": "CORE-14272",
-            "url": "https://golfnow.atlassian.net/browse/CORE-14272",
-            "summary": "Create endpoint to validate cancellation eligibility for Products",
-            "description": "",
-            "type": "Story",
-            "status": "Closed",
-            "priority": "P1"
-          }
-        }
-      ]
     }
   ],
   "schemaVersionNumber": 1,
