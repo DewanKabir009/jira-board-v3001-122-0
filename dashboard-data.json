@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-06-14T16:58:53.872Z",
-  "pulledAtDisplay": "Jun 14, 2026, 12:58 PM",
+  "pulledAt": "2026-06-14T17:03:56.426Z",
+  "pulledAtDisplay": "Jun 14, 2026, 1:03 PM",
   "total": 33,
   "issues": [
     {
@@ -2856,10 +2856,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-06-14T16:58:19.431Z",
+    "previousPulledAt": "2026-06-14T16:58:53.872Z",
     "previousPulledAtDisplay": "Jun 14, 2026, 12:58 PM",
-    "currentPulledAt": "2026-06-14T16:58:53.872Z",
-    "currentPulledAtDisplay": "Jun 14, 2026, 12:58 PM",
+    "currentPulledAt": "2026-06-14T17:03:56.426Z",
+    "currentPulledAtDisplay": "Jun 14, 2026, 1:03 PM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -2867,6 +2867,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-06-14T16:58:53.872Z",
+      "previousPulledAtDisplay": "Jun 14, 2026, 12:58 PM",
+      "currentPulledAt": "2026-06-14T17:03:56.426Z",
+      "currentPulledAtDisplay": "Jun 14, 2026, 1:03 PM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-06-14T16:58:19.431Z",
       "previousPulledAtDisplay": "Jun 14, 2026, 12:58 PM",
@@ -4698,17 +4709,6 @@
       "previousPulledAtDisplay": "Jun 13, 2026, 9:03 PM",
       "currentPulledAt": "2026-06-14T01:08:15.066Z",
       "currentPulledAtDisplay": "Jun 13, 2026, 9:08 PM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-06-14T00:58:08.218Z",
-      "previousPulledAtDisplay": "Jun 13, 2026, 8:58 PM",
-      "currentPulledAt": "2026-06-14T01:03:11.885Z",
-      "currentPulledAtDisplay": "Jun 13, 2026, 9:03 PM",
       "isBaseline": false,
       "added": [],
       "removed": [],
