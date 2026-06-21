@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-06-21T07:13:06.114Z",
-  "pulledAtDisplay": "Jun 21, 2026, 3:13 AM",
+  "pulledAt": "2026-06-21T07:18:08.748Z",
+  "pulledAtDisplay": "Jun 21, 2026, 3:18 AM",
   "total": 33,
   "issues": [
     {
@@ -2340,7 +2340,320 @@
       "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14364?focusedCommentId=1171600",
       "lastCommentDisplay": "May 18, 2026, 1:44 PM",
       "lastCommentAuthor": "Joshua Marquess",
-      "testChecklist": null,
+      "testChecklist": {
+        "files": [
+          {
+            "id": "716093",
+            "filename": "QA_Test_Guide_CORE-14364.md",
+            "created": "2026-04-21T10:06:20.760-0400",
+            "author": "Luis Vallejo Mursuli"
+          }
+        ],
+        "commentIds": [
+          "1154310"
+        ],
+        "total": 18,
+        "testCases": [
+          {
+            "id": "A1",
+            "title": "View Wallet with ApplePay Payment Type",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify wallet displays correctly for customer with ApplePay (17) payment type",
+            "checks": [
+              "Page renders successfully without errors",
+              "ApplePay payment type visible in wallet section",
+              "Payment details (description, status) displayed correctly",
+              "Application logs show no errors",
+              "No NetDispatcherFaultException in logs",
+              "Wallet data retrieved successfully"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A2",
+            "title": "View Wallet with BakktPay Payment Type",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify wallet displays correctly for customer with BakktPay (18) payment type",
+            "checks": [
+              "Page renders successfully without errors",
+              "BakktPay payment type visible in wallet section",
+              "Payment details (description, status) displayed correctly",
+              "Application logs show successful deserialization",
+              "No NetDispatcherFaultException in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A3",
+            "title": "View Wallet with PaymentMethodKey Payment Type",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify wallet displays correctly for customer with PaymentMethodKey (19) payment type",
+            "checks": [
+              "Page renders successfully without errors",
+              "PaymentMethodKey payment type visible in wallet section",
+              "Payment details (description, status) displayed correctly",
+              "Application logs show successful deserialization",
+              "No NetDispatcherFaultException in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A4",
+            "title": "View Wallet with Multiple New Payment Types",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify wallet displays correctly when customer has multiple new payment types (combination of ApplePay, BakktPay, PaymentMethodKey)",
+            "checks": [
+              "Page renders successfully",
+              "All new payment types visible (e.g., 2-3 payment methods)",
+              "Each payment type displays unique details",
+              "Application logs show successful deserialization of all items",
+              "No NetDispatcherFaultException in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A5",
+            "title": "View Account Balance for Customer with New Payment Type",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify GolfNow Balance display works for customer with new payment types",
+            "checks": [
+              "Balance section loads without error",
+              "Balance amount displays correctly",
+              "Currency code shown correctly",
+              "Available balance total calculated correctly",
+              "Multiple currencies displayed if applicable",
+              "No deserialization errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A6",
+            "title": "View Transaction History with New Payment Types",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify transaction history displays for customers with new payment types",
+            "checks": [
+              "Transaction history loads without error",
+              "All transactions displayed in list",
+              "Date, amount, description visible for each transaction",
+              "Running balance calculated correctly",
+              "Transaction types shown correctly",
+              "No deserialization errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A7",
+            "title": "Select Payment Method During Reservation",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify payment method selection works during reservation checkout when customer has new payment types (deserialization test)",
+            "checks": [
+              "Payment method selection loads",
+              "Wallet data retrieved successfully",
+              "Credit card payment types filtered correctly",
+              "No errors when filtering payment types",
+              "Application logs clean"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A8",
+            "title": "Update Account Balance Expiration with New Payment Type",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify account balance expiration update works for customers with new payment types",
+            "checks": [
+              "Balance section loads before update",
+              "Expiration update saves successfully",
+              "Wallet reloads after update without error",
+              "New expiration date persisted in UI",
+              "Database updated with new expiration date",
+              "No deserialization errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B1",
+            "title": "View Wallet with CreditCard Payment Type (Existing)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify existing CreditCard (2) payment type continues to work after enum changes",
+            "checks": [
+              "Page renders successfully",
+              "CreditCard payment type visible",
+              "All credit card details displayed correctly (masked number, exp date)",
+              "Card brand shown (Visa, Mastercard, etc.)",
+              "IsDefault indicator shown if applicable",
+              "Same functionality as before fix",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B2",
+            "title": "View Wallet with GiftCard Payment Type (Existing)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify existing GiftCard (1) payment type continues to work",
+            "checks": [
+              "Gift card section loads successfully",
+              "Gift card details displayed correctly",
+              "Balance calculation correct",
+              "Gift card number/description shown",
+              "Gift card status displayed (Active/Inactive)",
+              "Same functionality as before fix",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B3",
+            "title": "View Wallet with GolfNowBalance/AccountBalance (Existing)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify existing GolfNowBalance (12) payment type continues to work",
+            "checks": [
+              "Balance section loads successfully",
+              "Balance amounts correct for each currency",
+              "Multiple currencies displayed if applicable",
+              "Currency formatting correct",
+              "Expiration dates shown correctly",
+              "Total available balance calculated correctly",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B4",
+            "title": "View Wallet with MilitaryStarCard (Existing)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify existing MilitaryStarCard (11) payment type continues to work",
+            "checks": [
+              "Wallet section loads",
+              "MilitaryStarCard payment type visible",
+              "Payment details displayed correctly",
+              "Same functionality as before fix",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B5",
+            "title": "View Wallet with Masterpass (Existing)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify existing Masterpass (13) payment type continues to work",
+            "checks": [
+              "Wallet section loads",
+              "Masterpass payment type visible",
+              "Payment details displayed correctly",
+              "Same functionality as before fix",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B6",
+            "title": "View Wallet with Mixed Existing Payment Types",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify customer with multiple existing payment types displays correctly",
+            "checks": [
+              "Main wallet section loads with all payment methods",
+              "Gift card section loads with gift card details",
+              "Account balance section loads with balance info",
+              "All payment types visible in appropriate sections",
+              "Each payment type shows correct details",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B7",
+            "title": "Gift Card Transaction History (Existing Workflow)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify gift card transaction history continues to work",
+            "checks": [
+              "Transaction history loads successfully",
+              "All transactions visible",
+              "Details complete for each transaction (date, amount, description)",
+              "Running balance calculated correctly",
+              "Transaction types shown correctly",
+              "Same functionality as before fix",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B8",
+            "title": "Account Balance Adjustment Workflow (Existing)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify account balance adjustment continues to work for existing payment types",
+            "checks": [
+              "Adjustment dialog opens",
+              "All fields functional (amount, type, reason)",
+              "Adjustment saves to database",
+              "Wallet reloads successfully after save",
+              "New balance correct (old balance + $10.00)",
+              "Transaction history shows adjustment",
+              "Same functionality as before fix",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B9",
+            "title": "Error Handling for Invalid Customer Number",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify error handling for invalid customer number hasn't changed",
+            "checks": [
+              "Error message displayed appropriately (e.g., \"Customer not found\")",
+              "No unhandled exceptions",
+              "Application logs show expected behavior",
+              "Same user experience as before fix",
+              "No NetDispatcherFaultException",
+              "Application remains responsive"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B10",
+            "title": "Error Handling for Customer with No Wallet",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify error handling for customer with no wallet data hasn't changed",
+            "checks": [
+              "Page renders successfully",
+              "Appropriate empty state message (e.g., \"No payment methods configured\")",
+              "No errors trying to display non-existent wallet",
+              "Application logs clean",
+              "Same user experience as before fix",
+              "No deserialization errors",
+              "A1: View wallet with ApplePay (17) payment type",
+              "A2: View wallet with BakktPay (18) payment type",
+              "A3: View wallet with PaymentMethodKey (19) payment type",
+              "A4: View wallet with multiple new payment types",
+              "A5: View account balance for customer with new payment type",
+              "A6: View transaction history with new payment types",
+              "A7: Select payment method during reservation",
+              "A8: Update account balance expiration with new payment type",
+              "B1: View wallet with CreditCard (2) - existing",
+              "B2: View wallet with GiftCard (1) - existing"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          }
+        ]
+      },
       "type": "Bug",
       "isSubtask": false,
       "status": "Closed",
@@ -2543,10 +2856,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-06-21T07:08:03.655Z",
-    "previousPulledAtDisplay": "Jun 21, 2026, 3:08 AM",
-    "currentPulledAt": "2026-06-21T07:13:06.114Z",
-    "currentPulledAtDisplay": "Jun 21, 2026, 3:13 AM",
+    "previousPulledAt": "2026-06-21T07:13:06.114Z",
+    "previousPulledAtDisplay": "Jun 21, 2026, 3:13 AM",
+    "currentPulledAt": "2026-06-21T07:18:08.748Z",
+    "currentPulledAtDisplay": "Jun 21, 2026, 3:18 AM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -2554,6 +2867,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-06-21T07:13:06.114Z",
+      "previousPulledAtDisplay": "Jun 21, 2026, 3:13 AM",
+      "currentPulledAt": "2026-06-21T07:18:08.748Z",
+      "currentPulledAtDisplay": "Jun 21, 2026, 3:18 AM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-06-21T07:08:03.655Z",
       "previousPulledAtDisplay": "Jun 21, 2026, 3:08 AM",
@@ -4385,17 +4709,6 @@
       "previousPulledAtDisplay": "Jun 20, 2026, 11:53 AM",
       "currentPulledAt": "2026-06-20T15:58:25.847Z",
       "currentPulledAtDisplay": "Jun 20, 2026, 11:58 AM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-06-20T15:48:20.943Z",
-      "previousPulledAtDisplay": "Jun 20, 2026, 11:48 AM",
-      "currentPulledAt": "2026-06-20T15:53:23.362Z",
-      "currentPulledAtDisplay": "Jun 20, 2026, 11:53 AM",
       "isBaseline": false,
       "added": [],
       "removed": [],
