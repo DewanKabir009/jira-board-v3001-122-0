@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-06-25T04:33:56.095Z",
-  "pulledAtDisplay": "Jun 25, 2026, 12:33 AM",
+  "pulledAt": "2026-06-25T04:38:58.711Z",
+  "pulledAtDisplay": "Jun 25, 2026, 12:38 AM",
   "total": 33,
   "issues": [
     {
@@ -2856,10 +2856,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-06-25T04:28:53.717Z",
-    "previousPulledAtDisplay": "Jun 25, 2026, 12:28 AM",
-    "currentPulledAt": "2026-06-25T04:33:56.095Z",
-    "currentPulledAtDisplay": "Jun 25, 2026, 12:33 AM",
+    "previousPulledAt": "2026-06-25T04:33:56.095Z",
+    "previousPulledAtDisplay": "Jun 25, 2026, 12:33 AM",
+    "currentPulledAt": "2026-06-25T04:38:58.711Z",
+    "currentPulledAtDisplay": "Jun 25, 2026, 12:38 AM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -2867,6 +2867,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-06-25T04:33:56.095Z",
+      "previousPulledAtDisplay": "Jun 25, 2026, 12:33 AM",
+      "currentPulledAt": "2026-06-25T04:38:58.711Z",
+      "currentPulledAtDisplay": "Jun 25, 2026, 12:38 AM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-06-25T04:28:53.717Z",
       "previousPulledAtDisplay": "Jun 25, 2026, 12:28 AM",
@@ -4698,17 +4709,6 @@
       "previousPulledAtDisplay": "Jun 24, 2026, 10:49 AM",
       "currentPulledAt": "2026-06-24T14:54:34.995Z",
       "currentPulledAtDisplay": "Jun 24, 2026, 10:54 AM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-06-24T14:48:22.339Z",
-      "previousPulledAtDisplay": "Jun 24, 2026, 10:48 AM",
-      "currentPulledAt": "2026-06-24T14:49:31.464Z",
-      "currentPulledAtDisplay": "Jun 24, 2026, 10:49 AM",
       "isBaseline": false,
       "added": [],
       "removed": [],
