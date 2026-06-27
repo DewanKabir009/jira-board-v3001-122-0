@@ -4,7 +4,7 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-06-27T22:45:06.379Z",
+  "pulledAt": "2026-06-27T22:45:49.246Z",
   "pulledAtDisplay": "Jun 27, 2026, 6:45 PM",
   "total": 33,
   "issues": [
@@ -1117,7 +1117,201 @@
       "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14412?focusedCommentId=1160206",
       "lastCommentDisplay": "May 5, 2026, 3:46 PM",
       "lastCommentAuthor": "Jake Hart",
-      "testChecklist": null,
+      "testChecklist": {
+        "files": [
+          {
+            "id": "718758",
+            "filename": "QA_Test_Guide_CORE-14412.md",
+            "created": "2026-04-29T11:15:26.399-0400",
+            "author": "Luis Vallejo Mursuli"
+          }
+        ],
+        "commentIds": [
+          "1157698"
+        ],
+        "total": 9,
+        "testCases": [
+          {
+            "id": "A1",
+            "title": "Successful Tracking with New CAKE Response Format",
+            "category": "4. Category A: Response Format Validation Tests",
+            "blocking": false,
+            "description": "Verify that CAKE conversions track successfully with the new API response format (Code=1, Msg=RECEIVED)",
+            "checks": [
+              "Reservation API call succeeds (HTTP 200/201)",
+              "ReservationID returned in response",
+              "Database record created with correct ReservationID",
+              "Vendor field = \"cake\"",
+              "AffNetworkID = \"6\"",
+              "CID (Campaign ID) matches request (12)",
+              "PID (Partner/Affiliate ID) matches request (456)",
+              "AID (Action/Event ID) matches request (3)",
+              "Trk (Tracking URL) populated with full CAKE URL",
+              "Application log shows \"CAKE response: httpStatus=OK, status=Success, code=1, msg=RECEIVED\"",
+              "No exceptions or errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "A2",
+            "title": "Backward Compatibility with Legacy CAKE Response Format",
+            "category": "4. Category A: Response Format Validation Tests",
+            "blocking": false,
+            "description": "Verify backward compatibility - system still accepts legacy CAKE response format (Code=0, Msg=SUCCESS) if CAKE ever reverts or uses it",
+            "checks": [
+              "Reservation created successfully",
+              "Database record exists",
+              "Application log shows Success status",
+              "No validation errors even with legacy format",
+              "Code handles both formats gracefully"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "A3",
+            "title": "Duplicate Tracking Detection and Handling",
+            "category": "4. Category A: Response Format Validation Tests",
+            "blocking": false,
+            "description": "Verify that duplicate CAKE tracking attempts are detected and handled correctly (Code=1, Msg=DUPLICATED)",
+            "checks": [
+              "First reservation (A1) has database record",
+              "First reservation log: \"status=Success, msg=RECEIVED\"",
+              "Second reservation (A3) created successfully",
+              "Second reservation has database record",
+              "Second reservation log: \"status=Duplicate, msg=DUPLICATED\"",
+              "No errors or exceptions for duplicate tracking",
+              "Code treats Duplicate as acceptable (returns true)",
+              "Both reservations tracked in database"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "B1",
+            "title": "Complete Reservation with CAKE Affiliate Tracking",
+            "category": "5. Category B: Reservation Integration Tests",
+            "blocking": false,
+            "description": "Verify complete end-to-end reservation flow with CAKE affiliate tracking integration",
+            "checks": [
+              "Reservation created successfully (HTTP 200/201)",
+              "ReservationID returned",
+              "Payment processed",
+              "Tee time inventory decremented",
+              "Workflow activity executed (check logs for \"TrackReservationConversionActivity\")",
+              "CAKE pixel fired (check logs for \"CAKE response:\")",
+              "Database record exists with correct ReservationID",
+              "All required fields populated (see Test B2 for field details)",
+              "Trk contains full pixel URL with all parameters",
+              "No errors in reservation flow"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "B2",
+            "title": "Database Record Structure and Field Population Accuracy",
+            "category": "5. Category B: Reservation Integration Tests",
+            "blocking": false,
+            "description": "Verify that CAKE tracking database record structure is correct and all fields are populated with accurate data",
+            "checks": [
+              "Database record exists",
+              "All required fields populated (not NULL where required)",
+              "ReservationID matches API response",
+              "AffNetworkID = \"6\"",
+              "Vendor = \"cake\"",
+              "CID (Campaign ID) matches request",
+              "PID (Partner/Affiliate ID) matches request",
+              "AID (Action/Event ID) matches request",
+              "Amt1 (Amount) is numeric and formatted correctly",
+              "Qty1 (Quantity) matches number of players",
+              "Currency matches invoice currency",
+              "Method = \"Ecommerce\"",
+              "Trk (Tracking URL) is complete and valid",
+              "Trk contains all expected parameters",
+              "Trk parameters match reservation details",
+              "TimeStamp is recent"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "B3",
+            "title": "Repeated Reservation Call - Duplicate Tracking Behavior",
+            "category": "5. Category B: Reservation Integration Tests",
+            "blocking": false,
+            "description": "Verify that when the same CAKE RequestID is used multiple times, subsequent calls are logged as duplicates but don't fail the reservation",
+            "checks": [
+              "Second reservation created successfully",
+              "Second reservation has separate database record",
+              "Application log for first call: \"status=Success\"",
+              "Application log for second call: \"status=Duplicate\"",
+              "No errors or exceptions thrown for duplicate",
+              "Reservation flow completed normally",
+              "Both tracking records in database",
+              "Both records have same RequestID in Trk field",
+              "CAKE API recognized duplicate RequestID"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "C1",
+            "title": "Invalid or Malformed CAKE Parameters",
+            "category": "6. Category C: Error Handling Tests",
+            "blocking": false,
+            "description": "Verify that invalid CAKE affiliate parameters are handled gracefully without breaking reservation flow",
+            "checks": [
+              "API call completes (does not hang or crash)",
+              "Response received (even if tracking failed)",
+              "If CAKE rejects: No database record or status=Failure in logs",
+              "If CAKE accepts: Database record created",
+              "Application logs show CAKE response or exception",
+              "No unhandled exceptions",
+              "Reservation flow not blocked by invalid tracking parameters",
+              "Error handling code executed (try-catch wrapper)"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "C2",
+            "title": "Missing Required CAKE Parameters",
+            "category": "6. Category C: Error Handling Tests",
+            "blocking": false,
+            "description": "Verify behavior when required CAKE affiliate parameters are missing from request",
+            "checks": [
+              "Reservation created successfully",
+              "No CAKE tracking record in database",
+              "No \"CAKE response:\" log entries for this reservation",
+              "No errors or exceptions",
+              "Workflow validation skips tracking when parameters missing",
+              "Application remains stable"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "C3",
+            "title": "Verify Non-CAKE Affiliate Tracking Unaffected",
+            "category": "6. Category C: Error Handling Tests",
+            "blocking": false,
+            "description": "Verify that the CAKE response validation fix does not affect other affiliate tracking providers (regression test)",
+            "checks": [
+              "Code changes only in CAKE-specific files",
+              "No shared tracking infrastructure modified",
+              "TrackingProviderService routing unchanged",
+              "Other providers (if testable) work correctly",
+              "No regression in non-CAKE affiliate tracking",
+              "A1: Successful tracking with new CAKE response format (Code=1, Msg=RECEIVED)",
+              "A2: Backward compatibility with legacy format (Code=0, Msg=SUCCESS)",
+              "A3: Duplicate tracking detection (Code=1, Msg=DUPLICATED)",
+              "B1: Complete reservation with CAKE affiliate tracking",
+              "B2: Database record structure and field population accuracy",
+              "B3: Repeated reservation call - duplicate tracking behavior",
+              "C1: Invalid or malformed CAKE parameters",
+              "C2: Missing required CAKE parameters",
+              "C3: Verify non-CAKE affiliate tracking unaffected",
+              "All Category A tests (3 tests) completed",
+              "All Category B tests (3 tests) completed"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          }
+        ]
+      },
       "type": "Bug",
       "isSubtask": false,
       "status": "Closed",
@@ -1494,7 +1688,317 @@
       "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14332?focusedCommentId=1162678",
       "lastCommentDisplay": "May 11, 2026, 4:37 PM",
       "lastCommentAuthor": "Dewan Kabir",
-      "testChecklist": null,
+      "testChecklist": {
+        "files": [
+          {
+            "id": "718106",
+            "filename": "QA_Test_Guide_CORE-14117_CORE-14332.md",
+            "created": "2026-04-27T14:58:12.446-0400",
+            "author": "Luis Vallejo Mursuli"
+          }
+        ],
+        "commentIds": [
+          "1156736"
+        ],
+        "total": 25,
+        "testCases": [
+          {
+            "id": "A1",
+            "title": "Dynamic Fee Override Applied to Trade Rate (FF Enabled)",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "Verify dynamic transaction fee override replaces default fee for trade rate when LaunchDarkly feature flag is enabled for Channel 331",
+            "checks": [],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A2",
+            "title": "Non-Trade Rates Unchanged by Dynamic Fees",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "Verify that non-trade rates (IsTrade = false) are NOT affected by dynamic transaction fee overrides",
+            "checks": [],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A3",
+            "title": "Fee Messaging Reflects Final Calculated Fees ⚠️ BLOCKING",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": true,
+            "description": "Verify that FeeMessagingDisplayRates accurately reflects the final transaction fee totals after all calculations complete (validates CORE-14117 fix)",
+            "checks": [],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A4",
+            "title": "Multiple Facilities with Different Fee Configurations",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "Verify batch query optimization works when tee times span multiple facilities (tests performance optimization)",
+            "checks": [
+              "System optimizes database queries (single call for multiple facilities)",
+              "Each facility's dynamic fee configuration applied correctly"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A5",
+            "title": "Percentage-Based Dynamic Fee (Future/Optional)",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "If percentage-based fees are configured, verify they calculate correctly",
+            "checks": [
+              "TransactionFeesTotal.Value = 50.00 * 0.05 = $2.50"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A6",
+            "title": "9-Hole vs 18-Hole Rates",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "Verify dynamic fees apply correctly to both 9-hole and 18-hole rates",
+            "checks": [],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A7",
+            "title": "Pagination Consistency (Skip/Take)",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "Verify dynamic fees apply consistently across paginated results",
+            "checks": [],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A8",
+            "title": "GetInvoice Endpoint Fee Messaging",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "Verify dynamic fees and fee messaging work correctly in GetInvoice endpoint",
+            "checks": [
+              "TransactionFeesTotal.Value = 1.99 (for trade rate)",
+              "FeeMessagingDisplayRates.TransactionFeesTotal = 1.99",
+              "Accurate total calculation"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A9",
+            "title": "TeeTimeInvoice with Multiple Players",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "Verify dynamic fees applied correctly when multiple players are included in TeeTimeInvoice",
+            "checks": [
+              "Each player's transaction fee = 1.99 (if trade rate)",
+              "Total transaction fees = 1.99 * number_of_players",
+              "FeeMessagingDisplayRates accurate per player"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A10",
+            "title": "Dynamic Fee with Zero Value",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "Verify system handles zero-value dynamic fees correctly",
+            "checks": [],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A11",
+            "title": "LaunchDarkly Feature Flag ENABLED (Channel 331)",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "Verify LaunchDarkly feature flag evaluation returns TRUE for Channel 331, enabling FeeConfiguration",
+            "checks": [
+              "LaunchDarkly evaluates flag for ChannelContext(331)",
+              "Flag returns true",
+              "FeeCalculationService.ApplyTransactionFees() executes (Line 1339)",
+              "Dynamic fees and fee messaging work as expected"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A12",
+            "title": "LaunchDarkly Feature Flag DISABLED (Channel 5151)",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "Verify LaunchDarkly feature flag evaluation returns FALSE for Channel 5151, disabling FeeConfiguration",
+            "checks": [
+              "LaunchDarkly evaluates flag for ChannelContext(5151)",
+              "Flag returns false",
+              "FeeCalculationService.ApplyTransactionFees() SKIPPED",
+              "Legacy fee behavior used"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A13",
+            "title": "LaunchDarkly Fallback to CRMConfig ⚠️ BLOCKING",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": true,
+            "description": "Verify system falls back to TeeTime.FeeCalculation.Enabled (web.config) when LaunchDarkly is unavailable",
+            "checks": [
+              "LaunchDarkly call fails/times out",
+              "System falls back to CRMConfig",
+              "Reads TeeTime.FeeCalculation.Enabled from web.config",
+              "If true: FeeConfiguration still works",
+              "If false: Legacy behavior used"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A14",
+            "title": "Channel Context Differentiation",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "Verify different channels receive different feature flag evaluations based on LaunchDarkly targeting rules",
+            "checks": [
+              "Channel 331: FeeConfiguration enabled, fees = 1.99",
+              "Channel 5151: FeeConfiguration disabled, fees = default (e.g., 3.49)"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "A15",
+            "title": "Mixed Trade and Non-Trade Rates in Single Response",
+            "category": "4. New Feature Tests: Dynamic Fees & LaunchDarkly",
+            "blocking": false,
+            "description": "Verify a single tee time response correctly handles both trade and non-trade rates with different fee treatments",
+            "checks": [],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "B1",
+            "title": "Legacy Behavior - Feature Flag Disabled ⚠️ BLOCKING",
+            "category": "5. Regression Tests: Backward Compatibility",
+            "blocking": true,
+            "description": "Verify legacy tee time fee behavior works correctly when feature flag is disabled (Channel 5151)",
+            "checks": [
+              "LaunchDarkly returns false for channel 5151",
+              "FeeCalculationService SKIPPED",
+              "Legacy fee logic used",
+              "Transaction fees use default configuration (NOT dynamic overrides)"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "B2",
+            "title": "Facility Without Dynamic Fee Configuration",
+            "category": "5. Regression Tests: Backward Compatibility",
+            "blocking": false,
+            "description": "Verify facilities without dynamic fee configurations continue working normally",
+            "checks": [
+              "No dynamic overrides applied",
+              "Default fee logic used",
+              "Normal response returned"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "B3",
+            "title": "Invalid Facility ID",
+            "category": "5. Regression Tests: Backward Compatibility",
+            "blocking": false,
+            "description": "Verify appropriate error handling for non-existent facility IDs",
+            "checks": [],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "B4",
+            "title": "Multiple Date Ranges",
+            "category": "5. Regression Tests: Backward Compatibility",
+            "blocking": false,
+            "description": "Verify dynamic fees apply correctly across different date ranges",
+            "checks": [],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "B5",
+            "title": "Empty Tee Time Results",
+            "category": "5. Regression Tests: Backward Compatibility",
+            "blocking": false,
+            "description": "Verify system handles empty tee time results gracefully (no tee times available)",
+            "checks": [],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "B6",
+            "title": "Rate Set Differentiation",
+            "category": "5. Regression Tests: Backward Compatibility",
+            "blocking": false,
+            "description": "Verify different rate sets within the same facility are handled correctly",
+            "checks": [
+              "Multiple rate sets may exist for same facility",
+              "Dynamic fee applies based on IsTrade flag, not rate set",
+              "Each rate set's trade rates get 1.99 fee",
+              "Each rate set's non-trade rates use default fees"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "B7",
+            "title": "Currency Code Consistency",
+            "category": "5. Regression Tests: Backward Compatibility",
+            "blocking": false,
+            "description": "Verify all Money objects maintain consistent currency codes throughout response",
+            "checks": [],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "B8",
+            "title": "Null or Missing Fee Configuration Fields",
+            "category": "5. Regression Tests: Backward Compatibility",
+            "blocking": false,
+            "description": "Verify system handles database records with null or missing fields gracefully",
+            "checks": [
+              "System handles NULL/invalid fee values gracefully",
+              "Either skips the record with warning in logs, OR uses default fee value (0.00)",
+              "No unhandled exceptions"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "B9",
+            "title": "Player Count Variations",
+            "category": "5. Regression Tests: Backward Compatibility",
+            "blocking": false,
+            "description": "Verify dynamic fees work correctly with different player counts (1-4 players)",
+            "checks": [
+              "Transaction fee per player = 1.99 (for trade rate)",
+              "Total transaction fees = 1.99 * player_count"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          },
+          {
+            "id": "B10",
+            "title": "Concurrent Requests Same Facility",
+            "category": "5. Regression Tests: Backward Compatibility",
+            "blocking": true,
+            "description": "Verify system handles concurrent requests for the same facility without issues",
+            "checks": [
+              "Test environment identified (DEV / STG)",
+              "Database access confirmed",
+              "Application log access confirmed",
+              "Postman/REST client configured with authentication",
+              "LaunchDarkly access confirmed (optional)",
+              "Facility 1806 exists with tee times for 2026-04-22 to 2026-04-24",
+              "Dynamic fee configuration confirmed: Fee = $1.99 for Facility 1806 trade rates",
+              "Both trade and non-trade rates available for Facility 1806",
+              "Channel 331 LaunchDarkly flag returns TRUE (verified)",
+              "Channel 5151 LaunchDarkly flag returns FALSE (verified)",
+              "All BLOCKING tests passed (A3, A13, B1)",
+              "All Critical severity tests passed",
+              "All High severity tests passed or documented",
+              "Response times acceptable (< 2 seconds for standard requests)",
+              "Batch query verified (1 DB call per request, not N+1)",
+              "Concurrent request test passed (B10)"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14117_CORE-14332.md"
+          }
+        ]
+      },
       "type": "Story",
       "isSubtask": false,
       "status": "Closed",
@@ -1836,7 +2340,320 @@
       "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14364?focusedCommentId=1171600",
       "lastCommentDisplay": "May 18, 2026, 1:44 PM",
       "lastCommentAuthor": "Joshua Marquess",
-      "testChecklist": null,
+      "testChecklist": {
+        "files": [
+          {
+            "id": "716093",
+            "filename": "QA_Test_Guide_CORE-14364.md",
+            "created": "2026-04-21T10:06:20.760-0400",
+            "author": "Luis Vallejo Mursuli"
+          }
+        ],
+        "commentIds": [
+          "1154310"
+        ],
+        "total": 18,
+        "testCases": [
+          {
+            "id": "A1",
+            "title": "View Wallet with ApplePay Payment Type",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify wallet displays correctly for customer with ApplePay (17) payment type",
+            "checks": [
+              "Page renders successfully without errors",
+              "ApplePay payment type visible in wallet section",
+              "Payment details (description, status) displayed correctly",
+              "Application logs show no errors",
+              "No NetDispatcherFaultException in logs",
+              "Wallet data retrieved successfully"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A2",
+            "title": "View Wallet with BakktPay Payment Type",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify wallet displays correctly for customer with BakktPay (18) payment type",
+            "checks": [
+              "Page renders successfully without errors",
+              "BakktPay payment type visible in wallet section",
+              "Payment details (description, status) displayed correctly",
+              "Application logs show successful deserialization",
+              "No NetDispatcherFaultException in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A3",
+            "title": "View Wallet with PaymentMethodKey Payment Type",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify wallet displays correctly for customer with PaymentMethodKey (19) payment type",
+            "checks": [
+              "Page renders successfully without errors",
+              "PaymentMethodKey payment type visible in wallet section",
+              "Payment details (description, status) displayed correctly",
+              "Application logs show successful deserialization",
+              "No NetDispatcherFaultException in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A4",
+            "title": "View Wallet with Multiple New Payment Types",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify wallet displays correctly when customer has multiple new payment types (combination of ApplePay, BakktPay, PaymentMethodKey)",
+            "checks": [
+              "Page renders successfully",
+              "All new payment types visible (e.g., 2-3 payment methods)",
+              "Each payment type displays unique details",
+              "Application logs show successful deserialization of all items",
+              "No NetDispatcherFaultException in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A5",
+            "title": "View Account Balance for Customer with New Payment Type",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify GolfNow Balance display works for customer with new payment types",
+            "checks": [
+              "Balance section loads without error",
+              "Balance amount displays correctly",
+              "Currency code shown correctly",
+              "Available balance total calculated correctly",
+              "Multiple currencies displayed if applicable",
+              "No deserialization errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A6",
+            "title": "View Transaction History with New Payment Types",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify transaction history displays for customers with new payment types",
+            "checks": [
+              "Transaction history loads without error",
+              "All transactions displayed in list",
+              "Date, amount, description visible for each transaction",
+              "Running balance calculated correctly",
+              "Transaction types shown correctly",
+              "No deserialization errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A7",
+            "title": "Select Payment Method During Reservation",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify payment method selection works during reservation checkout when customer has new payment types (deserialization test)",
+            "checks": [
+              "Payment method selection loads",
+              "Wallet data retrieved successfully",
+              "Credit card payment types filtered correctly",
+              "No errors when filtering payment types",
+              "Application logs clean"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "A8",
+            "title": "Update Account Balance Expiration with New Payment Type",
+            "category": "4. New Feature Tests: Payment Type Support",
+            "blocking": false,
+            "description": "Verify account balance expiration update works for customers with new payment types",
+            "checks": [
+              "Balance section loads before update",
+              "Expiration update saves successfully",
+              "Wallet reloads after update without error",
+              "New expiration date persisted in UI",
+              "Database updated with new expiration date",
+              "No deserialization errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B1",
+            "title": "View Wallet with CreditCard Payment Type (Existing)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify existing CreditCard (2) payment type continues to work after enum changes",
+            "checks": [
+              "Page renders successfully",
+              "CreditCard payment type visible",
+              "All credit card details displayed correctly (masked number, exp date)",
+              "Card brand shown (Visa, Mastercard, etc.)",
+              "IsDefault indicator shown if applicable",
+              "Same functionality as before fix",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B2",
+            "title": "View Wallet with GiftCard Payment Type (Existing)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify existing GiftCard (1) payment type continues to work",
+            "checks": [
+              "Gift card section loads successfully",
+              "Gift card details displayed correctly",
+              "Balance calculation correct",
+              "Gift card number/description shown",
+              "Gift card status displayed (Active/Inactive)",
+              "Same functionality as before fix",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B3",
+            "title": "View Wallet with GolfNowBalance/AccountBalance (Existing)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify existing GolfNowBalance (12) payment type continues to work",
+            "checks": [
+              "Balance section loads successfully",
+              "Balance amounts correct for each currency",
+              "Multiple currencies displayed if applicable",
+              "Currency formatting correct",
+              "Expiration dates shown correctly",
+              "Total available balance calculated correctly",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B4",
+            "title": "View Wallet with MilitaryStarCard (Existing)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify existing MilitaryStarCard (11) payment type continues to work",
+            "checks": [
+              "Wallet section loads",
+              "MilitaryStarCard payment type visible",
+              "Payment details displayed correctly",
+              "Same functionality as before fix",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B5",
+            "title": "View Wallet with Masterpass (Existing)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify existing Masterpass (13) payment type continues to work",
+            "checks": [
+              "Wallet section loads",
+              "Masterpass payment type visible",
+              "Payment details displayed correctly",
+              "Same functionality as before fix",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B6",
+            "title": "View Wallet with Mixed Existing Payment Types",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify customer with multiple existing payment types displays correctly",
+            "checks": [
+              "Main wallet section loads with all payment methods",
+              "Gift card section loads with gift card details",
+              "Account balance section loads with balance info",
+              "All payment types visible in appropriate sections",
+              "Each payment type shows correct details",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B7",
+            "title": "Gift Card Transaction History (Existing Workflow)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify gift card transaction history continues to work",
+            "checks": [
+              "Transaction history loads successfully",
+              "All transactions visible",
+              "Details complete for each transaction (date, amount, description)",
+              "Running balance calculated correctly",
+              "Transaction types shown correctly",
+              "Same functionality as before fix",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B8",
+            "title": "Account Balance Adjustment Workflow (Existing)",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify account balance adjustment continues to work for existing payment types",
+            "checks": [
+              "Adjustment dialog opens",
+              "All fields functional (amount, type, reason)",
+              "Adjustment saves to database",
+              "Wallet reloads successfully after save",
+              "New balance correct (old balance + $10.00)",
+              "Transaction history shows adjustment",
+              "Same functionality as before fix",
+              "No errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B9",
+            "title": "Error Handling for Invalid Customer Number",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify error handling for invalid customer number hasn't changed",
+            "checks": [
+              "Error message displayed appropriately (e.g., \"Customer not found\")",
+              "No unhandled exceptions",
+              "Application logs show expected behavior",
+              "Same user experience as before fix",
+              "No NetDispatcherFaultException",
+              "Application remains responsive"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          },
+          {
+            "id": "B10",
+            "title": "Error Handling for Customer with No Wallet",
+            "category": "5. Regression Tests: Existing Functionality",
+            "blocking": false,
+            "description": "Verify error handling for customer with no wallet data hasn't changed",
+            "checks": [
+              "Page renders successfully",
+              "Appropriate empty state message (e.g., \"No payment methods configured\")",
+              "No errors trying to display non-existent wallet",
+              "Application logs clean",
+              "Same user experience as before fix",
+              "No deserialization errors",
+              "A1: View wallet with ApplePay (17) payment type",
+              "A2: View wallet with BakktPay (18) payment type",
+              "A3: View wallet with PaymentMethodKey (19) payment type",
+              "A4: View wallet with multiple new payment types",
+              "A5: View account balance for customer with new payment type",
+              "A6: View transaction history with new payment types",
+              "A7: Select payment method during reservation",
+              "A8: Update account balance expiration with new payment type",
+              "B1: View wallet with CreditCard (2) - existing",
+              "B2: View wallet with GiftCard (1) - existing"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14364.md"
+          }
+        ]
+      },
       "type": "Bug",
       "isSubtask": false,
       "status": "Closed",
@@ -2039,9 +2856,9 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-06-27T22:39:53.761Z",
-    "previousPulledAtDisplay": "Jun 27, 2026, 6:39 PM",
-    "currentPulledAt": "2026-06-27T22:45:06.379Z",
+    "previousPulledAt": "2026-06-27T22:45:06.379Z",
+    "previousPulledAtDisplay": "Jun 27, 2026, 6:45 PM",
+    "currentPulledAt": "2026-06-27T22:45:49.246Z",
     "currentPulledAtDisplay": "Jun 27, 2026, 6:45 PM",
     "isBaseline": false,
     "added": [],
@@ -2050,6 +2867,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-06-27T22:45:06.379Z",
+      "previousPulledAtDisplay": "Jun 27, 2026, 6:45 PM",
+      "currentPulledAt": "2026-06-27T22:45:49.246Z",
+      "currentPulledAtDisplay": "Jun 27, 2026, 6:45 PM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-06-27T22:39:53.761Z",
       "previousPulledAtDisplay": "Jun 27, 2026, 6:39 PM",
@@ -3881,17 +4709,6 @@
       "previousPulledAtDisplay": "Jun 27, 2026, 3:28 AM",
       "currentPulledAt": "2026-06-27T07:33:49.627Z",
       "currentPulledAtDisplay": "Jun 27, 2026, 3:33 AM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-06-27T07:23:43.417Z",
-      "previousPulledAtDisplay": "Jun 27, 2026, 3:23 AM",
-      "currentPulledAt": "2026-06-27T07:28:46.524Z",
-      "currentPulledAtDisplay": "Jun 27, 2026, 3:28 AM",
       "isBaseline": false,
       "added": [],
       "removed": [],
