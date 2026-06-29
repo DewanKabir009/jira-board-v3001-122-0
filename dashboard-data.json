@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-06-29T14:29:09.015Z",
-  "pulledAtDisplay": "Jun 29, 2026, 10:29 AM",
+  "pulledAt": "2026-06-29T14:34:12.173Z",
+  "pulledAtDisplay": "Jun 29, 2026, 10:34 AM",
   "total": 33,
   "issues": [
     {
@@ -1117,7 +1117,201 @@
       "lastCommentUrl": "https://golfnow.atlassian.net/browse/CORE-14412?focusedCommentId=1160206",
       "lastCommentDisplay": "May 5, 2026, 3:46 PM",
       "lastCommentAuthor": "Jake Hart",
-      "testChecklist": null,
+      "testChecklist": {
+        "files": [
+          {
+            "id": "718758",
+            "filename": "QA_Test_Guide_CORE-14412.md",
+            "created": "2026-04-29T11:15:26.399-0400",
+            "author": "Luis Vallejo Mursuli"
+          }
+        ],
+        "commentIds": [
+          "1157698"
+        ],
+        "total": 9,
+        "testCases": [
+          {
+            "id": "A1",
+            "title": "Successful Tracking with New CAKE Response Format",
+            "category": "4. Category A: Response Format Validation Tests",
+            "blocking": false,
+            "description": "Verify that CAKE conversions track successfully with the new API response format (Code=1, Msg=RECEIVED)",
+            "checks": [
+              "Reservation API call succeeds (HTTP 200/201)",
+              "ReservationID returned in response",
+              "Database record created with correct ReservationID",
+              "Vendor field = \"cake\"",
+              "AffNetworkID = \"6\"",
+              "CID (Campaign ID) matches request (12)",
+              "PID (Partner/Affiliate ID) matches request (456)",
+              "AID (Action/Event ID) matches request (3)",
+              "Trk (Tracking URL) populated with full CAKE URL",
+              "Application log shows \"CAKE response: httpStatus=OK, status=Success, code=1, msg=RECEIVED\"",
+              "No exceptions or errors in logs"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "A2",
+            "title": "Backward Compatibility with Legacy CAKE Response Format",
+            "category": "4. Category A: Response Format Validation Tests",
+            "blocking": false,
+            "description": "Verify backward compatibility - system still accepts legacy CAKE response format (Code=0, Msg=SUCCESS) if CAKE ever reverts or uses it",
+            "checks": [
+              "Reservation created successfully",
+              "Database record exists",
+              "Application log shows Success status",
+              "No validation errors even with legacy format",
+              "Code handles both formats gracefully"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "A3",
+            "title": "Duplicate Tracking Detection and Handling",
+            "category": "4. Category A: Response Format Validation Tests",
+            "blocking": false,
+            "description": "Verify that duplicate CAKE tracking attempts are detected and handled correctly (Code=1, Msg=DUPLICATED)",
+            "checks": [
+              "First reservation (A1) has database record",
+              "First reservation log: \"status=Success, msg=RECEIVED\"",
+              "Second reservation (A3) created successfully",
+              "Second reservation has database record",
+              "Second reservation log: \"status=Duplicate, msg=DUPLICATED\"",
+              "No errors or exceptions for duplicate tracking",
+              "Code treats Duplicate as acceptable (returns true)",
+              "Both reservations tracked in database"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "B1",
+            "title": "Complete Reservation with CAKE Affiliate Tracking",
+            "category": "5. Category B: Reservation Integration Tests",
+            "blocking": false,
+            "description": "Verify complete end-to-end reservation flow with CAKE affiliate tracking integration",
+            "checks": [
+              "Reservation created successfully (HTTP 200/201)",
+              "ReservationID returned",
+              "Payment processed",
+              "Tee time inventory decremented",
+              "Workflow activity executed (check logs for \"TrackReservationConversionActivity\")",
+              "CAKE pixel fired (check logs for \"CAKE response:\")",
+              "Database record exists with correct ReservationID",
+              "All required fields populated (see Test B2 for field details)",
+              "Trk contains full pixel URL with all parameters",
+              "No errors in reservation flow"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "B2",
+            "title": "Database Record Structure and Field Population Accuracy",
+            "category": "5. Category B: Reservation Integration Tests",
+            "blocking": false,
+            "description": "Verify that CAKE tracking database record structure is correct and all fields are populated with accurate data",
+            "checks": [
+              "Database record exists",
+              "All required fields populated (not NULL where required)",
+              "ReservationID matches API response",
+              "AffNetworkID = \"6\"",
+              "Vendor = \"cake\"",
+              "CID (Campaign ID) matches request",
+              "PID (Partner/Affiliate ID) matches request",
+              "AID (Action/Event ID) matches request",
+              "Amt1 (Amount) is numeric and formatted correctly",
+              "Qty1 (Quantity) matches number of players",
+              "Currency matches invoice currency",
+              "Method = \"Ecommerce\"",
+              "Trk (Tracking URL) is complete and valid",
+              "Trk contains all expected parameters",
+              "Trk parameters match reservation details",
+              "TimeStamp is recent"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "B3",
+            "title": "Repeated Reservation Call - Duplicate Tracking Behavior",
+            "category": "5. Category B: Reservation Integration Tests",
+            "blocking": false,
+            "description": "Verify that when the same CAKE RequestID is used multiple times, subsequent calls are logged as duplicates but don't fail the reservation",
+            "checks": [
+              "Second reservation created successfully",
+              "Second reservation has separate database record",
+              "Application log for first call: \"status=Success\"",
+              "Application log for second call: \"status=Duplicate\"",
+              "No errors or exceptions thrown for duplicate",
+              "Reservation flow completed normally",
+              "Both tracking records in database",
+              "Both records have same RequestID in Trk field",
+              "CAKE API recognized duplicate RequestID"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "C1",
+            "title": "Invalid or Malformed CAKE Parameters",
+            "category": "6. Category C: Error Handling Tests",
+            "blocking": false,
+            "description": "Verify that invalid CAKE affiliate parameters are handled gracefully without breaking reservation flow",
+            "checks": [
+              "API call completes (does not hang or crash)",
+              "Response received (even if tracking failed)",
+              "If CAKE rejects: No database record or status=Failure in logs",
+              "If CAKE accepts: Database record created",
+              "Application logs show CAKE response or exception",
+              "No unhandled exceptions",
+              "Reservation flow not blocked by invalid tracking parameters",
+              "Error handling code executed (try-catch wrapper)"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "C2",
+            "title": "Missing Required CAKE Parameters",
+            "category": "6. Category C: Error Handling Tests",
+            "blocking": false,
+            "description": "Verify behavior when required CAKE affiliate parameters are missing from request",
+            "checks": [
+              "Reservation created successfully",
+              "No CAKE tracking record in database",
+              "No \"CAKE response:\" log entries for this reservation",
+              "No errors or exceptions",
+              "Workflow validation skips tracking when parameters missing",
+              "Application remains stable"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          },
+          {
+            "id": "C3",
+            "title": "Verify Non-CAKE Affiliate Tracking Unaffected",
+            "category": "6. Category C: Error Handling Tests",
+            "blocking": false,
+            "description": "Verify that the CAKE response validation fix does not affect other affiliate tracking providers (regression test)",
+            "checks": [
+              "Code changes only in CAKE-specific files",
+              "No shared tracking infrastructure modified",
+              "TrackingProviderService routing unchanged",
+              "Other providers (if testable) work correctly",
+              "No regression in non-CAKE affiliate tracking",
+              "A1: Successful tracking with new CAKE response format (Code=1, Msg=RECEIVED)",
+              "A2: Backward compatibility with legacy format (Code=0, Msg=SUCCESS)",
+              "A3: Duplicate tracking detection (Code=1, Msg=DUPLICATED)",
+              "B1: Complete reservation with CAKE affiliate tracking",
+              "B2: Database record structure and field population accuracy",
+              "B3: Repeated reservation call - duplicate tracking behavior",
+              "C1: Invalid or malformed CAKE parameters",
+              "C2: Missing required CAKE parameters",
+              "C3: Verify non-CAKE affiliate tracking unaffected",
+              "All Category A tests (3 tests) completed",
+              "All Category B tests (3 tests) completed"
+            ],
+            "sourceFile": "QA_Test_Guide_CORE-14412.md"
+          }
+        ]
+      },
       "type": "Bug",
       "isSubtask": false,
       "status": "Closed",
@@ -2662,10 +2856,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-06-29T14:24:05.051Z",
-    "previousPulledAtDisplay": "Jun 29, 2026, 10:24 AM",
-    "currentPulledAt": "2026-06-29T14:29:09.015Z",
-    "currentPulledAtDisplay": "Jun 29, 2026, 10:29 AM",
+    "previousPulledAt": "2026-06-29T14:29:09.015Z",
+    "previousPulledAtDisplay": "Jun 29, 2026, 10:29 AM",
+    "currentPulledAt": "2026-06-29T14:34:12.173Z",
+    "currentPulledAtDisplay": "Jun 29, 2026, 10:34 AM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -2673,6 +2867,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-06-29T14:29:09.015Z",
+      "previousPulledAtDisplay": "Jun 29, 2026, 10:29 AM",
+      "currentPulledAt": "2026-06-29T14:34:12.173Z",
+      "currentPulledAtDisplay": "Jun 29, 2026, 10:34 AM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-06-29T14:24:05.051Z",
       "previousPulledAtDisplay": "Jun 29, 2026, 10:24 AM",
@@ -4504,17 +4709,6 @@
       "previousPulledAtDisplay": "Jun 28, 2026, 2:37 PM",
       "currentPulledAt": "2026-06-28T18:42:23.891Z",
       "currentPulledAtDisplay": "Jun 28, 2026, 2:42 PM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-06-28T18:32:19.065Z",
-      "previousPulledAtDisplay": "Jun 28, 2026, 2:32 PM",
-      "currentPulledAt": "2026-06-28T18:37:21.404Z",
-      "currentPulledAtDisplay": "Jun 28, 2026, 2:37 PM",
       "isBaseline": false,
       "added": [],
       "removed": [],
