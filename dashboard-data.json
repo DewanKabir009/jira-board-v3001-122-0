@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-08-16T04:47:36.953Z",
-  "pulledAtDisplay": "Aug 16, 2026, 12:47 AM",
+  "pulledAt": "2026-08-16T04:51:38.721Z",
+  "pulledAtDisplay": "Aug 16, 2026, 12:51 AM",
   "total": 33,
   "issues": [
     {
@@ -2856,10 +2856,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-08-16T04:42:34.284Z",
-    "previousPulledAtDisplay": "Aug 16, 2026, 12:42 AM",
-    "currentPulledAt": "2026-08-16T04:47:36.953Z",
-    "currentPulledAtDisplay": "Aug 16, 2026, 12:47 AM",
+    "previousPulledAt": "2026-08-16T04:47:36.953Z",
+    "previousPulledAtDisplay": "Aug 16, 2026, 12:47 AM",
+    "currentPulledAt": "2026-08-16T04:51:38.721Z",
+    "currentPulledAtDisplay": "Aug 16, 2026, 12:51 AM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -2867,6 +2867,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-08-16T04:47:36.953Z",
+      "previousPulledAtDisplay": "Aug 16, 2026, 12:47 AM",
+      "currentPulledAt": "2026-08-16T04:51:38.721Z",
+      "currentPulledAtDisplay": "Aug 16, 2026, 12:51 AM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-08-16T04:42:34.284Z",
       "previousPulledAtDisplay": "Aug 16, 2026, 12:42 AM",
@@ -4697,17 +4708,6 @@
       "previousPulledAt": "2026-08-15T15:31:05.979Z",
       "previousPulledAtDisplay": "Aug 15, 2026, 11:31 AM",
       "currentPulledAt": "2026-08-15T15:31:33.919Z",
-      "currentPulledAtDisplay": "Aug 15, 2026, 11:31 AM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-08-15T15:26:03.287Z",
-      "previousPulledAtDisplay": "Aug 15, 2026, 11:26 AM",
-      "currentPulledAt": "2026-08-15T15:31:05.979Z",
       "currentPulledAtDisplay": "Aug 15, 2026, 11:31 AM",
       "isBaseline": false,
       "added": [],
