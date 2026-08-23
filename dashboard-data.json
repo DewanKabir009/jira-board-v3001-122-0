@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-08-23T23:31:46.201Z",
-  "pulledAtDisplay": "Aug 23, 2026, 7:31 PM",
+  "pulledAt": "2026-08-23T23:36:49.597Z",
+  "pulledAtDisplay": "Aug 23, 2026, 7:36 PM",
   "total": 33,
   "issues": [
     {
@@ -2856,10 +2856,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-08-23T23:31:06.621Z",
+    "previousPulledAt": "2026-08-23T23:31:46.201Z",
     "previousPulledAtDisplay": "Aug 23, 2026, 7:31 PM",
-    "currentPulledAt": "2026-08-23T23:31:46.201Z",
-    "currentPulledAtDisplay": "Aug 23, 2026, 7:31 PM",
+    "currentPulledAt": "2026-08-23T23:36:49.597Z",
+    "currentPulledAtDisplay": "Aug 23, 2026, 7:36 PM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -2867,6 +2867,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-08-23T23:31:46.201Z",
+      "previousPulledAtDisplay": "Aug 23, 2026, 7:31 PM",
+      "currentPulledAt": "2026-08-23T23:36:49.597Z",
+      "currentPulledAtDisplay": "Aug 23, 2026, 7:36 PM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-08-23T23:31:06.621Z",
       "previousPulledAtDisplay": "Aug 23, 2026, 7:31 PM",
@@ -4698,17 +4709,6 @@
       "previousPulledAtDisplay": "Aug 23, 2026, 6:08 AM",
       "currentPulledAt": "2026-08-23T10:13:53.607Z",
       "currentPulledAtDisplay": "Aug 23, 2026, 6:13 AM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-08-23T10:05:54.409Z",
-      "previousPulledAtDisplay": "Aug 23, 2026, 6:05 AM",
-      "currentPulledAt": "2026-08-23T10:08:49.951Z",
-      "currentPulledAtDisplay": "Aug 23, 2026, 6:08 AM",
       "isBaseline": false,
       "added": [],
       "removed": [],
