@@ -4,8 +4,8 @@
   "dashboardVersion": "v1.10.6",
   "siteUrl": "https://golfnow.atlassian.net",
   "jql": "fixVersion = \"v3001.122.0\" ORDER BY updated DESC",
-  "pulledAt": "2026-10-30T14:31:18.398Z",
-  "pulledAtDisplay": "Oct 30, 2026, 10:31 AM",
+  "pulledAt": "2026-10-30T14:56:18.396Z",
+  "pulledAtDisplay": "Oct 30, 2026, 10:56 AM",
   "total": 33,
   "issues": [
     {
@@ -2027,7 +2027,7 @@
         "summary": "Customizable transaction fees",
         "description": "",
         "type": "Epic",
-        "status": "Planning",
+        "status": "Backlog",
         "priority": "P1"
       }
     },
@@ -2091,7 +2091,7 @@
         "summary": "Customizable transaction fees",
         "description": "",
         "type": "Epic",
-        "status": "Planning",
+        "status": "Backlog",
         "priority": "P1"
       }
     },
@@ -2736,7 +2736,7 @@
         "summary": "Commerce Proxy API",
         "description": "",
         "type": "Epic",
-        "status": "Planning",
+        "status": "Backlog",
         "priority": "None"
       }
     },
@@ -2856,10 +2856,10 @@
     }
   ],
   "pullDiff": {
-    "previousPulledAt": "2026-10-30T14:06:14.046Z",
-    "previousPulledAtDisplay": "Oct 30, 2026, 10:06 AM",
-    "currentPulledAt": "2026-10-30T14:31:18.398Z",
-    "currentPulledAtDisplay": "Oct 30, 2026, 10:31 AM",
+    "previousPulledAt": "2026-10-30T14:31:18.398Z",
+    "previousPulledAtDisplay": "Oct 30, 2026, 10:31 AM",
+    "currentPulledAt": "2026-10-30T14:56:18.396Z",
+    "currentPulledAtDisplay": "Oct 30, 2026, 10:56 AM",
     "isBaseline": false,
     "added": [],
     "removed": [],
@@ -2867,6 +2867,17 @@
     "statusChanges": []
   },
   "pullHistory": [
+    {
+      "previousPulledAt": "2026-10-30T14:31:18.398Z",
+      "previousPulledAtDisplay": "Oct 30, 2026, 10:31 AM",
+      "currentPulledAt": "2026-10-30T14:56:18.396Z",
+      "currentPulledAtDisplay": "Oct 30, 2026, 10:56 AM",
+      "isBaseline": false,
+      "added": [],
+      "removed": [],
+      "updated": [],
+      "statusChanges": []
+    },
     {
       "previousPulledAt": "2026-10-30T14:06:14.046Z",
       "previousPulledAtDisplay": "Oct 30, 2026, 10:06 AM",
@@ -4698,17 +4709,6 @@
       "previousPulledAtDisplay": "Oct 29, 2026, 12:33 PM",
       "currentPulledAt": "2026-10-29T16:56:14.758Z",
       "currentPulledAtDisplay": "Oct 29, 2026, 12:56 PM",
-      "isBaseline": false,
-      "added": [],
-      "removed": [],
-      "updated": [],
-      "statusChanges": []
-    },
-    {
-      "previousPulledAt": "2026-10-29T16:28:27.732Z",
-      "previousPulledAtDisplay": "Oct 29, 2026, 12:28 PM",
-      "currentPulledAt": "2026-10-29T16:33:31.188Z",
-      "currentPulledAtDisplay": "Oct 29, 2026, 12:33 PM",
       "isBaseline": false,
       "added": [],
       "removed": [],
